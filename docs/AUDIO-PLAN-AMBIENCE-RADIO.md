@@ -54,9 +54,11 @@ Skip the call if another cue is already playing. Add a dedicated “radio chatte
 
 Player call signs may use badge numbers. Jeffery Price is Ranger 1, badge #273.
 
+For generic landing calls on non-quotable squares, alternate between the Senior Ranger (female) and the male ranger voices on successive eligible landings. The Senior Ranger is a distinct field-ranger voice, not Dispatch: Dispatch remains the separate communications role, while the Senior Ranger can use the radio treatment for authoritative field orders. A quotable square uses its assigned character below instead of this generic rotation.
+
 ### Voice and DSP plan
 
-- Generate the spoken material with Chatterbox voices, using 2–3 ranger voices.
+- Generate the spoken material with Chatterbox voices, using the Senior Ranger plus 2–3 male ranger voices.
 - Apply a radio DSP chain: roughly 300–3000 Hz band-pass, light distortion, crackle/hiss, key-up click, and squelch tail.
 - Prepare 6–8 opener templates and all 52 square names.
 - Prefer recording/generating openers and place names as separate assets and stitching them in the browser to keep the download small.
@@ -112,7 +114,8 @@ Plan-only voice-line map derived from `board/desert-ranger.json` and `docs/RULES
 | Character | Chatterbox voice direction | Typical use |
 |---|---|---|
 | Dispatch | Calm adult, clipped professional delivery, low-mid register, lightly amused under pressure; designed to survive the radio band-pass. | Movement directions, fire calls, reroutes, and radio-only landings. |
-| Ranger 1 / field ranger | Warm outdoorsy adult, grounded mid-range, efficient phrasing, dry humor; badge #273 can be used for Jeffery Price. | General ranger reactions and place/effect confirmations. |
+| Senior Ranger (female) | Calm, commanding, no-nonsense, with dry humor; mature alto, steady pace, clipped radio delivery, moderate exaggeration. Distinct from Dispatch, she is the authoritative field ranger and can voice generic landing calls on her rotation. | Rulings, closures, citations, hazards, orders, and firm field decisions. |
+| Ranger 1 / field ranger | Warm outdoorsy adult, grounded mid-range, efficient phrasing, dry humor; badge #273 can be used for Jeffery Price. | General ranger reactions and place/effect confirmations, including the male side of generic-call rotation. |
 | HR representative | Bright, polished alto or tenor, quick corporate cadence, friendly but delighted by policy language. | Grievances, promotions, affirmative action, and overdue paperwork. |
 | Tow-truck guy | Warm gravelly baritone, road-weary but kind, unflappable comic timing. | Breakdowns, backing accidents, flats, and being stuck. |
 | Nerdy ranger | Youthful precise tenor, earnest enthusiasm, slightly over-explains ecology and archaeology. | Olla, elephant trees, shortcuts, and field observations. |
@@ -123,6 +126,7 @@ Plan-only voice-line map derived from `board/desert-ranger.json` and `docs/RULES
 ### Landing and timing rules
 
 - On a quotable landing, replace the generic landing radio call with one dedicated line by default. A line tagged `radio` may retain the key-up/squelch treatment; it still counts as the one landing call.
+- On a radio-call-only landing, alternate the Senior Ranger and male ranger voices for the generic call; do not use Dispatch as a third generic voice in that rotation.
 - Do not stack a generic radio opener, a quotable line, and a reply. Allow one short line plus the necessary click/tail, with a target ceiling of about 3 seconds for all landing voice audio.
 - Resolve chained effects before choosing the line. For example, `41 -> 12` should get one primary Ocotillo Wells/lose-turn line, not a line for both squares; `44` should get one line for the final roll-back outcome.
 - If a line would exceed the ceiling, prefer the effect line and suppress the generic radio call. If radio chatter is off, play only a non-radio cheer/aww cue when enabled.
@@ -133,7 +137,7 @@ Plan-only voice-line map derived from `board/desert-ranger.json` and `docs/RULES
 | Index | Square name | Board text | Effect | Proposed character | Proposed short lines | Cue |
 |---:|---|---|---|---|---|---|
 | 0 | Start | `START` | Start; no effect | — | **Radio call only; no dedicated line.** | radio |
-| 1 | Go to Hawk Canyon | `GO TO HAWK CANYON` | Go to 20, Hawk Canyon | Dispatch | “Dispatch, rerouting to Hawk Canyon.”<br>“Copy. Scenic route, mandatory.” | radio |
+| 1 | Go to Hawk Canyon | `GO TO HAWK CANYON` | Go to 20, Hawk Canyon | Senior Ranger (female) | “Senior Ranger to Hawk Canyon. Take the scenic route.”<br>“Order received. Move along.” | radio |
 | 2 | Palm Canyon | `PALM CANYON` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 3 | Promoted | `PROMOTED GO TO SACRAMENTO` | Go to 21, Sacramento | HR representative | “Congratulations! Your promotion comes with a Sacramento transfer.”<br>“Upward and westward—please pack light.” | cheer |
 | 4 | Sandstone Canyon | `SANDSTONE CANYON` | Place only | — | **Radio call only; no dedicated line.** | radio |
@@ -141,27 +145,27 @@ Plan-only voice-line map derived from `board/desert-ranger.json` and `docs/RULES
 | 6 | Cut Across Trail | `LAND HERE AND YOU MAY USE CUT ACROSS TRAIL` | Optional exact-landing shortcut to 33, Una Palma | Nerdy ranger | “Shortcut unlocked. I love a legal trail hack.”<br>“Cut across? Efficient and dusty.” | cheer |
 | 7 | Harper Flat | `HARPER FLAT` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 8 | Coyote Canyon | `COYOTE CANYON` | Place only | — | **Radio call only; no dedicated line.** | radio |
-| 9 | Vandalized Sign | `VANDALIZED SIGN - GO BACK 1 SPACE` | Go back 1 to Coyote Canyon (8) | Nerdy ranger | “Someone edited the sign with a very permanent marker.”<br>“Back one. Art class is over.” | aww |
+| 9 | Vandalized Sign | `VANDALIZED SIGN - GO BACK 1 SPACE` | Go back 1 to Coyote Canyon (8) | Senior Ranger (female) | “Vandalized sign. Back one space and report the marker.”<br>“Public lands are not a sketchbook.” | aww |
 | 10 | Grapevine Canyon | `GRAPEVINE CANYON` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 11 | Dos Cabezas | `DOS CABEZAS` | Place only | — | **Radio call only; no dedicated line.** | radio |
-| 12 | Ocotillo Wells | `OCOTILLO WELLS LOSE 1 TURN` | Lose 1 turn | Tow-truck guy | “The well has water; the schedule doesn't.”<br>“One turn cooling off—hydrate.” | aww |
+| 12 | Ocotillo Wells | `OCOTILLO WELLS LOSE 1 TURN` | Lose 1 turn | Senior Ranger (female) | “Ocotillo Wells: one-turn hold. Hydrate and reset.”<br>“The desert has called a timeout.” | aww |
 | 13 | Garage | `GARAGE` | Place only | — | **Radio call only; no dedicated line.** | radio |
-| 14 | Off-Road Bust | `YOU CATCH TWO OFF-ROAD MOTORCYCLES ~ ROLL AGAIN!` | Catch two off-road motorcycles; roll again | Ranger 1 / field ranger | “Two bikes, zero permits, one more roll.”<br>“Off-road? More like off-the-hook—roll again.” | cheer |
+| 14 | Off-Road Bust | `YOU CATCH TWO OFF-ROAD MOTORCYCLES ~ ROLL AGAIN!` | Catch two off-road motorcycles; roll again | Senior Ranger (female) | “Two off-road bikes cited. Roll again, and stay on the trail.”<br>“Citation complete. Your next move is a roll.” | cheer |
 | 15 | Fault Wash | `FAULT WASH` | Place only | — | **Radio call only; no dedicated line.** | radio |
-| 16 | No Extra Water | `NO EXTRA DRINKING WATER GO BACK 6 SPACES` | Go back 6 to Grapevine Canyon (10) | Dispatch | “Water check failed. Back six and refill.”<br>“No extra water? That is a six-space thirst trap.” | aww |
+| 16 | No Extra Water | `NO EXTRA DRINKING WATER GO BACK 6 SPACES` | Go back 6 to Grapevine Canyon (10) | Senior Ranger (female) | “No extra water. Back six, then refill.”<br>“Hydration is not optional.” | aww |
 | 17 | Middle Willows | `MIDDLE WILLOWS` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 18 | Vallecito | `VALLECITO` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 19 | Arroyo Salado | `ARROYO SALADO` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 20 | Hawk Canyon | `HAWK CANYON` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 21 | Sacramento | `SACRAMENTO` | Place only | — | **Radio call only; no dedicated line.** | radio |
-| 22 | Grievance Upheld | `GRIEVANCE UPHELD MOVE AHEAD 10` | Move ahead 10 to Una Palma (32) | HR representative | “Grievance upheld. Your paperwork just got a turbo boost.”<br>“HR says: move ahead ten—no appeal needed.” | cheer |
+| 22 | Grievance Upheld | `GRIEVANCE UPHELD MOVE AHEAD 10` | Move ahead 10 to Una Palma (32) | Senior Ranger (female) | “Grievance upheld. Move ahead ten.”<br>“Ruling stands; enjoy the fast lane.” | cheer |
 | 23 | Vehicle Breaks Down | `VEHICLE BREAKS DOWN GO BACK 10` | Go back 10 to Garage (13) | Tow-truck guy | “Your vehicle has filed for a ten-space retreat.”<br>“Tow truck guy says: I can be there after ten spaces.” | aww |
 | 24 | Sheep Canyon | `SHEEP CANYON` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 25 | Tamarisk Grove | `TAMARISK GROVE` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 26 | Found an Olla | `YOU FOUND AN OLLA ROLL AGAIN` | Found an olla; roll again | Nerdy ranger | “Ancient pot, modern bonus: roll again.”<br>“Olla found! Please admire it from a respectful distance.” | cheer |
 | 27 | VIP Ride Along | `V.I.P. RIDE ALONG - BACK TO MIDDLE WILLOWS` | Go back to 17, Middle Willows | Supervisor | “VIP ride along complete. Please return to Middle Willows.”<br>“Very Important Passenger, very ordinary detour.” | aww |
 | 28 | Supervisor on Vacation | `MOVE AHEAD 5 SUPERVISOR ON VACATION` | Move ahead 5 to Una Palma (33) | Supervisor | “Supervisor's on vacation; the paperwork says go five.”<br>“No boss, no brakes—move ahead five.” | cheer |
-| 29 | Shooters Cited | `SHOOTERS CITED - ROLL AGAIN` | Roll again | Dispatch | “Citations issued. Roll again, carefully.”<br>“That's one way to get a second chance.” | cheer |
+| 29 | Shooters Cited | `SHOOTERS CITED - ROLL AGAIN` | Roll again | Senior Ranger (female) | “Shooters cited. Roll again, and keep it responsible.”<br>“Citation issued. Take your second chance.” | cheer |
 | 30 | Backing Accident | `BACKING ACCIDENT LOSE 2 TURNS (OUCH!)` | Lose 2 turns | Tow-truck guy | “Backing accident. Everybody take two deep breaths.”<br>“Ouch! Two turns in the slow lane.” | aww |
 | 31 | Affirmative Action | `AFFIRMATIVE ACTION SAYS SWAP PLACES WITH ANOTHER PLAYER` | Choose another player and swap places; optional in solo play | HR representative | “Affirmative Action says: pick a partner and swap.”<br>“A fair exchange—please keep hands inside the board.” | cheer |
 | 32 | Yaqui Pass | `YAQUI PASS` | Place only | — | **Radio call only; no dedicated line.** | radio |
@@ -173,21 +177,22 @@ Plan-only voice-line map derived from `board/desert-ranger.json` and `docs/RULES
 | 38 | 17 Palms | `17 PALMS` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 39 | Fish Creek | `FISH CREEK` | Place only | — | **Radio call only; no dedicated line.** | radio |
 | 40 | Subpoena | `SUBPOENA GO TO COURT` | Go to 34, Court | Judge | “Subpoena served. Court is not optional.”<br>“Please report to Court—bring your indoor voice.” | aww |
-| 41 | Go to Ocotillo Wells | `GO TO OCOTILLO WELLS` | Go to 12, then trigger Ocotillo Wells lose 1 turn | Dispatch | “Dispatch: Ocotillo Wells, and yes, the extra penalty is real.”<br>“Go to Ocotillo Wells; one turn stays behind.” | aww |
+| 41 | Go to Ocotillo Wells | `GO TO OCOTILLO WELLS` | Go to 12, then trigger Ocotillo Wells lose 1 turn | Senior Ranger (female) | “Order: Ocotillo Wells. The extra turn is part of the ruling.”<br>“Proceed to Ocotillo Wells; no appeals on the detour.” | aww |
 | 42 | Stuck in Pinyon | `STUCK IN PINYON DROP OFF LOSE 1 TURN` | Drop off; lose 1 turn | Tow-truck guy | “Pinyon wins. We are officially parked.”<br>“Drop-off complete; one turn in the shade.” | aww |
 | 43 | Fonts Point | `FONTS POINT` | Place only; board text intentionally has no apostrophe | — | **Radio call only; no dedicated line.** | radio |
 | 44 | Reports Overdue | `REPORTS OVERDUE ROLL DICE AND GO BACK # SHOWN` | Roll again and move back that many; chained effects apply | HR representative | “Reports overdue. Roll for the size of your retreat.”<br>“The paperwork moved first—back we go.” | aww |
 | 45 | Barrel Springs | `BARREL SPRINGS` | Place only | — | **Radio call only; no dedicated line.** | radio |
-| 46 | Cholla Flat Tire | `CHOLLA CAUSES FLAT TIRE LOSE 1 TURN` | Lose 1 turn | Tow-truck guy | “Cholla: one, tire: zero.”<br>“Flat tire. One turn for roadside service.” | aww |
+| 46 | Cholla Flat Tire | `CHOLLA CAUSES FLAT TIRE LOSE 1 TURN` | Lose 1 turn | Senior Ranger (female) | “Cholla hazard confirmed. Lose one turn.”<br>“That cactus won. Service pause: one turn.” | aww |
 | 47 | Sunset Mountain | `SUNSET MOUNTAIN` | Place only | — | **Radio call only; no dedicated line.** | radio |
-| 48 | Sheep Canyon Closure | `SHEEP CANYON CLOSURE - GO BACK 9` | Go back 9 to Fish Creek (39) | Dispatch | “Sheep Canyon is closed. Turn around nine spaces.”<br>“The trail is closed; the detour is not subtle.” | aww |
-| 49 | Go to 17 Palms | `GO TO 17 PALMS` | Go to 38, 17 Palms | Dispatch | “Dispatch, redirecting to 17 Palms.”<br>“Not Palm Canyon—17 Palms. The map is very specific.” | aww |
-| 50 | Ground Fire Report | `REPORT OF A GROUND FIRE AT ARROYO SALADO - GO CHECK!` | Go to 19, Arroyo Salado | Dispatch | “Ground fire at Arroyo Salado. Ranger 1, go check.”<br>“Copy. One square before the finish, naturally.” | radio |
+| 48 | Sheep Canyon Closure | `SHEEP CANYON CLOSURE - GO BACK 9` | Go back 9 to Fish Creek (39) | Senior Ranger (female) | “Sheep Canyon is closed. Turn around nine.”<br>“Closure order stands; take the detour.” | aww |
+| 49 | Go to 17 Palms | `GO TO 17 PALMS` | Go to 38, 17 Palms | Senior Ranger (female) | “Ranger order: 17 Palms, not Palm Canyon.”<br>“Proceed to 17 Palms. The map is specific.” | aww |
+| 50 | Ground Fire Report | `REPORT OF A GROUND FIRE AT ARROYO SALADO - GO CHECK!` | Go to 19, Arroyo Salado | Senior Ranger (female) | “Ground fire at Arroyo Salado. Ranger 1, go check.”<br>“Hazard call confirmed. Move now, carefully.” | radio |
 | 51 | Finish | `FINISH !!!` | Win; overshooting counts as a win | Ranger crowd | “Finish! Nice work, Ranger.”<br>“Case closed, boots up.” | cheer |
 
 ### Selection summary
 
 - 27 squares have dedicated quotable/story lines: 1, 3, 6, 9, 12, 14, 16, 22, 23, 26–31, 34–36, 40–42, 44, 46, 48–51.
+- The Senior Ranger (female) now voices 12 of those quotable squares: 1, 9, 12, 14, 16, 22, 29, 41, 46, 48, 49, and 50. These cover orders, a ruling, citations, closures, and hazards.
 - The remaining 25 squares are intentionally **radio call only**; their place-name landings should stay uncluttered.
-- The cast is Dispatch, Ranger 1/field ranger, HR representative, tow-truck guy, nerdy ranger, supervisor, judge, and ranger crowd.
-- Review a small sample set with the user before full Chatterbox production, especially the HR, tow-truck, judge, and crowd voices.
+- The cast is Dispatch, Senior Ranger (female), Ranger 1/field ranger, HR representative, tow-truck guy, nerdy ranger, supervisor, judge, and ranger crowd.
+- Review a small sample set with the user before full Chatterbox production, especially the Senior Ranger, HR, tow-truck, judge, and crowd voices.
