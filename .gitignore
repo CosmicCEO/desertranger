@@ -1,0 +1,14 @@
+# Real config holds the DB password - never commit it.
+desertranger/config.php
+
+# Binary assets are NOT in git (the GitHub connector used for this repo only
+# takes text). Rebuild them with dev/make-assets.sh or get the assets zip.
+desertranger/assets/img/
+desertranger/assets/audio/
+desertranger/assets/fonts/
+# Deploy copy of /board/desert-ranger.json (the master stays in /board/).
+desertranger/board/
+
+# Dev tooling
+node_modules/
+proto-shots/

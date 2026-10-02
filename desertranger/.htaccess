@@ -1,0 +1,25 @@
+# Desert Ranger - Apache settings (works on Apache 2.2 and 2.4).
+Options -Indexes
+DirectoryIndex index.html
+
+# Never serve the real config, SQL, or markdown files directly.
+<FilesMatch "^(config\.php|config\.sample\.php|.*\.sql|.*\.md)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Long cache for art/audio/fonts; never cache the API.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/png  "access plus 30 days"
+  ExpiresByType audio/mpeg "access plus 30 days"
+  ExpiresByType font/ttf   "access plus 30 days"
+</IfModule>
+AddType font/ttf .ttf
+AddType audio/mpeg .mp3
