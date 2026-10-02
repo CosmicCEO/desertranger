@@ -196,3 +196,73 @@ Plan-only voice-line map derived from `board/desert-ranger.json` and `docs/RULES
 - The remaining 25 squares are intentionally **radio call only**; their place-name landings should stay uncluttered.
 - The cast is Dispatch, Senior Ranger (female), Ranger 1/field ranger, HR representative, tow-truck guy, nerdy ranger, supervisor, judge, and ranger crowd.
 - Review a small sample set with the user before full Chatterbox production, especially the Senior Ranger, HR, tow-truck, judge, and crowd voices.
+
+## E) Background radio chatter: Dispatch and R55
+
+Occasional two-way exchanges between Dispatch and Ranger 55 (call sign **R55**) that play as local ambience. These are not synchronized: each device may hear a different exchange at a different time.
+
+### Playback and mix rules
+
+- After audio unlock, choose an exchange at a random interval of a few minutes; do not make the timing predictable.
+- Keep it quieter than game cues and duck or skip it whenever a game cue, landing call, dice sound, or square quotable is playing.
+- Put it behind the existing **radio chatter** toggle and use the same radio DSP chain as landing calls: approximately 300–3000 Hz band-pass, light distortion, crackle/hiss, key-up click, and squelch tail.
+- Keep each exchange short and conversational. It is background flavor, not a gameplay event, and never reserves synchronized event timing.
+- Dispatch is a separate voice. R55 is primarily a male ranger voice (or an alternate male ranger take), distinct from the Senior Ranger and from the Dispatch operator.
+
+### Sample exchanges
+
+1. **Lunch interrupted**
+   - **Dispatch:** “R55, 10-20?”
+   - **R55:** “10-20 Borrego Springs. Attempting lunch.”
+   - **Dispatch:** “10-4. Your lunch is now officially a call.”
+
+2. **Coffee check**
+   - **Dispatch:** “R55, status?”
+   - **R55:** “10-8, coffee acquired.”
+   - **Dispatch:** “10-4. Protect the coffee.”
+
+3. **Off-duty taco stand**
+   - **R55:** “Dispatch, R55 going 10-7 for lunch.”
+   - **Dispatch:** “10-4. Same taco stand?”
+   - **R55:** “The only one with a seat.”
+
+4. **The repeat request**
+   - **Dispatch:** “R55, 10-6 at the trailhead?”
+   - **R55:** “10-9, Dispatch. The wind ate that.”
+   - **Dispatch:** “I said you’re 10-6. And bring snacks.”
+
+5. **End of shift**
+   - **R55:** “R55, end of shift. Going 10-7.”
+   - **Dispatch:** “10-4. The desert will hold your paperwork.”
+
+6. **Running taco-stand gag**
+   - **Dispatch:** “R55, 10-20?”
+   - **R55:** “10-7 at the taco stand in Borrego Springs.”
+   - **Dispatch:** “R55, that’s your third 10-7 there today.”
+   - **R55:** “Quality control.”
+
+7. **Cactus assistance**
+   - **Dispatch:** “R55, status?”
+   - **R55:** “10-6, assisting a visitor with a very persuasive cactus.”
+   - **Dispatch:** “10-4. Keep your distance.”
+
+8. **Fish Creek clarification**
+   - **Dispatch:** “R55, report.”
+   - **R55:** “10-8 and heading to Fish Creek.”
+   - **Dispatch:** “10-9? I heard ‘fish’ and ‘free lunch.’”
+   - **R55:** “Negative. I said Fish Creek.”
+
+### Ten-code glossary
+
+Ten-codes vary by agency and region, so keep this flavor set to the widely recognized meanings and avoid depending on a code for a rules decision:
+
+| Code | Meaning used here |
+|---|---|
+| 10-4 | Acknowledged / understood |
+| 10-6 | Busy / temporarily occupied |
+| 10-7 | Out of service / off duty |
+| 10-8 | In service / available |
+| 10-9 | Please repeat |
+| 10-20 | Location |
+
+These exchanges are sample dialogue only. Review the Dispatch/R55 samples before full Chatterbox production, and keep the gag light enough to sit behind gameplay rather than compete with it.
