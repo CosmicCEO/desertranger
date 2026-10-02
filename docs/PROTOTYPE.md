@@ -1,0 +1,229 @@
+# Desert Ranger: Milestone 1 prototype
+
+A playable web version of the board for 2 to 8 players. It uses plain PHP,
+MySQL/MariaDB through PDO, and vanilla JavaScript with no build step and
+no Composer. Clients poll the server about once a second.
+Challenges and accounts are out of scope for this milestone (accounts are milestone 2).
+
+## What's in the box
+
+```
+desertranger/                 <- upload this folder to htdocs/desertranger
+  index.html                  one page: home / lobby / game (+ ?board=1 big-screen mode)
+  api.php                     JSON API, routed by ?a=action (no URL rewriting needed)
+  install.php                 one-time table creation; refuses to run once tables exist
+  config.sample.php           copy to config.php (gitignored) and fill in DB details
+  .htaccess                   blocks config/sql/md files, no directory listings
+  board/desert-ranger.json    deploy COPY of /board/desert-ranger.json (not in git; made by
+                              dev/make-assets.sh). In a repo checkout the code falls back to
+                              /board/, so there is one master copy. Clients load it via api.php?a=board
+  lib/rules.php               PURE rules engine (no DB/HTTP), all game rules live here
+  lib/game.php                DB layer: loads state, calls the engine, saves in one transaction
+  lib/db.php                  config + PDO connection
+  lib/schema.sql              tables (users, games, players, events)
+  assets/js/sync.js           clock sync (NTP-style) + Web Audio scheduling
+  assets/js/board.js          piece placement (photo coordinates -> flat board) + hop animation
+  assets/js/app.js            screens, API calls, 1 s polling
+  assets/css/style.css        pitch-sheet palette + local fonts
+  assets/img|audio|fonts/     BINARY, not in git (see "Binary assets")
+  tests/rules_test.php        CLI rules tests (php tests/rules_test.php)
+  tests/simulate_game.php     full game over HTTP, incl. double-tap / parallel-tap checks
+  tests/poll_load.sh          N clients polling 1/s, prints req/s + latency + MySQL q/s
+dev/e2e/                      headless-Chrome smoke test (Node + playwright-core), not deployed
+dev/make-assets.sh            rebuilds the binary assets from the design workspace
+```
+
+`lib/` and `tests/` each have an `.htaccess` that denies web access.
+
+## Binary assets and the board copy (not in git)
+
+The GitHub connector used to commit this repo can only push text, so these files
+are **not in the repository**. Rebuild them with
+`bash dev/make-assets.sh /path/to/design-workspace desertranger` (needs Python with Pillow).
+The same script copies `board/desert-ranger.json` into `desertranger/board/` for upload.
+You can also take them from the prepared zip (`desertranger-assets.zip` in the build workspace,
+which includes the board copy):
+
+| File | Source |
+|---|---|
+| `assets/img/board-2000.jpg` (560 KB) | `art/board-flat.jpg` resized to 2000 px wide, JPEG q80 |
+| `assets/img/pieces/*.png` (8 files, about 50 KB each) | `art/pieces/*.png`, at most 200 px |
+| `assets/audio/crowd-cheer-v2.mp3`, `crowd-aww-v2.mp3` | `audio/samples/crowd/` |
+| `assets/fonts/Bungee-Regular.ttf`, `BungeeShade-Regular.ttf`, `Nunito.ttf`, `Caveat.ttf` | `pitch/fonts/` |
+
+## Run it locally
+
+Any Apache + PHP 7.4+ + MySQL 5.7+/MariaDB setup works. MAMP works on a Mac.
+On Debian or Ubuntu:
+
+```bash
+sudo apt-get install apache2 libapache2-mod-php php-mysql mariadb-server
+sudo mariadb -e "CREATE DATABASE desertranger CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+  CREATE USER 'desertranger'@'localhost' IDENTIFIED BY 'pick-a-password';
+  GRANT ALL ON desertranger.* TO 'desertranger'@'localhost';"
+bash dev/make-assets.sh /path/to/design-workspace desertranger   # binary assets + board copy
+cp -r desertranger /var/www/html/
+cp /var/www/html/desertranger/config.sample.php /var/www/html/desertranger/config.php   # edit it
+# browse to http://localhost/desertranger/install.php once, then http://localhost/desertranger/
+```
+
+For a quick run without Apache, use `cd desertranger && php -S 0.0.0.0:8099`. The
+built-in server ignores `.htaccess`, so use it for development only.
+
+On the build box the game is at **http://localhost:8098/desertranger/**. That
+Apache listens on port 8098, and the database is `desertranger`, user
+`desertranger`.
+
+### URLs
+- `/desertranger/` is the home screen. Enter a name, pick a rig, and either create a game or join one with a room code.
+- `/desertranger/?g=ABCD` opens or resumes game ABCD. A refresh puts you back in the same seat.
+- `/desertranger/?g=ABCD&board=1` is the shared TV/laptop view: board, turn banner, players, and log, with no controls.
+- Add `&debug=1` to show the clock-sync footer (offset, best RTT, polls/s, audio state, cue lead).
+
+### Tests
+```bash
+php desertranger/tests/rules_test.php                                       # 45 checks, exit 0 = pass
+php desertranger/tests/simulate_game.php http://localhost:8098/desertranger 4
+bash desertranger/tests/poll_load.sh http://localhost:8098/desertranger ABCD 8 60
+cd dev/e2e && npm install && CHROME=/path/to/chrome node e2e.js http://localhost:8098/desertranger/
+```
+
+## Deploy to Network Solutions (shared Linux hosting)
+
+1. **Check PHP**: in the hosting control panel, make sure PHP is **7.4 or newer**.
+   8.x is better. `install.php` also checks this.
+2. **Create the database**: in Database Manager, create a MySQL database and a user.
+   Note the **host name**, which is often something like `xxxxx.mysql.netsol.com`
+   and not `localhost`. Also note the database name, user, and password.
+3. **Upload**: first run `dev/make-assets.sh`, or unzip the assets zip into the folder. Then use
+   SFTP (FileZilla, Cyberduck, or similar) to upload the whole `desertranger/` folder,
+   including `assets/img`, `assets/audio`, `assets/fonts`, and `board/`, to
+   `htdocs/desertranger/`.
+4. **Configure**: on the server, copy `config.sample.php` to `config.php` and enter the DB
+   host, name, user, and password. Leave `'debug' => false`. You can also edit
+   `config.php` locally and upload it.
+5. **Install**: open `https://yourdomain/desertranger/install.php` once. It checks the
+   PHP version, the PDO MySQL driver, and the DB connection, then creates the tables. If you
+   open it again, it refuses to run because the tables already exist. You may delete the file afterwards.
+6. **HTTPS**: turn on the free SSL certificate for the domain. Phones need HTTPS to keep
+   cookies reliably, and it is good practice for audio unlock too.
+7. **Smoke test**: open the site on two phones, create and join a game, and play a few turns.
+   Then open `?g=CODE&board=1` on a laptop. If something fails, open `api.php?a=time` (it should
+   return `{"ok":true,"t":...}`) and `api.php?a=info`. A "Server error." message means
+   the details are in the host's PHP error log. You can also set `'debug' => true` briefly.
+
+If the host still runs Apache 2.2, the `.htaccess` files include 2.2-style deny rules.
+
+## How it works
+
+### Rules engine (`lib/rules.php`)
+- `roll($state, $dieFn)` and `choose($state, $choice, $dieFn)` return the new state, the
+  animation steps, the log lines, and a sound cue. The engine never rolls dice itself. The server passes
+  `random_int`, and tests pass scripted dice.
+- **Confirmed rules** (client, Oct 1, 2026):
+  - Effects chain.
+  - Roll again keeps the turn, with no limit.
+  - 44 rolls again and moves back that many squares, and chaining applies.
+  - Swap is optional and can target any player. It is skipped in solo play.
+  - The 6 → 33 shortcut is optional and only applies on an exact landing.
+  - Overshooting FINISH wins.
+  - Lose N turns means you skip your next N turns.
+  - Moves never go below START.
+- **Open rules** (marked `TODO(rules)` in code): the goto targets and square 48 (a plain −9)
+  come straight from the JSON. Change the JSON, not the code.
+- **Prototype decisions** (also `TODO(rules)`):
+  - After a swap, neither player triggers the square they land on.
+  - The extra die for square 44 is rolled automatically.
+  - For roll again, the player taps ROLL again.
+- `MAX_CHAIN_DEPTH = 20` stops any effect loop. The tests use a goto 1↔2 board to prove it.
+
+### A turn on the server (`lib/game.php: dr_take_action`)
+One transaction does all of this:
+1. `SELECT … FROM games WHERE code=? FOR UPDATE` locks the game row.
+2. If `last_action_key` equals this request's key, the request is a retry. It returns OK and does nothing.
+3. The `turn` sent by the client must equal `games.turn_number`. If not, the server returns 409.
+   A double tap sends the same turn number twice, so the second tap is rejected.
+4. The server checks that the token belongs to the current player, runs the engine, and saves the
+   players, the game, and the events. Then it commits.
+The simulation fires two taps at the same instant from separate processes, and exactly one is accepted.
+
+### Polling and the event log
+- Clients call `api.php?a=state&code=ABCD&since=<lastEventId>` about once a second (every 4 s
+  when the tab is hidden). Each poll runs 3 small SELECTs plus `SET time_zone`. The poll writes only
+  when it updates `last_seen_at`, at most once every 20 s per player.
+- Every action writes event rows: one log line, plus the animation steps (walk path, jump,
+  swap, die value), plus the cue. A "loses this turn" skip gets its own line.
+
+### Synced audio
+- **Cues**:
+  - A win plays `cheer`.
+  - A roll again plays `cheer`.
+  - A "big setback" plays `aww`. That means any lose-turn, or being pushed back 5 or more squares in one action.
+  - Tune this in `DesertRangerRules::BIG_SETBACK_SQUARES` / `finishAction()`.
+- The server writes `play_at_ms = now + cue_lead_ms` (1500 ms, set in config) on the event.
+- **Clock sync** (`assets/js/sync.js`):
+  - At start-up the client sends 6 quick pings to `api.php?a=time`. That endpoint skips the DB.
+  - After that it pings every 30 s, and every poll also counts as a sample.
+  - For each sample, `offset = serverTime − (t0+t1)/2`.
+  - The client keeps the last 40 samples and uses the median offset of the 5 with the lowest RTT.
+- **Playback**:
+  - The cue is scheduled on the Web Audio clock at `playAt − offset`, minus `outputLatency` where the browser reports it.
+  - A cue that arrives up to 250 ms late starts immediately, skipping into the clip so it stays in sync.
+  - A cue later than that is skipped.
+- **Unlock**: a "Tap to enable sound" overlay appears after a refresh or resume. Creating, joining, or tapping ROLL also unlocks audio, as iOS requires.
+
+### Piece placement
+The JSON's x,y values are in **original photo** pixels (4913×3583). The displayed image is the
+perspective-flattened board, so `board.js` applies the same 3×3 homography that produced
+`art/board-flat.jpg` (from `art/_work/warp.py`). A plain scale would be off by up to about 2
+squares near the corners. Positions are stored as percentages, so they hold at any zoom. If squares are
+re-traced on the flat image, set the matrix to identity (there is a comment in `board.js`).
+
+### Resume
+Create and join return a secret seat token. The DB stores only its sha256. The client keeps the token in
+`localStorage` (`dr_token_<CODE>`), and the server also sets an httpOnly cookie `dr_<CODE>`
+that lasts 60 days. Either one restores the seat. POSTs must be `application/json`, so the
+cookie fallback can't be abused by cross-site forms.
+
+### Ready for milestone 2 (accounts)
+The `users` table already exists, and `players.user_id` and `games.created_by_user_id` are
+nullable foreign keys. Milestone 2 adds sign-up and login, sets `user_id` on join, and
+lets a logged-in user reclaim their seat without the token.
+
+## Test results (Oct 2, 2026, build box)
+- `rules_test.php`: **45/45 pass** on PHP 8.4.26, and also on PHP 7.4.33 in Docker. The tests cover:
+  - every chain, including 41→12, 44→41→12, 44→40→34, and 48→39
+  - roll-again streaks
+  - shortcut exact landing, accepted and declined
+  - swaps with players ahead and behind, and solo play
+  - lose 1 and lose 2 turns
+  - overshoot win, clamping at START, and the chain-depth guard
+  - an exhaustive pass over every square × die × 44-die (1836 cases)
+  - 3000 random 2–8 player games, all finished, with invariants holding
+- `simulate_game.php`: full games to the finish with 2, 3, 4, and 8 players against Apache + PHP 8.4 +
+  MariaDB 11.8, all passing. A 3-player and a 4-player game also passed against **PHP 7.4.33 + MariaDB 11.8**
+  and **PHP 7.4.33 + MySQL 5.7.44**. The MySQL 5.7 run used a fresh `install.php` run, and the rerun was refused as intended.
+- **Polling load**, 8 clients polling 1/s for 60 s while a game was played:
+  - Requests: 8.0 req/s, with 8–10 req/s per second in the Apache log including the rolling player.
+  - Latency: average 1.9 ms, p95 3.2 ms.
+  - MySQL: about 46 queries/s. Apache CPU stayed under 1 s over the 60 s.
+- **Headless Chrome**:
+  - Setup: 3 phone contexts at 390×844 plus a board view at 1280×800.
+  - Flow: create, join by link, start, 10 actions including a shortcut choice, then resume after reload and resume with only the cookie (localStorage cleared). No console errors.
+  - Cue scheduling: all three unlocked devices scheduled the cue for the same server time, with clock offsets of 0–2 ms (same machine).
+
+## Known gaps / not yet done
+- **Not tested on real phones or by ear.** Audio sync was verified only in headless Chrome on one
+  machine, where every clock is the same. Cross-device offset estimation is implemented but
+  untested on real Wi-Fi or cellular. iOS Safari, the silent switch, and Bluetooth speaker latency are untested.
+- **Not tested on the Network Solutions host itself.** PHP 7.4 + MySQL 5.7 was emulated in Docker.
+  The `.htaccess` options (`Options -Indexes`, `FilesMatch`) may be restricted on some shared plans.
+  If you get a 500 error, remove the offending lines.
+- No turn timeout or skipping of absent players. Nobody can leave, kick, or rematch. A stalled player blocks the game.
+- You can't join after the game starts. Spectators can use the board view.
+- No rate limiting on game creation and no cleanup of old games.
+- `aww` fires fairly often (about 1 in 3 actions in simulations, because every lose-turn counts). Tune it with the client.
+- Tabs that are hidden or slow to poll skip cues that arrive more than 250 ms late. That is intended.
+- Board coordinates are still "approximate, to be re-traced". The pieces line up well on the flat image.
+- Only one board. The rules engine accepts any board JSON with the same square types.
+- Local Apache on the build box serves plain HTTP on 8098. HTTPS on 8443 was not configured.

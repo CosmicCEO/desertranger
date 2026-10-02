@@ -1,0 +1,7 @@
+{
+  "name": "desertranger-e2e",
+  "private": true,
+  "description": "Headless Chrome smoke test for the Desert Ranger prototype (dev only, not deployed).",
+  "scripts": { "e2e": "node e2e.js" },
+  "dependencies": { "playwright-core": "^1.50.0" }
+}
