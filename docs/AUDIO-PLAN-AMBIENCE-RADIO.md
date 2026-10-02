@@ -83,3 +83,22 @@ The user has not heard samples yet. Generate a small representative sample set b
 - [ ] All source/license entries are recorded in the credits file.
 - [ ] Ambience stays under approximately 1.5 MB and audio remains lazy-loaded.
 - [ ] Samples are reviewed before full production.
+
+## C) Dice roll sound
+
+### Local roll feedback
+
+- As soon as the active player taps **Roll**, play a short shake/rattle locally for immediate feedback (approximately 0.4–0.8 seconds).
+- Optionally loop the shake/rattle while the Roll control is held, stopping when the hold ends or the roll is committed.
+- This initial feedback is local-only and should not wait for the network or the synchronized result.
+
+### Synchronized landing sound
+
+- When the result appears, play a clatter/landing sound through the existing `play_at` event system so all devices hear the roll together.
+- Use 3–4 take variants, rotate them randomly, and apply slight pitch variation to keep repeated rolls from sounding identical.
+
+### Asset constraints and sourcing
+
+- Use CC0 sources only, such as the Kenney casino/dice pack, the Freesound CC0 filter, and Sonniss.
+- Log each selected source, license, and attribution detail in the credits file.
+- Keep the files tiny: target less than 50 KB per sound file.
