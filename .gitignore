@@ -1,14 +1,49 @@
-# Real config holds the DB password - never commit it.
+# ---------------------------------------------------------------------------
+# Secrets: the real config holds the DB password. Never commit it.
+# ---------------------------------------------------------------------------
 desertranger/config.php
+config.php
+.dbpass*
+.env
 
-# Binary assets are NOT in git (the GitHub connector used for this repo only
-# takes text). Rebuild them with dev/make-assets.sh or get the assets zip.
+# ---------------------------------------------------------------------------
+# Binary assets. They are NOT in git (the GitHub connector used so far only
+# takes text). They come from desertranger-assets-for-mac.zip: unzip it at the
+# repo root. To rebuild the game's assets instead, use dev/make-assets.sh.
+#
+# If you later decide to version them (from the Mac, with plain git or git
+# LFS), delete the matching lines below first, e.g.
+#   git lfs install && git lfs track "*.jpg" "*.png" "*.mp3" "*.ttf" "*.pdf"
+# ---------------------------------------------------------------------------
 desertranger/assets/img/
 desertranger/assets/audio/
 desertranger/assets/fonts/
-# Deploy copy of /board/desert-ranger.json (the master stays in /board/).
+# Deploy copy of board/desert-ranger.json (the master stays in /board/).
 desertranger/board/
+# Design originals (board photo, flattened board, icons, pitch PDF/PNG ...).
+art-binaries/
+# Binaries that belong to the text files under design/ and host-test/.
+design/**/*.jpg
+design/**/*.png
+design/**/*.pdf
+design/**/*.mp3
+design/**/*.wav
+design/**/*.ttf
+design/**/*.npy
+design/**/*.zip
+host-test/*.pdf
+host-test/*.png
+host-test/*.zip
+# The assets zip itself.
+*-assets*.zip
 
-# Dev tooling
+# ---------------------------------------------------------------------------
+# Dev tooling / OS junk
+# ---------------------------------------------------------------------------
 node_modules/
 proto-shots/
+.DS_Store
+._*
+.idea/
+.vscode/
+*.log

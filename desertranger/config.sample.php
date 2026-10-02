@@ -4,16 +4,26 @@
  *
  * Copy this file to config.php and fill in your database details.
  * config.php is NOT in git (it holds the password).
- * On Network Solutions: Database Manager shows the host name, database name,
+ *
+ * Network Solutions: Database Manager shows the host name, database name,
  * user and password after you create the database.
+ *
+ * MAMP on a Mac (default ports 8888/8889, user root / password root):
+ *     'db_host' => '127.0.0.1',  'db_port' => 8889,
+ *     'db_user' => 'root',       'db_pass' => 'root',
+ *   or, instead of host/port, the socket:
+ *     'db_socket' => '/Applications/MAMP/tmp/mysql/mysql.sock',
+ *   Use 127.0.0.1, not "localhost", with a port: PHP turns "localhost" into
+ *   "use the default socket" and ignores the port.
  */
 return array(
     // --- MySQL / MariaDB ---
-    'db_host' => 'localhost',     // NetSol often uses a host like "xxxxx.mysql.netsol.com"
-    'db_port' => 3306,
-    'db_name' => 'desertranger',
-    'db_user' => 'desertranger',
-    'db_pass' => 'change-me',
+    'db_host'   => 'localhost',   // NetSol often uses a host like "xxxxx.mysql.netsol.com"; MAMP: '127.0.0.1'
+    'db_port'   => 3306,          // MAMP: 8889
+    'db_socket' => '',            // Optional Unix socket path; when set, host and port are ignored
+    'db_name'   => 'desertranger',
+    'db_user'   => 'desertranger',
+    'db_pass'   => 'change-me',
 
     // --- Game tuning ---
     // How far in the future synced sounds are scheduled (ms). Must be longer
