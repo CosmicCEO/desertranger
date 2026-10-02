@@ -31,37 +31,62 @@ desertranger/                 <- upload this folder to htdocs/desertranger
   tests/poll_load.sh          N clients polling 1/s, prints req/s + latency + MySQL q/s
 dev/e2e/                      headless-Chrome smoke test (Node + playwright-core), not deployed
 dev/make-assets.sh            rebuilds the binary assets from the design workspace
+board/desert-ranger.json      MASTER board data (squares, types, x,y in photo pixels)
+docs/                         plan, rules notes (incl. the client's confirmed answers), audio research, this file
+design/                       text sources of the design work (board-photo extraction, icon
+                              extraction, crowd-audio mixing, pitch sheet). Their binaries are
+                              in the assets zip under art-binaries/. See design/README.md
+host-test/                    the earlier Network Solutions host test kit (amp-test.php + SOP)
 ```
 
 `lib/` and `tests/` each have an `.htaccess` that denies web access.
 
 ## Binary assets and the board copy (not in git)
 
-The GitHub connector used to commit this repo can only push text, so these files
-are **not in the repository**. Rebuild them with
+The GitHub connector used to commit this repo can only push text, so images, audio,
+fonts and the deploy copy of the board JSON are **not in the repository**. Get them from
+**`desertranger-assets-for-mac.zip`** (delivered separately, about 50 MB) and
+**unzip it at the repo root**, i.e. the folder that contains `desertranger/`, `board/` and `docs/`:
+
+```bash
+cd ~/code/anza-borrego-challenge
+unzip -o ~/Downloads/desertranger-assets-for-mac.zip
+```
+
+That creates:
+- `desertranger/assets/img/`, `assets/audio/`, `assets/fonts/` and `desertranger/board/desert-ranger.json`.
+  These are what the game needs, about 1.7 MB.
+- `art-binaries/`: design originals that the game does **not** need. That covers the original
+  board photo (4913×3583, the space of the JSON x,y), the flattened board, the full-size
+  pieces, the icons (PNG and SVG), the line art, and the pitch sheet PDF/PNG with its fonts and
+  images. See `ASSETS-README.txt` inside the zip.
+
+All of these paths are in `.gitignore`, so they can't be committed by accident. If you'd rather
+version them from the Mac, remove the lines from `.gitignore` and commit with plain git, or use
+git LFS (`git lfs track "*.jpg" "*.png" "*.mp3" "*.ttf" "*.pdf"`).
+
+You can also rebuild the game's assets with
 `bash dev/make-assets.sh /path/to/design-workspace desertranger` (needs Python with Pillow).
 The same script copies `board/desert-ranger.json` into `desertranger/board/` for upload.
-You can also take them from the prepared zip (`desertranger-assets.zip` in the build workspace,
-which includes the board copy):
 
 | File | Source |
 |---|---|
-| `assets/img/board-2000.jpg` (560 KB) | `art/board-flat.jpg` resized to 2000 px wide, JPEG q80 |
-| `assets/img/pieces/*.png` (8 files, about 50 KB each) | `art/pieces/*.png`, at most 200 px |
-| `assets/audio/crowd-cheer-v2.mp3`, `crowd-aww-v2.mp3` | `audio/samples/crowd/` |
-| `assets/fonts/Bungee-Regular.ttf`, `BungeeShade-Regular.ttf`, `Nunito.ttf`, `Caveat.ttf` | `pitch/fonts/` |
+| `assets/img/board-2000.jpg` (560 KB) | `art-binaries/art/board-flat.jpg` resized to 2000 px wide, JPEG q80 |
+| `assets/img/pieces/*.png` (8 files, about 50 KB each) | `art-binaries/art/pieces/*.png`, at most 200 px |
+| `assets/audio/crowd-cheer-v2.mp3`, `crowd-aww-v2.mp3` | design workspace `audio/samples/crowd/` (made by `design/scripts/crowd_v2_*.py`) |
+| `assets/fonts/Bungee-Regular.ttf`, `BungeeShade-Regular.ttf`, `Nunito.ttf`, `Caveat.ttf` | `art-binaries/pitch/fonts/` |
 
 ## Run it locally
 
-Any Apache + PHP 7.4+ + MySQL 5.7+/MariaDB setup works. MAMP works on a Mac.
-On Debian or Ubuntu:
+Any Apache + PHP 7.4+ + MySQL 5.7+/MariaDB setup works. For a Mac, see
+**Run it on a Mac with MAMP** below. On Debian or Ubuntu:
 
 ```bash
 sudo apt-get install apache2 libapache2-mod-php php-mysql mariadb-server
 sudo mariadb -e "CREATE DATABASE desertranger CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
   CREATE USER 'desertranger'@'localhost' IDENTIFIED BY 'pick-a-password';
   GRANT ALL ON desertranger.* TO 'desertranger'@'localhost';"
-bash dev/make-assets.sh /path/to/design-workspace desertranger   # binary assets + board copy
+unzip -o desertranger-assets-for-mac.zip    # at the repo root: binary assets + board copy
 cp -r desertranger /var/www/html/
 cp /var/www/html/desertranger/config.sample.php /var/www/html/desertranger/config.php   # edit it
 # browse to http://localhost/desertranger/install.php once, then http://localhost/desertranger/
@@ -88,6 +113,107 @@ bash desertranger/tests/poll_load.sh http://localhost:8098/desertranger ABCD 8 6
 cd dev/e2e && npm install && CHROME=/path/to/chrome node e2e.js http://localhost:8098/desertranger/
 ```
 
+## Run it on a Mac with MAMP
+
+Tested setup this targets: free MAMP 6 or 7 with default ports (Apache **8888**, MySQL **8889**),
+MySQL user `root` / password `root`, and document root `/Applications/MAMP/htdocs`.
+The build box emulated it with MySQL 8.0 on 127.0.0.1:8889 and root/root, plus a symlinked checkout. It was not run on a real Mac.
+
+### 1. Clone and add the assets
+```bash
+mkdir -p ~/code && cd ~/code
+git clone https://github.com/CosmicCEO/anza-borrego-challenge.git
+cd anza-borrego-challenge
+git checkout prototype-m1          # until the PR is merged; afterwards use main
+unzip -o ~/Downloads/desertranger-assets-for-mac.zip    # AT THE REPO ROOT
+ls desertranger/assets/img/board-2000.jpg desertranger/board/desert-ranger.json   # both must exist
+```
+Clone into a folder like `~/code`, **not** `~/Documents`, `~/Desktop` or `~/Downloads`.
+macOS privacy protection can stop MAMP's Apache from reading those folders through a symlink,
+and you get a 403.
+
+### 2. Put the game in MAMP's htdocs (pick one)
+- **Symlink**. Recommended, because edits in the repo are live:
+  ```bash
+  ln -s ~/code/anza-borrego-challenge/desertranger /Applications/MAMP/htdocs/desertranger
+  ```
+  With a symlink the code finds the board data in the repo's `board/` folder even without the
+  zip's `desertranger/board/` copy.
+- **Copy** (re-copy after every pull):
+  ```bash
+  rsync -a --exclude config.php ~/code/anza-borrego-challenge/desertranger/ /Applications/MAMP/htdocs/desertranger/
+  ```
+  A copy needs `desertranger/board/desert-ranger.json` from the zip.
+
+### 3. Start MAMP and create the database
+Start the servers in MAMP. In **Preferences → Ports**, keep 8888/8889, or note your own ports.
+In **Preferences → PHP**, pick a PHP 8.x version (7.4 also works).
+
+Use either phpMyAdmin or the CLI:
+- **phpMyAdmin**: open the MAMP WebStart page (`http://localhost:8888/MAMP/`) → Tools → phpMyAdmin.
+  Go to Databases, create `desertranger`, and choose collation `utf8mb4_unicode_ci`.
+- **CLI**: the client lives inside MAMP. The path depends on the version, so `ls /Applications/MAMP/Library/bin/` to find it:
+  ```bash
+  /Applications/MAMP/Library/bin/mysql -h 127.0.0.1 -P 8889 -u root -proot \
+    -e "CREATE DATABASE desertranger CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+  # MAMP 7 with MySQL 8 may use /Applications/MAMP/Library/bin/mysql80/bin/mysql
+  ```
+root/root is fine on a lab Mac. If you prefer a dedicated user, create one and use it in `config.php`.
+
+### 4. config.php
+```bash
+cd ~/code/anza-borrego-challenge/desertranger      # or /Applications/MAMP/htdocs/desertranger for a copy
+cp config.sample.php config.php
+```
+Set these values:
+```php
+'db_host'   => '127.0.0.1',   // NOT 'localhost': with 'localhost' PHP uses a socket and ignores the port
+'db_port'   => 8889,
+'db_socket' => '',            // or '/Applications/MAMP/tmp/mysql/mysql.sock' (then host/port are ignored)
+'db_name'   => 'desertranger',
+'db_user'   => 'root',
+'db_pass'   => 'root',
+'debug'     => true,          // fine on a lab Mac; shows error details in API responses
+```
+`config.php` is in `.gitignore`.
+
+### 5. Install, then play
+1. Open **http://localhost:8888/desertranger/install.php**. Every row should be ✓, followed by
+   "Installed! Tables created". Reloading it shows "Already installed … Refusing to run again".
+2. Open **http://localhost:8888/desertranger/**, create a game, and open `?g=CODE&board=1`
+   in another window for the big-screen view.
+
+### 6. Phones on the same Wi-Fi
+- Find the Mac's IP with `ipconfig getifaddr en0`, or look in System Settings → Wi-Fi → Details. It's often `en1` on Macs with Ethernet.
+- On each phone, open **http://<mac-ip>:8888/desertranger/**.
+- If macOS asks whether to accept incoming connections for `httpd`, click **Allow**. If phones
+  can't connect, check System Settings → Network → Firewall.
+- **Plain HTTP on the LAN is fine for this prototype**:
+  - **Audio**: the iOS audio unlock is a user-gesture rule ("Tap to enable sound"), not a secure-context rule. Web Audio works over http.
+  - **Other browser APIs**: nothing the game uses needs a secure context. That covers `fetch`, `localStorage`, cookies, `crypto.getRandomValues`, Web Audio and `performance.now`.
+  - **Cookie**: the seat cookie sets `Secure` only when the page is served over HTTPS, so resume works on http too.
+  - **Avoid**: features like `crypto.randomUUID`, the clipboard API, service workers, and wake lock would need HTTPS (or `localhost`). The prototype avoids them on purpose.
+- Make sure the phone isn't on a guest or "isolated" Wi-Fi network. Many of those block device-to-device traffic.
+
+### Troubleshooting (MAMP)
+| Symptom | Fix |
+|---|---|
+| install.php: "Database connection ✗ … Connection refused" or "No such file or directory" | MySQL isn't running, or the port isn't 8889 (check MAMP → Preferences → Ports). Use `127.0.0.1`, not `localhost`, or set `db_socket` to `/Applications/MAMP/tmp/mysql/mysql.sock`. |
+| "Access denied for user 'root'" | The MAMP root password was changed. Use the current one, or a dedicated user. |
+| "Unknown database 'desertranger'" | Create the database (step 3). |
+| 403 Forbidden on the symlink | The checkout is under Documents, Desktop or Downloads (macOS privacy), or Apache isn't following symlinks. Move the clone to `~/code`, or use the copy method. |
+| 500 Internal Server Error | `.htaccess` isn't allowed. MAMP's default `AllowOverride All` handles it. If you changed `httpd.conf`, restore it, or delete the offending `.htaccess` lines. |
+| Board image or pieces missing, fonts look plain | The zip wasn't unzipped at the repo root. Check `desertranger/assets/img/board-2000.jpg`. |
+| "board/desert-ranger.json not found" | For a copied install, add `desertranger/board/desert-ranger.json` from the zip. |
+| "Server error." in the game | Set `'debug' => true` and retry. Also look at `/Applications/MAMP/logs/php_error.log`. |
+| No sound | Tap "Tap to enable sound". On iPhone, turn off the silent switch and raise the volume. Sounds only play on wins, roll-again and big setbacks. |
+| Phones can't reach the Mac | Same Wi-Fi (not guest), correct IP and `:8888`, macOS firewall allows `httpd`. |
+| Port 8888 already in use | Change it in MAMP → Preferences → Ports, and use that port in the URLs. |
+
+Quick health checks: `http://localhost:8888/desertranger/api.php?a=time` should return
+`{"ok":true,"t":...}` (no DB involved), and reloading `install.php` re-runs its checks (PHP version,
+PDO driver, DB connection and server version) before saying "Already installed".
+
 ## Deploy to Network Solutions (shared Linux hosting)
 
 1. **Check PHP**: in the hosting control panel, make sure PHP is **7.4 or newer**.
@@ -95,12 +221,12 @@ cd dev/e2e && npm install && CHROME=/path/to/chrome node e2e.js http://localhost
 2. **Create the database**: in Database Manager, create a MySQL database and a user.
    Note the **host name**, which is often something like `xxxxx.mysql.netsol.com`
    and not `localhost`. Also note the database name, user, and password.
-3. **Upload**: first run `dev/make-assets.sh`, or unzip the assets zip into the folder. Then use
+3. **Upload**: first unzip the assets zip at the repo root, or run `dev/make-assets.sh`. Then use
    SFTP (FileZilla, Cyberduck, or similar) to upload the whole `desertranger/` folder,
    including `assets/img`, `assets/audio`, `assets/fonts`, and `board/`, to
    `htdocs/desertranger/`.
 4. **Configure**: on the server, copy `config.sample.php` to `config.php` and enter the DB
-   host, name, user, and password. Leave `'debug' => false`. You can also edit
+   host, port (usually 3306), name, user, and password. Leave `db_socket` empty. Leave `'debug' => false`. You can also edit
    `config.php` locally and upload it.
 5. **Install**: open `https://yourdomain/desertranger/install.php` once. It checks the
    PHP version, the PDO MySQL driver, and the DB connection, then creates the tables. If you
@@ -109,7 +235,7 @@ cd dev/e2e && npm install && CHROME=/path/to/chrome node e2e.js http://localhost
    cookies reliably, and it is good practice for audio unlock too.
 7. **Smoke test**: open the site on two phones, create and join a game, and play a few turns.
    Then open `?g=CODE&board=1` on a laptop. If something fails, open `api.php?a=time` (it should
-   return `{"ok":true,"t":...}`) and `api.php?a=info`. A "Server error." message means
+   return `{"ok":true,"t":...}`) and `api.php?a=info` (it should list the vehicles). A "Server error." message means
    the details are in the host's PHP error log. You can also set `'debug' => true` briefly.
 
 If the host still runs Apache 2.2, the `.htaccess` files include 2.2-style deny rules.
@@ -175,7 +301,7 @@ The simulation fires two taps at the same instant from separate processes, and e
 ### Piece placement
 The JSON's x,y values are in **original photo** pixels (4913×3583). The displayed image is the
 perspective-flattened board, so `board.js` applies the same 3×3 homography that produced
-`art/board-flat.jpg` (from `art/_work/warp.py`). A plain scale would be off by up to about 2
+`art/board-flat.jpg` (from `design/art/_work/warp.py`). A plain scale would be off by up to about 2
 squares near the corners. Positions are stored as percentages, so they hold at any zoom. If squares are
 re-traced on the flat image, set the matrix to identity (there is a comment in `board.js`).
 
@@ -203,6 +329,12 @@ lets a logged-in user reclaim their seat without the token.
 - `simulate_game.php`: full games to the finish with 2, 3, 4, and 8 players against Apache + PHP 8.4 +
   MariaDB 11.8, all passing. A 3-player and a 4-player game also passed against **PHP 7.4.33 + MariaDB 11.8**
   and **PHP 7.4.33 + MySQL 5.7.44**. The MySQL 5.7 run used a fresh `install.php` run, and the rerun was refused as intended.
+- **Port/socket config** (added for MAMP, Oct 2, 2026):
+  - A fresh `install.php` plus 4- and 8-player simulations passed against **MySQL 8.0.46 on 127.0.0.1:8889 with root/root**, the MAMP defaults (Docker).
+  - That run used a symlinked checkout without `desertranger/board/`, so it relied on the repo `board/` fallback.
+  - The headless-Chrome e2e passed on the same setup.
+  - A 4-player simulation passed with `db_socket` set to the MariaDB socket and a bogus host/port, which proves the socket wins.
+  - An old `config.php` without `db_socket` still works, and the rules tests still pass 45/45.
 - **Polling load**, 8 clients polling 1/s for 60 s while a game was played:
   - Requests: 8.0 req/s, with 8–10 req/s per second in the Apache log including the rolling player.
   - Latency: average 1.9 ms, p95 3.2 ms.
@@ -216,6 +348,7 @@ lets a logged-in user reclaim their seat without the token.
 - **Not tested on real phones or by ear.** Audio sync was verified only in headless Chrome on one
   machine, where every clock is the same. Cross-device offset estimation is implemented but
   untested on real Wi-Fi or cellular. iOS Safari, the silent switch, and Bluetooth speaker latency are untested.
+- **Not run on a real Mac/MAMP.** The MAMP defaults were emulated on Linux (see test results).
 - **Not tested on the Network Solutions host itself.** PHP 7.4 + MySQL 5.7 was emulated in Docker.
   The `.htaccess` options (`Options -Indexes`, `FilesMatch`) may be restricted on some shared plans.
   If you get a 500 error, remove the offending lines.

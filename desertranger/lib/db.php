@@ -13,7 +13,7 @@ function dr_config()
             throw new RuntimeException('config.php is missing. Copy config.sample.php to config.php and edit it.');
         }
         $cfg = require $file;
-        $cfg += array('db_port' => 3306, 'cue_lead_ms' => 1500, 'debug' => false);
+        $cfg += array('db_port' => 3306, 'db_socket' => '', 'cue_lead_ms' => 1500, 'debug' => false);
     }
     return $cfg;
 }
@@ -24,8 +24,17 @@ function dr_db()
     static $pdo = null;
     if ($pdo === null) {
         $c = dr_config();
-        $dsn = 'mysql:host=' . $c['db_host'] . ';port=' . (int)$c['db_port']
-             . ';dbname=' . $c['db_name'] . ';charset=utf8mb4';
+        if (!empty($c['db_socket'])) {
+            // Unix socket (e.g. MAMP: /Applications/MAMP/tmp/mysql/mysql.sock).
+            // When a socket is given, host and port are ignored.
+            $dsn = 'mysql:unix_socket=' . $c['db_socket'];
+        } else {
+            // TCP. Use 127.0.0.1 rather than "localhost" when you need a
+            // non-standard port: PHP treats "localhost" as "use the default
+            // socket" and silently ignores the port.
+            $dsn = 'mysql:host=' . $c['db_host'] . ';port=' . (int)$c['db_port'];
+        }
+        $dsn .= ';dbname=' . $c['db_name'] . ';charset=utf8mb4';
         $pdo = new PDO($dsn, $c['db_user'], $c['db_pass'], array(
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
