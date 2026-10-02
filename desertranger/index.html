@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C3623B">
+<link rel="icon" href="assets/img/pieces/bronco-orange.png">
+<title>Desert Ranger</title>
+<link rel="stylesheet" href="assets/css/style.css?v=1">
+</head>
+<body>
+<!--
+  Desert Ranger, milestone 1 prototype.
+  One page, three screens (home / lobby / game). Plain JS, no build step:
+    assets/js/sync.js   clock sync + Web Audio scheduling
+    assets/js/board.js  board drawing + piece animation
+    assets/js/app.js    screens, API calls, polling
+  URL options:  ?g=CODE      open/resume that game
+                &board=1     big shared-screen view (no controls)
+                &debug=1     clock-sync debug footer
+-->
+
+<!-- HOME: create or join -->
+<section id="screen-home" class="screen" hidden>
+  <h1 class="title">Desert<br>Ranger</h1>
+  <p class="tagline">Race from Start to Finish across Anza-Borrego</p>
+
+  <div id="resume-box" class="card" hidden>
+    <button id="btn-resume" class="btn big sage" type="button">Resume game</button>
+  </div>
+
+  <div class="card">
+    <label class="field">Your name
+      <input id="in-name" maxlength="20" autocomplete="nickname" placeholder="e.g. Jeff">
+    </label>
+    <label class="field">Room code <span class="hint">(leave empty to start a new game)</span>
+      <input id="in-code" maxlength="4" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="ABCD">
+    </label>
+    <div class="field">Pick your rig</div>
+    <div id="vehicle-grid" class="vehicle-grid"></div>
+    <p id="home-error" class="error" role="alert"></p>
+    <button id="btn-join" class="btn big" type="button" hidden>Join game</button>
+    <button id="btn-create" class="btn big" type="button">Create new game</button>
+  </div>
+</section>
+
+<!-- LOBBY: wait for players, host starts -->
+<section id="screen-lobby" class="screen" hidden>
+  <h2 class="mini-title">Desert Ranger</h2>
+  <div class="card code-card">
+    <div class="label">Room code</div>
+    <div id="lobby-code" class="room-code"></div>
+    <div class="hint">Friends join at <span id="lobby-link"></span></div>
+  </div>
+  <div class="card">
+    <div class="label">Rangers (<span id="lobby-count">0</span>/8)</div>
+    <ul id="lobby-players" class="player-list"></ul>
+  </div>
+  <button id="btn-start" class="btn big" type="button" hidden>Start game</button>
+  <p id="lobby-wait" class="center hint" hidden>Waiting for the host to start…</p>
+  <p id="lobby-error" class="error" role="alert"></p>
+  <p class="center hint">Shared screen / TV: open <span id="lobby-board-link"></span></p>
+</section>
+
+<!-- GAME -->
+<section id="screen-game" class="screen" hidden>
+  <header class="game-head">
+    <span class="logo">Desert Ranger</span>
+    <span class="code-chip" id="game-code"></span>
+    <button id="btn-zoom" class="icon-btn" type="button" title="Zoom board">🔍</button>
+    <button id="btn-mute" class="icon-btn" type="button" title="Sound on/off">🔊</button>
+  </header>
+
+  <div class="game-main">
+    <div id="board-wrap" class="board-wrap">
+      <div id="board" class="board">
+        <img id="board-img" src="assets/img/board-2000.jpg" alt="Desert Ranger board" draggable="false">
+      </div>
+    </div>
+
+    <aside class="side">
+      <div id="turn-banner" class="turn-banner"></div>
+      <div id="action-bar" class="action-bar">
+        <div id="die" class="die" aria-live="polite">–</div>
+        <button id="btn-roll" class="btn huge" type="button" disabled>ROLL</button>
+      </div>
+      <div id="choices" class="choices"></div>
+      <p id="game-error" class="error" role="alert"></p>
+      <ul id="player-list" class="player-list"></ul>
+      <ol id="log" class="log"></ol>
+      <a id="btn-new" class="btn big sage" href="./" hidden>New game</a>
+    </aside>
+  </div>
+</section>
+
+<!-- iOS/Android only allow sound after a tap -->
+<div id="sound-overlay" class="overlay" hidden>
+  <button id="btn-sound" class="btn huge" type="button">🔊 Tap to enable sound</button>
+</div>
+
+<footer id="debug" class="debug" hidden></footer>
+
+<script src="assets/js/sync.js?v=1"></script>
+<script src="assets/js/board.js?v=1"></script>
+<script src="assets/js/app.js?v=1"></script>
+</body>
+</html>
