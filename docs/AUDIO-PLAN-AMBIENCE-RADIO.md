@@ -115,7 +115,7 @@ Plan-only voice-line map derived from `board/desert-ranger.json` and `docs/RULES
 |---|---|---|
 | Dispatch | Calm adult, clipped professional delivery, low-mid register, lightly amused under pressure; designed to survive the radio band-pass. | Movement directions, fire calls, reroutes, and radio-only landings. |
 | Senior Ranger (female) | Calm, commanding, no-nonsense, with dry humor; mature alto, steady pace, clipped radio delivery, moderate exaggeration. Distinct from Dispatch, she is the authoritative field ranger and can voice generic landing calls on her rotation. | Rulings, closures, citations, hazards, orders, and firm field decisions. |
-| Ranger 1 / field ranger | Warm outdoorsy adult, grounded mid-range, efficient phrasing, dry humor; badge #273 can be used for Jeffery Price. | General ranger reactions and place/effect confirmations, including the male side of generic-call rotation. |
+| Ranger 273 / field ranger | Warm outdoorsy adult, grounded mid-range, efficient phrasing, dry humor; Jeffery Price is Ranger 1, badge #273. He identifies plants by family, genus, and species, especially on nature walks. | General ranger reactions, place/effect confirmations, plant walks, and the male side of generic-call rotation. |
 | HR representative | Bright, polished alto or tenor, quick corporate cadence, friendly but delighted by policy language. | Grievances, promotions, affirmative action, and overdue paperwork. |
 | Tow-truck guy | Warm gravelly baritone, road-weary but kind, unflappable comic timing. | Breakdowns, backing accidents, flats, and being stuck. |
 | Nerdy ranger | Youthful precise tenor, earnest enthusiasm, slightly over-explains ecology and archaeology. | Olla, elephant trees, shortcuts, and field observations. |
@@ -194,8 +194,8 @@ Plan-only voice-line map derived from `board/desert-ranger.json` and `docs/RULES
 - 27 squares have dedicated quotable/story lines: 1, 3, 6, 9, 12, 14, 16, 22, 23, 26–31, 34–36, 40–42, 44, 46, 48–51.
 - The Senior Ranger (female) now voices 12 of those quotable squares: 1, 9, 12, 14, 16, 22, 29, 41, 46, 48, 49, and 50. These cover orders, a ruling, citations, closures, and hazards.
 - The remaining 25 squares are intentionally **radio call only**; their place-name landings should stay uncluttered.
-- The cast is Dispatch, Senior Ranger (female), Ranger 1/field ranger, HR representative, tow-truck guy, nerdy ranger, supervisor, judge, and ranger crowd.
-- Review a small sample set with the user before full Chatterbox production, especially the Senior Ranger, HR, tow-truck, judge, and crowd voices.
+- The cast is Dispatch, Senior Ranger (female), Ranger 273 / field ranger, HR representative, tow-truck guy, nerdy ranger, supervisor, judge, and ranger crowd.
+- Review a small sample set with the user before full Chatterbox production, especially the Senior Ranger, Ranger 273, HR, tow-truck, judge, and crowd voices.
 
 ## E) Background radio chatter: Dispatch and R55
 
@@ -215,6 +215,8 @@ Occasional two-way exchanges between Dispatch and Ranger 55 (call sign **R55**) 
 - Client Jeffery Price's real ranger-days hangout was **Burro Bend Cafe** in Ocotillo Wells during 1980–82; use that name as-is.
 - The cafe was right across the highway from the ranger station.
 - It made the best hamburgers and cold lemonade, especially good on a hot day.
+- Jeffery Price, Ranger 1 / badge #273, identifies plants by family, genus, and species while leading nature walks at the Visitor Center.
+- The plant taxonomy used in the samples below was quick-checked against current regional and taxonomic references: *Fouquieria splendens* / Fouquieriaceae (ocotillo), *Bursera microphylla* / Burseraceae (elephant tree), *Washingtonia filifera* / Arecaceae (California fan palm), *Agave deserti* / Asparagaceae (desert agave), and *Larrea tridentata* / Zygophyllaceae (creosote).
 - Burro Bend Cafe is client-supplied lore and is the approved real business name for this plan. Fictionalize other real business names unless permission is obtained.
 
 ### Sample exchanges
@@ -258,15 +260,29 @@ Occasional two-way exchanges between Dispatch and Ranger 55 (call sign **R55**) 
    - **R55:** “10-6, assisting a visitor with a very persuasive cactus.”
    - **Dispatch:** “10-4. Keep your distance.”
 
-9. **Visitor Center nature walk**
-   - **Dispatch:** “R55, status?”
-   - **R55:** “10-7 at the Anza-Borrego Desert State Park Visitor Center, leading a nature walk.”
-   - **Dispatch:** “10-4. Try not to identify every shrub by first name.”
+9. **Ranger 273 nature walk: creosote**
+   - **Dispatch:** “273, status?”
+   - **273:** “10-7 at the Visitor Center. Currently on Zygophyllaceae, Larrea tridentata.”
+   - **Dispatch:** “...Creosote?”
+   - **273:** “Creosote, for the folks in back.”
 
-10. **Visitor Center, then Ocotillo Wells**
-   - **Dispatch:** “R55, 10-20?”
-   - **R55:** “10-7 at the Visitor Center, leading a nature walk. Then Ocotillo Wells for a burger.”
-   - **Dispatch:** “10-4. Keep the tour—and the lemonade—hydrated.”
+10. **Ranger 273 nature walk: ocotillo**
+   - **Dispatch:** “273, status?”
+   - **273:** “10-7 at the Visitor Center. Fouquieriaceae, Fouquieria splendens.”
+   - **Dispatch:** “Ocotillo?”
+   - **273:** “Ocotillo. Family first, common name second.”
+
+11. **Ranger 273 and the elephant-tree square**
+   - **Dispatch:** “273, status?”
+   - **273:** “10-7 leading a walk: Burseraceae, Bursera microphylla.”
+   - **Dispatch:** “Elephant tree—the stampede square?”
+   - **273:** “Correct. The botany is moving.”
+
+12. **Ranger 273’s palm-and-agave lesson**
+   - **Dispatch:** “273, report.”
+   - **273:** “10-7 at the Visitor Center: Arecaceae, Washingtonia filifera, and Asparagaceae, Agave deserti.”
+   - **Dispatch:** “Fan palm and desert agave?”
+   - **273:** “You’re catching up.”
 
 ### Ten-code glossary
 
@@ -281,4 +297,4 @@ Ten-codes vary by agency and region, so keep this flavor set to the widely recog
 | 10-9 | Please repeat |
 | 10-20 | Location |
 
-These exchanges are sample dialogue only. Review the Dispatch/R55 samples before full Chatterbox production, and keep the gag light enough to sit behind gameplay rather than compete with it.
+These exchanges are sample dialogue only. Review the Dispatch/R55 and Ranger 273 samples before full Chatterbox production, and keep the gag light enough to sit behind gameplay rather than compete with it.
