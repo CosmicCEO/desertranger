@@ -141,3 +141,13 @@ body.board-mode .piece .nm { font-size: clamp(9px, 1vw, 18px); }
 .demo-tag { font: .8rem Bungee, sans-serif; letter-spacing: .12em; background: var(--gold); color: var(--ink);
   border: 2px solid var(--ink); border-radius: 8px; padding: 2px 8px; }
 #btn-demo { margin-top: 4px; }
+
+/* Narrow phones: the header must still fit the logo, room code, DEMO tag and all three buttons (zoom, sound, audio settings) */
+.game-head .logo { min-width: 0; }
+@media (max-width: 430px) {
+  .game-head { gap: 5px; padding: 8px 8px; }
+  .game-head .logo { font-size: .9rem; line-height: 1.05; }
+  .game-head .code-chip { font-size: .85rem; padding: 3px 6px; letter-spacing: .06em; }
+  .game-head .icon-btn { min-width: 40px; min-height: 44px; padding: 0 6px; font-size: 1.1rem; }
+  .demo-tag { font-size: .62rem; padding: 2px 5px; letter-spacing: .08em; }
+}

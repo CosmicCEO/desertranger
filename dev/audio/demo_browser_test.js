@@ -99,6 +99,17 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
   const names = await d1.locator('#player-list li').allTextContents();
   check('player list: Marigold (you) + 2 computer rivals', names.length === 3 && /Marigold \(you\)/.test(names[0]) && /Rival 1 \(computer\)/.test(names[1]) && /Rival 2 \(computer\)/.test(names[2]), names);
   check('End demo button shown (and not "New game")', await visible(d1, '#btn-end-demo') && (await text(d1, '#btn-end-demo')) === 'End demo' && !(await visible(d1, '#btn-new')));
+  const headerFits = async page => page.evaluate(() => {   // every header control must be fully on screen
+    const w = innerWidth, out = [];
+    document.querySelectorAll('.game-head > *').forEach(e => { if (e.offsetParent !== null && e.id !== 'audio-panel') { const r = e.getBoundingClientRect(); if (r.right > w + 0.5 || r.left < -0.5) out.push((e.id || e.className) + ' right=' + Math.round(r.right) + '/' + w); } });
+    return out;
+  });
+  check('header (logo, code, DEMO tag, zoom, sound, audio settings) fits a 390 px phone: nothing cut off', (await headerFits(d1)).length === 0, await headerFits(d1));
+  await d1.setViewportSize({ width: 360, height: 780 }); await sleep(300);
+  check('...and a 360 px phone', (await headerFits(d1)).length === 0, await headerFits(d1));
+  await d1.setViewportSize({ width: 375, height: 667 }); await sleep(300);
+  check('...and a 375x667 phone (iPhone SE size)', (await headerFits(d1)).length === 0, await headerFits(d1));
+  await d1.setViewportSize({ width: 390, height: 844 }); await sleep(300);
   await d1.screenshot({ path: SHOTS + 'demo-game-phone-390x844.png' });
 
   await hostRolls(d1);                                        // the host plays; the rivals must roll by themselves
