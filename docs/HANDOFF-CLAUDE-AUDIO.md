@@ -776,13 +776,13 @@ Keep the existing style: ES5, IIFEs, no dependencies. Bump `?v=` on every script
 - [x] **5.1 Server, the one allowed change:** in `lib/game.php::dr_take_action`, the first log line of each action (types `turn`/`win`) must always get `play_at_ms`, even when `cue` is null. Do it by adding an optional `$forcePlayAt = false` parameter to `dr_add_event()` and passing `true` for that first line. Leave `cue` semantics, the schema and the API shape unchanged.
   - Then rerun `rules_test.php` (pure engine, should stay 45/45) and `simulate_game.php`.
   - If `simulate_game.php` asserts that `playAt` is null without a cue, **don't weaken the test silently.** Update the assertion to the new contract and explain it in the log and the commit message.
-- [ ] **5.2 One shared timeline per turn event:** every device must compute the same audio timeline from the same event.
+- [x] **5.2 One shared timeline per turn event:** every device must compute the same audio timeline from the same event.
   - When a turn event arrives with `playAt` (T, server ms), push a **wait-until-T** task into the BoardView queue *before* its steps. Pushing it immediately keeps the queue non-empty, so `setPlayers()` doesn't snap the piece early.
   - That way the die reveal and the hops start at T on every device.
   - Add `BoardView.prototype.timeline(steps)`. It returns the offsets (ms from T) of each `roll` step and the end of movement, using the same constants as `animate()`: roll 550; walk = hops × `HOP_MS` + 250; jump/swap = `JUMP_MS`.
   - If the event is already late (local time > T + 250 ms, e.g. a hidden tab), animate immediately as today and **skip** its audio. That's the existing late rule.
   - Keep a constant `SYNC_ANIM = true` so this can be turned off. If the e2e test breaks because of the delay, fix the test's waits, don't drop the feature. If you can't, set it to `false`, schedule audio at T + offsets anyway, and log it.
-- [ ] **5.3 Audio graph and lazy loader (`sync.js`):**
+- [x] **5.3 Audio graph and lazy loader (`sync.js`):**
   - Add buses: `master` (the existing mute) → `cue` (crowd + dice), `voice` (landing calls), `amb` (bed + critters) and `chatter`. `amb` and `chatter` each pass through a duck gain.
   - Add `Sound.clip(id)`: it reads `audio/manifest.json` once and fetches `audio/<file>?v=<v>` on demand. It decodes with the callback form of `decodeAudioData` (old Safari) and caches the promise. A missing clip resolves to `null`; never throw, and never log an error for an optional asset (a single `console.warn` is fine).
   - Add `Sound.at(buffer, serverMs, opts)`: a generic version of `schedule()` with bus, gain, playbackRate, offset and duration. It returns the scheduled ctx-time window `{start, end}`.
@@ -792,7 +792,7 @@ Keep the existing style: ES5, IIFEs, no dependencies. Bump `?v=` on every script
     - Tier B, right after the game starts (status `active`), throttled 4 at a time: openers, all places for both voices, quotables.
     - Tier C, 20 s after start, or idle: ambience bed, critters, chatter.
   - Never fetch audio before the audio-unlock tap, and never on the home/lobby screen.
-- [ ] **5.4 Landing-call picker (`radio.js`), a pure function that's easy to test:**
+- [x] **5.4 Landing-call picker (`radio.js`), a pure function that's easy to test:**
   ```js
   // Inputs every device shares: ev.id, ev.type, ev.data.steps, the quotable set from audio-lines.json squares[].
   function pickLanding(ev, Q) {
@@ -832,11 +832,11 @@ Keep the existing style: ES5, IIFEs, no dependencies. Bump `?v=` on every script
     - trim the decoded buffers' leading and trailing near-silence first (threshold 0.003) so the stitches are tight.
   
     Clean clips play dry with no click or squelch.
-- [ ] **5.5 Dice:**
+- [x] **5.5 Dice:**
   - **Local shake:** on the ROLL tap (inside the existing handler, after `Sound.unlock()`), play `dice-shake-01` immediately, local only. It's optional to loop it while the button is held or until the turn's T arrives, then fade it out over 80 ms.
   - **Synced clatter:** for each `roll` step, schedule `dice-clatter-0{1 + (ev.id + i) % 4}` at T + its timeline offset (the 44 extra die gets its own). Use `playbackRate = 1 + ((ev.id * 7 + i) % 9 - 4) * 0.01` (±4 %, deterministic, so every device matches).
   - The clatter belongs to the `cue` bus and is **not** subject to the radio toggle.
-- [ ] **5.6 Ambience (`ambience.js`):**
+- [x] **5.6 Ambience (`ambience.js`):**
   - Start only after unlock + Tier C has loaded the bed. Play the bed as two overlapping sources with a 1.5 s equal-power crossfade at the loop point.
   - **Critters:**
     - random interval 20-60 s (`Math.random`; local, never synced);
@@ -846,12 +846,12 @@ Keep the existing style: ES5, IIFEs, no dependencies. Bump `?v=` on every script
     - optional local tie-ins: favor the rattle when this device's own piece sits on a hazard square, and water near Palm Canyon.
   - **Ducking:** when any `cue`/`voice` sound is scheduled, ramp the `amb` duck gain to −12 dB from (start − 0.15 s) and back to 0 dB at (end + 0.4 s) with `setTargetAtTime` (time constant ≈ 0.08 s). Chatter ducks to −18 dB or is skipped (5.7).
   - **Board view (`?board=1`):** the ambience default is +6 dB louder (the room speaker), and ambience defaults to on. Keep the normal player mix separate.
-- [ ] **5.7 Background chatter (in `ambience.js`, behind the radio-chatter toggle):**
+- [x] **5.7 Background chatter (in `ambience.js`, behind the radio-chatter toggle):**
   - The first exchange comes no sooner than 90 s after unlock; after that the gap is random, 150-330 s (unpredictable).
   - Pick a random exchange with no immediate repeat. Weight Burro Bend exchanges 1, 3, 6 and 7 ×3 for 2 minutes after this device's own piece lands on Ocotillo Wells (12) (plan E tie-in), but never within 10 s of that square's quotable.
   - **Playback:** for each line, click → line over hiss → squelch, with 350-600 ms between lines. Use the `chatter` bus at gain ≈ 0.35, quieter than game cues.
   - **Skip or duck rule:** if any game cue, landing call, dice sound or quotable is scheduled within the exchange's window, postpone the exchange 20-40 s. If one arrives mid-exchange, duck chatter to −18 dB until it ends. Chatter never reserves synchronized timing.
-- [ ] **5.8 Toggles and volume UI:**
+- [x] **5.8 Toggles and volume UI:**
   - Add a ⚙ button next to 🔊 in `.game-head`. It opens a small panel with:
     - **Ambience** on/off (default on)
     - **Ambience volume** slider 0-100 (default 60; maps to bus gain 0-1.4)
@@ -859,14 +859,14 @@ Keep the existing style: ES5, IIFEs, no dependencies. Bump `?v=` on every script
   - Persist in `localStorage` as `dr_amb_on`, `dr_amb_vol`, `dr_radio_on`. Ambience and radio work independently of each other. 🔊 mute (`dr_muted`) still silences everything.
   - It must be usable at 390×844, and the panel closes on outside tap. Match `style.css` palette.
   - Open question for the log: should character quotables have their own toggle separate from "radio chatter"? Plan D implies radio off → crowd cue only, so that's what to implement.
-- [ ] **5.9 Robustness:**
+- [x] **5.9 Robustness:**
   - The first poll after load replays no history (the existing `wasFirst`).
   - Hidden tabs skip late audio.
   - A missing clip means silence, not an error.
   - iOS: everything starts only after unlock; resume the `AudioContext` if it's suspended.
   - No timers run before unlock. Stop critter and chatter timers on `game.status === 'finished'` plus 30 s.
-- [ ] **5.10 Debug footer (`&debug=1`):** append the last landing pick (`quote q41a` / `generic sr op3 pl39` / `skipped: busy`), the bus states and the loaded-clip count.
-- [ ] **5.11 Tests:**
+- [x] **5.10 Debug footer (`&debug=1`):** append the last landing pick (`quote q41a` / `generic sr op3 pl39` / `skipped: busy`), the bus states and the loaded-clip count.
+- [x] **5.11 Tests:**
   - Add `dev/audio/landing_test.js` (plain Node, no deps). It loads `radio.js`'s `pickLanding` (export it on `window.DRRadio`; the test can eval the file with a fake `window`) and checks the cases listed in 5.4, plus the 3 s fitting logic with fake durations.
   - Run it with `node dev/audio/landing_test.js`.
 - [ ] 5.12 **Commit + push** after each sub-step that works (5.1, 5.2-5.3, 5.4-5.5, 5.6-5.7, 5.8-5.10).

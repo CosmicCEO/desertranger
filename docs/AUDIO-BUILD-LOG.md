@@ -1,5 +1,5 @@
 # Audio build log (branch audio-build)
-_Last updated: 2026-10-03 03:20 CT by Claude Code_
+_Last updated: 2026-10-03 03:28 CT by Claude Code_
 
 ## Status
 | Phase | State | Notes |
@@ -9,13 +9,14 @@ _Last updated: 2026-10-03 03:20 CT by Claude Code_
 | 2 Radio + landing calls | in progress | batch generation running |
 | 3 Quotables | not started | |
 | 4 Chatter | not started | |
-| 5 Client integration | in progress | 5.1 done; 5.2+ in progress |
+| 5 Client integration | done on the mock; MAMP run pending | 5.1-5.11 ticked; 5.12 and a MAMP run (open question) remain |
 | 6 QA + wrap-up | not started | |
 
 ## Environment
 macOS 27.0 (arm64, Apple Silicon), 26 GiB free at start. Work done in a git worktree, `~/Developer/anza-borrego-challenge-audio`, on branch `audio-build` (the user's own clone stays on `main`). Homebrew installed: ffmpeg 9.0.2 (all 6 required filters present), espeak-ng, Python 3.11.17 (.venv-cb) and 3.12.15 (.venv-tts), node 26.10.0. PHP for the tests will be MAMP's own (`/Applications/MAMP/bin/php/`), not a brew install. Venvs: `.venv-cb` Python 3.11.17, chatterbox-tts 0.1.7, torch 2.6.0, **MPS available: yes** (freeze in `audio-work/pip-freeze-cb.txt`); `.venv-tts` Python 3.12.15, kokoro 0.9.4, faster-whisper 1.2.1 (`audio-work/pip-freeze-tts.txt`). Kokoro also auto-installed spaCy `en_core_web_sm` 3.8.0 via pip (MIT, free). Model downloads are slow here (~0.5 MB/s inbound); the Chatterbox weights were still downloading at 02:15 CT.
 
 ## Done (newest first)
+- 2026-10-03 03:28 CT Phase 5 verified in a real browser: `dev/audio/browser_test.js` (headless Chrome Canary, 3 pages = host phone 390x844, guest phone, `?board=1` screen, against `dev/audio/mock_server.js`, a JS test double of api.php with the same endpoints and `play_at` on every turn event): **42 passed, 0 failed, 0 console errors, 0 HTTP 4xx/5xx**. Covers: nothing fetched before the first tap; tier A at unlock, B/C only once the game is active; same T on every device; die revealed at T (animation synced); dice clatter at T+offset with identical variant/pitch; landing call identical on all devices and at the end of movement; quotable (q22) picked identically; <=3 s cap on real clip lengths; ducking (-12 dB amb, -18 dB chatter); settings panel + persistence; board view +6 dB; radio off = dice/crowd only; late (>250 ms) sounds skipped; chatter plays and is postponed when a cue is scheduled; ambience/chatter timers stop 30 s after a win. **Caveats:** ran on the mock server, not MAMP (see open question), in Chrome only (no Safari), and only against the ~30 clips shipped so far; rerun after Phases 2-4 land.
 - 2026-10-03 03:20 CT Phase 5 client code written (not yet verified in a browser): `sync.js` (buses, ducking, lazy `Sound.clip`, `Sound.at`, crossfade `loopBed`), `board.js` (`timeline()`, wait-until-T via `animate(..., startAt)`, `SYNC_ANIM`), new `radio.js` (pickLanding, planCall <=3 s, dice clatter, crowd retiming, tier B preload) and `ambience.js` (bed, critters, chatter, tier C), `app.js` wiring, gear panel in `index.html`/`style.css`, `?v=` bumped. `dev/audio/landing_test.js`: 29/29.
 - 2026-10-03 03:13 CT 5.1 server change: `dr_add_event()` gets `$forcePlayAt` and `dr_take_action()` passes `true` for the first log line, so every turn/win event carries `play_at_ms`. `rules_test.php` 45/45; new `dev/audio/play_at_test.php` (extracts the real function, runs on in-memory SQLite) 4/4. `simulate_game.php` asserts nothing about `playAt` being null without a cue, so its contract is unchanged. **Not run live:** see open question on the browser/server testing target.
 - 2026-10-03 03:13 CT Phase 2 batch (openers, places, replies) running in the background via `tools/audio/run_phase.sh 2`; CC0 animal-sound search delegated to a research subagent

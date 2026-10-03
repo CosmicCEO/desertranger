@@ -188,6 +188,7 @@
 
   window.DRAmbience = {
     setActive: setActive, finish: finish, noteLanding: noteLanding, setMyPos: setMyPos,
+    chatterNow: tryChatter,   // test/debug hook: run the chatter scheduler's decision now
     state: st,
     debugLine: function () {
       return 'bed ' + (st.bed ? 'on' : 'off') + ' · critters ' + st.critterCount + ' · chatter ' + st.chatterCount +
