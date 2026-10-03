@@ -208,12 +208,20 @@ Occasional two-way exchanges between Dispatch and Ranger 55 (call sign **R55**) 
 - Put it behind the existing **radio chatter** toggle and use the same radio DSP chain as landing calls: approximately 300–3000 Hz band-pass, light distortion, crackle/hiss, key-up click, and squelch tail.
 - Keep each exchange short and conversational. It is background flavor, not a gameplay event, and never reserves synchronized event timing.
 - Dispatch is a separate voice. R55 is primarily a male ranger voice (or an alternate male ranger take), distinct from the Senior Ranger and from the Dispatch operator.
+- Optional board tie-in: after the local ambience reaches the Ocotillo Wells square, favor a Burro Bend Cafe line, but keep it local and do not replace or stack with the square's quotable cue.
+
+### Lore
+
+- Client Jeffery Price's real ranger-days hangout was **Burro Bend Cafe** in Ocotillo Wells during 1980–82; use that name as-is.
+- The cafe was right across the highway from the ranger station.
+- It made the best hamburgers and cold lemonade, especially good on a hot day.
+- Burro Bend Cafe is client-supplied lore and is the approved real business name for this plan. Fictionalize other real business names unless permission is obtained.
 
 ### Sample exchanges
 
-1. **Lunch interrupted**
+1. **Lunch interrupted at Burro Bend**
    - **Dispatch:** “R55, 10-20?”
-   - **R55:** “10-20 Borrego Springs. Attempting lunch.”
+   - **R55:** “Burro Bend Cafe. Attempting lunch.”
    - **Dispatch:** “10-4. Your lunch is now officially a call.”
 
 2. **Coffee check**
@@ -221,10 +229,10 @@ Occasional two-way exchanges between Dispatch and Ranger 55 (call sign **R55**) 
    - **R55:** “10-8, coffee acquired.”
    - **Dispatch:** “10-4. Protect the coffee.”
 
-3. **Off-duty taco stand**
-   - **R55:** “Dispatch, R55 going 10-7 for lunch.”
-   - **Dispatch:** “10-4. Same taco stand?”
-   - **R55:** “The only one with a seat.”
+3. **Crossing the highway**
+   - **R55:** “Crossing the highway, 10-7 for a burger and a lemonade.”
+   - **Dispatch:** “10-4. Burro Bend again?”
+   - **R55:** “Best hamburger in the heat.”
 
 4. **The repeat request**
    - **Dispatch:** “R55, 10-6 at the trailhead?”
@@ -235,22 +243,30 @@ Occasional two-way exchanges between Dispatch and Ranger 55 (call sign **R55**) 
    - **R55:** “R55, end of shift. Going 10-7.”
    - **Dispatch:** “10-4. The desert will hold your paperwork.”
 
-6. **Running taco-stand gag**
+6. **Running Burro Bend gag**
    - **Dispatch:** “R55, 10-20?”
-   - **R55:** “10-7 at the taco stand in Borrego Springs.”
+   - **R55:** “Burro Bend. Again.”
    - **Dispatch:** “R55, that’s your third 10-7 there today.”
    - **R55:** “Quality control.”
 
-7. **Cactus assistance**
+7. **Lemonade is official business**
+   - **R55:** “Dispatch, it’s 112 out here; this lemonade is official business.”
+   - **Dispatch:** “10-4. Hydration is approved.”
+
+8. **Cactus assistance**
    - **Dispatch:** “R55, status?”
    - **R55:** “10-6, assisting a visitor with a very persuasive cactus.”
    - **Dispatch:** “10-4. Keep your distance.”
 
-8. **Fish Creek clarification**
-   - **Dispatch:** “R55, report.”
-   - **R55:** “10-8 and heading to Fish Creek.”
-   - **Dispatch:** “10-9? I heard ‘fish’ and ‘free lunch.’”
-   - **R55:** “Negative. I said Fish Creek.”
+9. **Visitor Center nature walk**
+   - **Dispatch:** “R55, status?”
+   - **R55:** “10-7 at the Anza-Borrego Desert State Park Visitor Center, leading a nature walk.”
+   - **Dispatch:** “10-4. Try not to identify every shrub by first name.”
+
+10. **Visitor Center, then Ocotillo Wells**
+   - **Dispatch:** “R55, 10-20?”
+   - **R55:** “10-7 at the Visitor Center, leading a nature walk. Then Ocotillo Wells for a burger.”
+   - **Dispatch:** “10-4. Keep the tour—and the lemonade—hydrated.”
 
 ### Ten-code glossary
 
