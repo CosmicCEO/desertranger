@@ -1,10 +1,10 @@
 # Audio build log (branch audio-build)
-_Last updated: 2026-10-03 00:01 CT by Claude Code_
+_Last updated: 2026-10-03 00:04 CT by Claude Code_
 
 ## Status
 | Phase | State | Notes |
 |---|---|---|
-| 0 Setup + samples | in progress | hand-off docs committed (ee82685), PR #3 open (draft); tools/audio scaffolded; installing toolchain |
+| 0 Setup + samples | in progress | scaffold pushed; brew done; building venvs, then smoke test (0.4) |
 | 1 Dice + ambience + critters | not started | |
 | 2 Radio + landing calls | not started | |
 | 3 Quotables | not started | |
@@ -13,9 +13,10 @@ _Last updated: 2026-10-03 00:01 CT by Claude Code_
 | 6 QA + wrap-up | not started | |
 
 ## Environment
-macOS 27.0 (arm64, Apple Silicon), 26 GiB free at start. Work done in a git worktree, `~/Developer/anza-borrego-challenge-audio`, on branch `audio-build` (the user's own clone stays on `main`). Toolchain versions are recorded below once installed.
+macOS 27.0 (arm64, Apple Silicon), 26 GiB free at start. Work done in a git worktree, `~/Developer/anza-borrego-challenge-audio`, on branch `audio-build` (the user's own clone stays on `main`). Homebrew installed: ffmpeg 9.0.2 (all 6 required filters present), espeak-ng, Python 3.11.17 (.venv-cb) and 3.12.15 (.venv-tts), node 26.10.0. PHP for the tests will be MAMP's own (`/Applications/MAMP/bin/php/`), not a brew install. Torch/MPS versions are added once the venvs finish.
 
 ## Done (newest first)
+- 2026-10-03 00:04 CT brew toolchain installed (ffmpeg, espeak-ng, python 3.11/3.12, node); venv builds started
 - 2026-10-03 00:01 CT hand-off docs committed and pushed (ee82685); draft PR #3 opened into main
 - 2026-10-03 00:01 CT `tools/audio/` scripts extracted verbatim from section 8 of the hand-off, `.gitignore` block added, log + CREDITS.md created
 
@@ -29,4 +30,4 @@ macOS 27.0 (arm64, Apple Silicon), 26 GiB free at start. Work done in a git work
 - Worked in a separate git worktree instead of checking out `audio-build` in the user's clone: the user's global rules say never to work in their own checkout. The clone is untouched.
 
 ## Open questions for the user
-- (none yet)
+- **Browser testing target (affects Phase 5/6 acceptance):** MAMP's `htdocs/desertranger` is a symlink to the user's own clone (`~/Developer/anza-borrego-challenge`, on `main`), and the gitignored `config.php` lives there. The guardrails forbid reading/creating `config.php` and editing MAMP's config, so I will not repoint the symlink or copy it. Offline work (audio, `landing_test.js`, `rules_test.php`) is unaffected. Options for the user: (a) check out `audio-build` in the clone when ready, or (b) repoint the symlink. Will decide how far to go in Phase 5.
