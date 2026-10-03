@@ -99,6 +99,11 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
   const names = await d1.locator('#player-list li').allTextContents();
   check('player list: Marigold (you) + 2 computer rivals', names.length === 3 && /Marigold \(you\)/.test(names[0]) && /Rival 1 \(computer\)/.test(names[1]) && /Rival 2 \(computer\)/.test(names[2]), names);
   check('End demo button shown (and not "New game")', await visible(d1, '#btn-end-demo') && (await text(d1, '#btn-end-demo')) === 'End demo' && !(await visible(d1, '#btn-new')));
+  await d1.click('#btn-audio'); await d1.click('#btn-test-sound'); await sleep(1200);
+  const testMsg = await text(d1, '#test-sound-msg');
+  check('the Test sound button plays a sound and reports the audio state', /Played a dice sound/.test(testMsg) && /Audio is running/.test(testMsg) && /clips loaded/.test(testMsg), testMsg);
+  check('the page keeps an inaudible looping <audio> playing (iPhone silent-switch workaround)', await d1.evaluate(() => !!(DRSound.keepAlive && !DRSound.keepAlive.paused)));
+  await d1.click('body', { position: { x: 5, y: 700 } });
   const headerFits = async page => page.evaluate(() => {   // every header control must be fully on screen
     const w = innerWidth, out = [];
     document.querySelectorAll('.game-head > *').forEach(e => { if (e.offsetParent !== null && e.id !== 'audio-panel') { const r = e.getBoundingClientRect(); if (r.right > w + 0.5 || r.left < -0.5) out.push((e.id || e.className) + ' right=' + Math.round(r.right) + '/' + w); } });

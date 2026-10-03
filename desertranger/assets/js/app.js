@@ -543,6 +543,19 @@
     $('set-amb').onchange = function () { Sound.setSetting('ambOn', this.checked); };
     $('set-vol').oninput = function () { $('set-vol-val').textContent = this.value; Sound.setSetting('ambVol', +this.value); };
     $('set-radio').onchange = function () { Sound.setSetting('radioOn', this.checked); };
+    // Test sound: plays one dice sound through the real audio graph and says what state the audio is in.
+    $('btn-test-sound').onclick = function () {
+      var msg = $('test-sound-msg');
+      Sound.unlock();   // a tap: also (re)starts the iPhone playback session
+      if (!Sound.ctx) { msg.textContent = 'This browser has no Web Audio, so the game cannot make sound here.'; return; }
+      var info = function () { return 'Audio is ' + Sound.ctx.state + ', ' + Sound.loadedCount() + ' clips loaded' + (Sound.muted ? ', and the 🔊 button has it muted' : '') + '.'; };
+      msg.textContent = 'Playing a dice sound… ' + info();
+      Sound.clip('dice-clatter-01').then(function (b) {
+        if (!b) { msg.textContent = 'The test sound could not be loaded. ' + info(); return; }
+        var w = Sound.at(b, null, { bus: 'cue', tag: 'test' });
+        msg.textContent = (w ? 'Played a dice sound. ' : 'Nothing was played. ') + info() + ' Heard nothing? Turn the iPhone silent switch off and the volume up.';
+      });
+    };
   }
 
   function init() {

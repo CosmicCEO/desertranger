@@ -125,6 +125,7 @@
         this.buildGraph();
         first = true;
       }
+      this.playbackSession();
       if (this.ctx.state === 'suspended') this.ctx.resume();
       // Play one silent sample: some iOS versions only unlock on an actual start().
       var b = this.ctx.createBuffer(1, 1, 22050), s = this.ctx.createBufferSource();
@@ -134,6 +135,31 @@
         this.load();
         this.listeners.forEach(function (fn) { try { fn(); } catch (e) { console.warn('unlock listener', e); } });
       }
+    },
+
+    /**
+     * iPhone: Web Audio is silenced by the ringer (silent) switch unless the page plays "media". Ask for the playback
+     * audio session (iOS 16.4+), and also keep an inaudible looping <audio> element playing (older iOS; same trick as
+     * the unmute-ios-audio library). Must run inside a tap handler. Harmless everywhere else.
+     */
+    playbackSession: function () {
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* not supported */ }
+      try {
+        if (!this.keepAlive) {
+          var rate = 8000, n = rate, buf = new Uint8Array(44 + n), dv = new DataView(buf.buffer);
+          var w4 = function (o, str) { for (var i = 0; i < 4; i++) buf[o + i] = str.charCodeAt(i); };
+          w4(0, 'RIFF'); dv.setUint32(4, 36 + n, true); w4(8, 'WAVE'); w4(12, 'fmt '); dv.setUint32(16, 16, true);
+          dv.setUint16(20, 1, true); dv.setUint16(22, 1, true); dv.setUint32(24, rate, true); dv.setUint32(28, rate, true);
+          dv.setUint16(32, 1, true); dv.setUint16(34, 8, true); w4(36, 'data'); dv.setUint32(40, n, true);
+          for (var j = 0; j < n; j++) buf[44 + j] = 128;   // 1 s of 8-bit silence
+          var el = document.createElement('audio');
+          el.src = URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+          el.loop = true; el.setAttribute('playsinline', ''); el.setAttribute('aria-hidden', 'true'); el.volume = 0.01;
+          this.keepAlive = el;
+        }
+        var pr = this.keepAlive.play();
+        if (pr && pr.catch) pr.catch(function () { /* no gesture yet: the next tap retries */ });
+      } catch (e) { /* ignore */ }
     },
 
     buildGraph: function () {
