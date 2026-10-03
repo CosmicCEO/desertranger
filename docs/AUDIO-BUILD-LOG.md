@@ -70,7 +70,7 @@ macOS 27.0 (arm64, Apple Silicon), 26 GiB free at start. Work done in a git work
 - **Over-cap clips are shipped, not dropped:** length-only failures keep their best take (0 word errors) and show as red rows on the review page; the runtime planner keeps calls within 3 s regardless.
 
 ## Open questions for the user
-1. ~~Run it on MAMP~~ **Done** (see the Done entry at the top): simulate_game 4p/8p pass on the real server, `play_at_ms` confirmed in MySQL, iPhone over the LAN reported a success. Still open from this item: the guest/board three-device run was exercised by hand by the user only, and Safari on a Mac was not tested.
+1. ~~Run it on MAMP~~ **Done** (see the Done entry at the top): simulate_game 4p/8p pass on the real server, `play_at_ms` confirmed in MySQL, iPhone over the LAN reported a success. Not known to me: which device combinations the user tried by hand (only that the testing was reported a success); Safari on a Mac was not tested by me.
 2. **Please listen** (I cannot): open http://localhost:8888/desertranger/audio/review.html (or just open the file). Priorities: the three CC0 critters (`amb-crow-01`, `amb-coyote-01`, `amb-hawk-01`; clipped by energy profile, never heard), chatter exchanges 9-12 (Latin plant names), the stitched landing-call demos at the top, the 55 red rows, and the Ranger 273 / R55 voices (pitch changed, see Decisions).
 3. **Shorter wording for the OVER-CAP lines?** Suggestions are in Skipped. Squares 27 and 41 (both variants over 3 s) and the long place names on action squares are the ones that matter in play.
 4. **Quail:** skipped (no clean CC0 call found). Want one cut from CHallSmith's CC0 ambience (Freesound 870486) after you audition it?
