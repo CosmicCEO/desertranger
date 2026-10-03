@@ -257,7 +257,7 @@
       var ctx = this.ctx, delayMs = serverMs == null ? 0 : (serverMs - Clock.offset) - localNow();
       if (serverMs != null) this.stats.lastLateMs = Math.round(-delayMs);
       if (delayMs < -LATE_LIMIT_MS) { this.stats.skipped++; return null; }
-      if (ctx.state === 'suspended') ctx.resume();
+      if (ctx.state !== 'running') ctx.resume();   // 'suspended', or 'interrupted' on iOS after a call / lock screen
       var busName = o.bus || 'cue', rate = o.rate || 1, off = o.offset || 0;
       var src = ctx.createBufferSource(), node = src;
       src.buffer = buf;
@@ -273,6 +273,7 @@
       src.start(when, off + skip, avail);
       var win = { start: when, end: when + avail / rate, bus: busName, tag: o.tag || '' };
       this.wins.push(win);
+      if (this.wins.length > 60) { var now = ctx.currentTime; this.wins = this.wins.filter(function (w) { return w.end > now - 2; }); }
       this.stats.played++;
       if (busName === 'cue' || busName === 'voice') this.duckApply();
       return win;

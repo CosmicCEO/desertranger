@@ -21,11 +21,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await page.addInitScript(() => {
       window.__cues = [];
       document.addEventListener('DOMContentLoaded', () => {
-        const S = window.DRSound, C = window.DRClock, orig = S.schedule.bind(S);
-        S.schedule = (name, playAt) => {
-          const ok = orig(name, playAt);
-          window.__cues.push({ name, playAt, ok, offset: C.offset, leadMs: Math.round(playAt - C.serverNow()) });
-          return ok;
+        // Crowd cues are scheduled through Sound.at (tag = cue name) since the audio build; record those.
+        const S = window.DRSound, C = window.DRClock, orig = S.at.bind(S);
+        S.at = (buf, playAt, o) => {
+          const w = orig(buf, playAt, o);
+          if (o && (o.tag === 'cheer' || o.tag === 'aww')) window.__cues.push({ name: o.tag, playAt, ok: !!w, offset: C.offset, leadMs: Math.round(playAt - C.serverNow()) });
+          return w;
         };
       });
     });
@@ -131,4 +132,5 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   console.log('log (newest first):\n  ' + (await board.$$eval('#log li', ls => ls.slice(0, 12).map(l => l.textContent))).join('\n  '));
   console.log('console errors:', errors.length ? errors : 'none');
   await browser.close();
+  if (errors.length) process.exitCode = 1;   // zero console errors is part of the audio build's definition of done
 })().catch(e => { console.error(e); process.exit(1); });
