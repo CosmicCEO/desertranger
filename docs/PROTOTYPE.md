@@ -309,6 +309,17 @@ lobby** after the finish) returns the same room to a clean lobby.
 - Tests: `php tests/demo_game.php <baseUrl>` (API, includes the 2-player-minimum checks) and
   `node dev/audio/demo_browser_test.js <baseUrl>` (one phone in headless Chrome).
 
+### Sound settings (⚙ panel next to the speaker button)
+
+Saved per device in `localStorage`; 🔊 mutes everything.
+- **Ambience** on/off and **Ambience volume** (default **20 %**, `dr_amb_vol`): the desert bed, the critters and the background
+  radio chatter. It plays in the **lobby** as well as in the game (from the audio-unlock tap, never on the home screen). The board
+  view is 6 dB louder. The background chatter scales with this slider.
+- **Game sounds volume** (default **50 %**, `dr_game_vol`): the turn-based sounds, meaning dice, landing radio calls, quotable
+  lines and the crowd cheer/aww. 100 % is the level the clips were mastered at; 50 % is half of that.
+- **Radio chatter** on/off (`dr_radio_on`): off = no landing calls, quotables or background chatter (dice and crowd stay).
+- **Test sound**: plays a dice sound through the game's audio and shows the audio state.
+
 ### Synced audio
 - **Cues**:
   - A win plays `cheer`.
