@@ -47,3 +47,9 @@ proto-shots/
 .idea/
 .vscode/
 *.log
+
+# audio build scratch (takes, refs, masters, QA) and Python venvs
+audio-work/
+.venv-cb/
+.venv-tts/
+__pycache__/

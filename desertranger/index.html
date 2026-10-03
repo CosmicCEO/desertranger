@@ -6,15 +6,17 @@
 <meta name="theme-color" content="#C3623B">
 <link rel="icon" href="assets/img/pieces/bronco-orange.png">
 <title>Desert Ranger</title>
-<link rel="stylesheet" href="assets/css/style.css?v=1">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body>
 <!--
   Desert Ranger, milestone 1 prototype.
   One page, three screens (home / lobby / game). Plain JS, no build step:
-    assets/js/sync.js   clock sync + Web Audio scheduling
-    assets/js/board.js  board drawing + piece animation
-    assets/js/app.js    screens, API calls, polling
+    assets/js/sync.js      clock sync + Web Audio scheduling, buses, ducking, lazy clip loader
+    assets/js/board.js     board drawing + piece animation
+    assets/js/radio.js     dice clatter, landing radio calls / quotables, crowd-cue timing (synced via play_at)
+    assets/js/ambience.js  desert bed, critters, background radio chatter (local only)
+    assets/js/app.js       screens, API calls, polling
   URL options:  ?g=CODE      open/resume that game
                 &board=1     big shared-screen view (no controls)
                 &debug=1     clock-sync debug footer
@@ -69,6 +71,13 @@
     <span class="code-chip" id="game-code"></span>
     <button id="btn-zoom" class="icon-btn" type="button" title="Zoom board">🔍</button>
     <button id="btn-mute" class="icon-btn" type="button" title="Sound on/off">🔊</button>
+    <button id="btn-audio" class="icon-btn" type="button" title="Audio settings" aria-label="Audio settings" aria-haspopup="true" aria-expanded="false">⚙</button>
+    <div id="audio-panel" class="audio-panel" role="dialog" aria-label="Audio settings" hidden>
+      <label class="aud-row"><input id="set-amb" type="checkbox"><span>Ambience</span></label>
+      <label class="aud-row aud-vol"><span>Ambience volume <b id="set-vol-val">60</b></span><input id="set-vol" type="range" min="0" max="100" step="1" value="60"></label>
+      <label class="aud-row"><input id="set-radio" type="checkbox"><span>Radio chatter</span></label>
+      <p class="hint">Radio chatter covers ranger calls, quotable lines and background chatter. Crowd cheers and dice follow the 🔊 button.</p>
+    </div>
   </header>
 
   <div class="game-main">
@@ -100,8 +109,10 @@
 
 <footer id="debug" class="debug" hidden></footer>
 
-<script src="assets/js/sync.js?v=1"></script>
-<script src="assets/js/board.js?v=1"></script>
-<script src="assets/js/app.js?v=1"></script>
+<script src="assets/js/sync.js?v=2"></script>
+<script src="assets/js/board.js?v=2"></script>
+<script src="assets/js/radio.js?v=1"></script>
+<script src="assets/js/ambience.js?v=1"></script>
+<script src="assets/js/app.js?v=2"></script>
 </body>
 </html>

@@ -30,6 +30,8 @@
 
   var HOP_MS = 260;   // one square of a walk
   var JUMP_MS = 750;  // goto / shortcut / swap
+  var ROLL_MS = 550;  // die reveal
+  var WALK_END_MS = 250; // pause after a walk
 
   function BoardView(boardEl, board, vehicles) {
     this.el = boardEl;
@@ -109,20 +111,44 @@
   };
 
   /**
+   * Offsets (ms after the animation starts) of every die reveal and of the moment the piece stops moving.
+   * Uses the same constants as animate(), so audio scheduled from it lines up with the pictures.
+   * Returns {rolls: [ms, ...], end: ms}.
+   */
+  BoardView.prototype.timeline = function (steps) {
+    var t = 0, rolls = [];
+    (steps || []).forEach(function (s) {
+      if (s.type === 'roll') { rolls.push(t); t += ROLL_MS; }
+      else if (s.type === 'walk') { t += (s.path || []).length * HOP_MS + WALK_END_MS; }
+      else if (s.type === 'jump' || s.type === 'swap') { t += JUMP_MS; }
+    });
+    return { rolls: rolls, end: t };
+  };
+
+  /**
    * Queue the animation steps of one turn (from the server event payload).
    * Step types: roll, walk {path}, jump {to}, swap {player, other, playerTo, otherTo},
    * loseTurn, rollAgain, skipped, chainGuard.  onRoll(value) is called for die steps.
+   * startAt (optional, local epoch ms): a wait task goes in the queue FIRST, so the whole turn starts at that
+   * moment on every device (the server's shared time T). Because the queue is then non-empty, setPlayers()
+   * does not snap the piece to its new square early.
    */
-  BoardView.prototype.animate = function (steps, onRoll, onDone) {
+  BoardView.prototype.animate = function (steps, onRoll, onDone, startAt) {
     var self = this;
+    if (startAt) {
+      self.queue.push(function (next) {
+        var d = startAt - (window.DRClock ? window.DRClock.localNow() : Date.now()); // same clock the sync offset uses
+        setTimeout(next, Math.max(0, d));
+      });
+    }
     (steps || []).forEach(function (s) {
       if (s.type === 'roll') {
-        self.queue.push(function (next) { if (onRoll) onRoll(s.value); setTimeout(next, 550); });
+        self.queue.push(function (next) { if (onRoll) onRoll(s.value); setTimeout(next, ROLL_MS); });
       } else if (s.type === 'walk') {
         (s.path || []).forEach(function (sq) {
           self.queue.push(function (next) { self.moveOne(s.player, sq, 'hop', HOP_MS, next); });
         });
-        self.queue.push(function (next) { setTimeout(next, 250); });
+        self.queue.push(function (next) { setTimeout(next, WALK_END_MS); });
       } else if (s.type === 'jump') {
         self.queue.push(function (next) { self.moveOne(s.player, s.to, 'jump', JUMP_MS, next); });
       } else if (s.type === 'swap') {
