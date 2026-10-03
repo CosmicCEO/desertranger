@@ -773,7 +773,7 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
 ### Phase 5: client integration (≈ 2-3 h)
 Keep the existing style: ES5, IIFEs, no dependencies. Bump `?v=` on every script/CSS you change in `index.html`. Add `<script src="assets/js/ambience.js?v=1">` and `radio.js` **after** `sync.js` and before `app.js`.
 
-- [ ] **5.1 Server, the one allowed change:** in `lib/game.php::dr_take_action`, the first log line of each action (types `turn`/`win`) must always get `play_at_ms`, even when `cue` is null. Do it by adding an optional `$forcePlayAt = false` parameter to `dr_add_event()` and passing `true` for that first line. Leave `cue` semantics, the schema and the API shape unchanged.
+- [x] **5.1 Server, the one allowed change:** in `lib/game.php::dr_take_action`, the first log line of each action (types `turn`/`win`) must always get `play_at_ms`, even when `cue` is null. Do it by adding an optional `$forcePlayAt = false` parameter to `dr_add_event()` and passing `true` for that first line. Leave `cue` semantics, the schema and the API shape unchanged.
   - Then rerun `rules_test.php` (pure engine, should stay 45/45) and `simulate_game.php`.
   - If `simulate_game.php` asserts that `playAt` is null without a cue, **don't weaken the test silently.** Update the assertion to the new contract and explain it in the log and the commit message.
 - [ ] **5.2 One shared timeline per turn event:** every device must compute the same audio timeline from the same event.

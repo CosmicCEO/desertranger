@@ -148,11 +148,13 @@ function dr_player_for_token(array $players, $token)
 }
 
 /** Append a log event. $payload is any array (stored as JSON). */
-function dr_add_event(PDO $db, $gameId, $turn, $type, $message, $payload = null, $cue = null)
+function dr_add_event(PDO $db, $gameId, $turn, $type, $message, $payload = null, $cue = null, $forcePlayAt = false)
 {
     $playAt = null;
-    if ($cue) {
+    if ($cue || $forcePlayAt) {
         // Schedule the sound a little in the future so every polling device can hear about it in time.
+        // $forcePlayAt stamps the time even when there is no crowd cue: it is the shared "T" every device
+        // starts the turn animation and the dice / landing-call audio from.
         $playAt = dr_now_ms() + (int)dr_config()['cue_lead_ms'];
     }
     $st = $db->prepare('INSERT INTO events (game_id, turn_number, type, message, payload, cue, play_at_ms, created_at)
@@ -364,7 +366,7 @@ function dr_take_action(PDO $db, $code, $token, $kind, $turn, $key, array $choic
         foreach ($res['log'] as $n => $line) {
             if ($n === 0) {
                 dr_add_event($db, $g['id'], $state['turn'], $new['status'] === 'finished' ? 'win' : 'turn',
-                             $line, array('steps' => $steps), $res['cue']);
+                             $line, array('steps' => $steps), $res['cue'], true);
             } else {
                 dr_add_event($db, $g['id'], $state['turn'], 'skip', $line);
             }

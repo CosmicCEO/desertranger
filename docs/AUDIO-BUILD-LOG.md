@@ -1,21 +1,23 @@
 # Audio build log (branch audio-build)
-_Last updated: 2026-10-03 03:10 CT by Claude Code_
+_Last updated: 2026-10-03 03:13 CT by Claude Code_
 
 ## Status
 | Phase | State | Notes |
 |---|---|---|
 | 0 Setup + samples | in progress | scaffold pushed; brew done; refs done; Chatterbox smoke test (0.4) waiting on a slow model download |
 | 1 Dice + ambience + critters | in progress | dice + bed + synth critters done; CC0 animal recordings (1.3) and tie-ins (1.4) pending |
-| 2 Radio + landing calls | not started | |
+| 2 Radio + landing calls | in progress | batch generation running |
 | 3 Quotables | not started | |
 | 4 Chatter | not started | |
-| 5 Client integration | not started | |
+| 5 Client integration | in progress | 5.1 done; 5.2+ in progress |
 | 6 QA + wrap-up | not started | |
 
 ## Environment
 macOS 27.0 (arm64, Apple Silicon), 26 GiB free at start. Work done in a git worktree, `~/Developer/anza-borrego-challenge-audio`, on branch `audio-build` (the user's own clone stays on `main`). Homebrew installed: ffmpeg 9.0.2 (all 6 required filters present), espeak-ng, Python 3.11.17 (.venv-cb) and 3.12.15 (.venv-tts), node 26.10.0. PHP for the tests will be MAMP's own (`/Applications/MAMP/bin/php/`), not a brew install. Venvs: `.venv-cb` Python 3.11.17, chatterbox-tts 0.1.7, torch 2.6.0, **MPS available: yes** (freeze in `audio-work/pip-freeze-cb.txt`); `.venv-tts` Python 3.12.15, kokoro 0.9.4, faster-whisper 1.2.1 (`audio-work/pip-freeze-tts.txt`). Kokoro also auto-installed spaCy `en_core_web_sm` 3.8.0 via pip (MIT, free). Model downloads are slow here (~0.5 MB/s inbound); the Chatterbox weights were still downloading at 02:15 CT.
 
 ## Done (newest first)
+- 2026-10-03 03:13 CT 5.1 server change: `dr_add_event()` gets `$forcePlayAt` and `dr_take_action()` passes `true` for the first log line, so every turn/win event carries `play_at_ms`. `rules_test.php` 45/45; new `dev/audio/play_at_test.php` (extracts the real function, runs on in-memory SQLite) 4/4. `simulate_game.php` asserts nothing about `playAt` being null without a cue, so its contract is unchanged. **Not run live:** see open question on the browser/server testing target.
+- 2026-10-03 03:13 CT Phase 2 batch (openers, places, replies) running in the background via `tools/audio/run_phase.sh 2`; CC0 animal-sound search delegated to a research subagent
 - 2026-10-03 03:10 CT Phase 0 finished: 0.5 voice distinctness fixed (see Decisions) and 0.6 sample set committed. The sample set in `review.html` has: opener+place for Senior Ranger (op-sr-01 + pl-sr-39) and Ranger 273 (op-r273-01 + pl-r273-39), hazard reply rp-dis-01, one quotable per character (q22a SR, q23a tow, q03a HR, q06a nerdy, q27a supervisor, q34a judge, q51a crowd), chatter exchange 2 (ch02-1/2/3), the ambience bed + critters and the dice. **Full production goes ahead before the user has reviewed the samples**, as the hand-off instructs; everything is regenerable from `audio-lines.json` + `cast.json` + `tools/audio/*`.
 - 2026-10-03 02:46 CT Phase 1 so far: dice (shake + 4 clatters, CC0 Kenney, 28 KB total, all within 0.2 LU of target), 90 s ambience bed (704 KB, -28.0 LUFS), synthesized rattle/truck/crickets (truck trimmed to 6 s to meet the <=6 s rule). CC0 animal recordings (crow, coyote, quail, hawk) still to source. Scripts: tools/audio/make_dice.py, make_ambience.py
 - 2026-10-03 02:46 CT Phase 0.4 smoke test ran end to end (refs -> Chatterbox on MPS -> Whisper -> master -> review): 6/7 pass. `op-sr-01` is FAIL after 5 takes (0 word errors but 1.76 s vs 1.725 s cap; brisker `--ex 0.65` retakes drop the first word "Dispatch"). Deferred to the Phase 2 retake ladder; the best take (s1, 1.51 s after atempo) is what is mastered for now.
