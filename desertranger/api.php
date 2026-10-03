@@ -115,7 +115,13 @@ try {
 
         case 'start':
             requirePost();
-            dr_start_game($db, $code, dr_token_for($code));
+            // demo = solo demo (host alone, 0-2 computer rivals); the rivals' tokens come back once, to the host only.
+            $rivals = dr_start_game($db, $code, dr_token_for($code), !empty($in['demo']), isset($in['bots']) ? $in['bots'] : DR_MAX_DEMO_RIVALS);
+            dr_out(array('ok' => true, 'rivals' => $rivals));
+
+        case 'enddemo':
+            requirePost();
+            dr_end_demo($db, $code, dr_token_for($code));
             dr_out(array('ok' => true));
 
         case 'roll':

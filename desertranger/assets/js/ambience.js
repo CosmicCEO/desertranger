@@ -2,13 +2,13 @@
  * ambience.js - local-only desert sound: a quiet looping bed, random critter one-shots, and occasional
  * background radio chatter (Dispatch <-> R55 / Ranger 273). Never synchronized between devices.
  *
- * Starts only after the audio-unlock tap AND once the game is active; the bed, critters and chatter lines
- * are "tier C": fetched about 20 s after the game starts (or when the browser is idle), never in the lobby.
+ * Starts after the audio-unlock tap, in the LOBBY as well as in the game (default volume 20 %); the bed, critters and
+ * chatter lines are "tier C": fetched about 20 s after the tap at the latest (browser idle time), never on the home screen.
  *   bed        crossfade-looped (1.5 s equal-power) on the amb bus; ducks under cues/voice (see sync.js)
  *   critters   one every 20-60 s, random -8..0 dB, random pan, never the same twice, rattle is rare
  *   chatter    first exchange >= 90 s after unlock, then every 150-330 s; behind the "Radio chatter" toggle;
  *              postponed 20-40 s if a game cue is playing; ducked to -18 dB if one arrives mid-exchange
- * Timers stop 30 s after the game finishes.
+ * Timers stop 30 s after the game finishes (and start again if the room goes back to a lobby, e.g. a demo ended).
  */
 (function () {
   'use strict';
@@ -161,7 +161,13 @@
     else setTimeout(loadTierC, 20000);
   }
 
-  function setActive(on) { st.active = !!on; if (on) maybeStart(); }
+  function setActive(on) {
+    st.active = !!on;
+    if (on && (st.stopTimer || st.finished)) {   // the room is a lobby/game again after a finished one: wind back up
+      clearTimeout(st.stopTimer); st.stopTimer = null; st.finished = false; st.startedC = false;
+    }
+    if (on) maybeStart();
+  }
 
   /** Game finished: let everything wind down, then stop all timers 30 s later. */
   function finish() {
