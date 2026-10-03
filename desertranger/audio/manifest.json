@@ -375,6 +375,39 @@
    "sec": 2.124,
    "bytes": 17597,
    "v": "3916b97e"
+  },
+  "amb-crow-01": {
+   "kind": "critter",
+   "note": "American crow, single caw",
+   "source": "CC0 Freesound preview crow-1.mp3 (see CREDITS.md)",
+   "lufs": -26.1,
+   "tp": -16.0,
+   "file": "amb/amb-crow-01.mp3",
+   "sec": 0.6,
+   "bytes": 5267,
+   "v": "91be4353"
+  },
+  "amb-coyote-01": {
+   "kind": "critter",
+   "note": "distant coyote yips",
+   "source": "CC0 Freesound preview coyote-1.mp3 (see CREDITS.md)",
+   "lufs": -26.0,
+   "tp": -10.9,
+   "file": "amb/amb-coyote-01.mp3",
+   "sec": 1.85,
+   "bytes": 15298,
+   "v": "338afc70"
+  },
+  "amb-hawk-01": {
+   "kind": "critter",
+   "note": "red-tailed hawk call",
+   "source": "CC0 Freesound preview hawk-2.mp3 (see CREDITS.md)",
+   "lufs": -26.0,
+   "tp": -18.4,
+   "file": "amb/amb-hawk-01.mp3",
+   "sec": 1.9,
+   "bytes": 15716,
+   "v": "3703aec1"
   }
  }
 }

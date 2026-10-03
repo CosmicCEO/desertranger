@@ -707,7 +707,7 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
   - Make `dice/dice-clatter-01..04.mp3` from die-throw-1..4: mono, −18 LUFS or peak mode.
   - Every file must be < 50 KB. Add a CREDITS row for each.
 - [x] 1.2 **Ambience bed:** `amb/amb-bed-01.mp3`. Use the 8.3 recipe (90 s loop, −28 LUFS, 64 kbps mono ≈ 720 KB). You may blend in a CC0 wind recording if it clearly sounds better.
-- [ ] 1.3 **Critters** (one-shots, each ≤ 6 s, −26 LUFS):
+- [x] 1.3 **Critters** (one-shots, each ≤ 6 s, −26 LUFS):
   - Synthesize crickets, the rattlesnake rattle (rare) and the distant truck with the 8.4 recipes.
   - Source the crow/raven caw, coyote yip, quail and hawk screech as **CC0** recordings:
     - **Freesound:** search with the CC0 filter (`https://freesound.org/search/?q=coyote&f=license:%22Creative+Commons+0%22`). Open the sound page and confirm the license box says **Creative Commons 0**. Downloading the original needs a login, so **don't log in**. Use the public HQ preview MP3 linked from the page's player (`https://cdn.freesound.org/previews/...-hq.mp3`). Record the page URL, preview URL, author and "CC0 1.0".
@@ -716,14 +716,14 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
   - Trim, de-noise lightly if needed (`afftdn=nf=-25`), mono, and normalize.
   - If you can't find a clean CC0 recording for a sound, skip it and log it.
 - [ ] 1.4 Optional square tie-in assets: a water trickle for Palm Canyon (square 2) and a second rattle variant for hazard squares. These are local only and low priority.
-- [ ] 1.5 Register every file in `manifest.json` (`kind` `dice`/`amb`/`critter`). Check the budgets: dice ≤ 250 KB, ambience ≤ 1.5 MB.
-- [ ] 1.6 `desertranger/audio/CREDITS.md` has one row per third-party file:
+- [x] 1.5 Register every file in `manifest.json` (`kind` `dice`/`amb`/`critter`). Check the budgets: dice ≤ 250 KB, ambience ≤ 1.5 MB.
+- [x] 1.6 `desertranger/audio/CREDITS.md` has one row per third-party file:
   `| file | source page URL | direct file URL | author | license | retrieved (CT) | changes |`.
   Add a "Generated / original" section that covers:
   - Chatterbox voices: model `ResembleAI/chatterbox`, MIT, Perth watermark
   - Kokoro-82M reference voices: Apache-2.0, used as references only (not shipped)
   - ffmpeg-synthesized bed, critters and radio FX: original
-- [ ] 1.7 **Commit + push.**
+- [x] 1.7 **Commit + push.**
 
 **Acceptance:** all files exist, play, meet their loudness targets (±1 LU) and stay inside the budgets. Every third-party file has a CC0 credits row with its URL. Nothing is non-CC0.
 
