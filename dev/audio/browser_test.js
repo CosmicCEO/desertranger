@@ -22,14 +22,17 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
 (async () => {
   const server = await startMock(PORT, ASSETS);
   const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--autoplay-policy=no-user-gesture-required', '--no-sandbox'] });
-  const errors = [], httpErrs = [], pages = {}, reqs = {};
+  const errors = [], httpErrs = [], pages = {}, reqs = {}, inflightB = {};
   async function open(label, opts) {
     const ctx = await browser.newContext(opts), page = await ctx.newPage();
     reqs[label] = [];
     page.on('console', m => { if (m.type() === 'error') errors.push(label + ': ' + m.text()); });
     page.on('pageerror', e => errors.push(label + ' pageerror: ' + e.message));
     page.on('response', r => { if (r.status() >= 400) httpErrs.push(label + ' ' + r.status() + ' ' + r.url()); });
-    page.on('request', r => { const g = group(r.url()); if (g) reqs[label].push({ t: Date.now(), g, url: r.url() }); });
+    inflightB[label] = { now: 0, max: 0 };
+    const doneB = r => { if (group(r.url()) === 'B') inflightB[label].now--; };
+    page.on('request', r => { const g = group(r.url()); if (g) reqs[label].push({ t: Date.now(), g, url: r.url() }); if (g === 'B') { const f = inflightB[label]; f.now++; f.max = Math.max(f.max, f.now); } });
+    page.on('requestfinished', doneB); page.on('requestfailed', doneB);
     await page.addInitScript(() => {
       window.__rec = { at: [], turns: [], die: [], duck: [] };
       document.addEventListener('DOMContentLoaded', () => {
@@ -84,7 +87,10 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await sleep(2500);
   let c = counts('host');
   check('after the unlock tap: manifest + tier A (radio fx, dice) + crowd clips load', c.manifest >= 1 && c.A >= 10 && c.crowd >= 2, c);
-  check('lobby: no tier B (voices) or tier C (ambience/chatter) requests', !c.B && !c.C, c);
+  check('lobby: no tier B (the radio-call voices) yet; the background sound (tier C) may already load', !c.B, c);
+  let lw = 0; while (!(await A.evaluate(() => !!window.DRAmbience.state.bed)) && lw < 30000) { await sleep(500); lw += 500; }
+  check('the background sound plays in the LOBBY (before any game has started), within ' + Math.round(lw / 1000) + ' s', await A.evaluate(() => !!window.DRAmbience.state.bed), lw);
+  check('lobby background volume defaults to 20 % (bus gain 0.28)', await A.evaluate(() => Math.abs(DRSound.bus.amb.gain.value - 0.28) < 0.01 && DRSound.settings.ambVol === 20));
 
   const B = await open('guest', phone);
   await B.goto(BASE + '?g=' + code + '&debug=1');
@@ -101,7 +107,7 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   check('board view is silent until its audio-unlock tap (overlay shown)', !counts('board').A && !counts('board').manifest, counts('board'));
   await C.click('#btn-sound');
   await sleep(2000);
-  check('board view: tier A after its tap, still nothing from tiers B/C in the lobby', counts('board').A >= 10 && !counts('board').B && !counts('board').C, counts('board'));
+  check('board view: tier A after its tap, no radio-call voices (tier B) in the lobby', counts('board').A >= 10 && !counts('board').B, counts('board'));
 
   // ---------------------------------------------------------------- game starts: tiers B and C
   await A.click('#btn-start');
@@ -113,15 +119,14 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   const man = JSON.parse(fs.readFileSync(path.join(__dirname, '../../desertranger/audio/manifest.json'), 'utf8')).clips;
   const wantB = Object.values(man).filter(m => ['opener', 'place', 'quotable'].includes(m.kind)).length;   // only clips that exist in the manifest are requested
   check('game active: tier B (openers, place names, quotables) is fetched - every shipped one, nothing else (' + wantB + ' clips)', c.B === wantB, { got: c.B, want: wantB });
-  if (wantB >= 40) check('tier B is throttled, not fetched all in the same instant', (() => { const ts = reqs.host.filter(r => r.g === 'B').map(r => r.t); return ts[ts.length - 1] - ts[0] > 200; })());
-  else console.log('       (throttle check skipped: only ' + wantB + ' tier B clips shipped so far)');
+  check('tier B is throttled: never more than 4 clips in flight at once (peak ' + inflightB.host.max + ')', inflightB.host.max >= 1 && inflightB.host.max <= 4, inflightB.host);
   let waited = 0; while (!counts('host').C && waited < 30000) { await sleep(500); waited += 500; }
   check('tier C (ambience, chatter) is fetched within ~20 s of the start', !!counts('host').C && Date.now() - tStart < 32000, { waited, c: counts('host') });
   await sleep(2500);
   const recA0 = await rec(A);
   check('ambience bed is playing on the phone (bed started, amb bus alive)', await A.evaluate(() => !!window.DRAmbience.state.bed), null);
   const gPhone = await A.evaluate(() => DRSound.bus.amb.gain.value), gBoard = await C.evaluate(() => DRSound.bus.amb.gain.value);
-  check('board view ambience defaults +6 dB (x2) louder than a phone, both on by default', Math.abs(gBoard / gPhone - 2) < 0.02 && Math.abs(gPhone - 0.84) < 0.02, { gPhone: gPhone, gBoard: gBoard });
+  check('board view ambience defaults +6 dB (x2) louder than a phone, both on by default', Math.abs(gBoard / gPhone - 2) < 0.02 && Math.abs(gPhone - 0.28) < 0.02, { gPhone: gPhone, gBoard: gBoard });
   await A.screenshot({ path: SHOTS + 'game-phone-390x844.png' });
 
   // ---------------------------------------------------------------- turn 1: plain landing, synced across devices
@@ -167,7 +172,8 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await A.screenshot({ path: SHOTS + 'settings-phone-390x844.png' });
   const pb = await A.evaluate(() => { const r = document.getElementById('audio-panel').getBoundingClientRect(); return { l: r.left, r: r.right, w: innerWidth }; });
   check('settings panel fits inside a 390 px phone screen', pb.l >= 0 && pb.r <= pb.w, pb);
-  check('settings default: ambience on, volume 60, radio on', await A.evaluate(() => document.getElementById('set-amb').checked && document.getElementById('set-vol').value === '60' && document.getElementById('set-radio').checked));
+  check('settings default: ambience on, ambience volume 20, game sounds volume 50, radio on', await A.evaluate(() => document.getElementById('set-amb').checked && document.getElementById('set-vol').value === '20' && document.getElementById('set-game-vol').value === '50' && document.getElementById('set-radio').checked));
+  check('game sounds default: bus gain 0.5 (half of the mastered level)', await A.evaluate(() => Math.abs(DRSound.bus.game.gain.value - 0.5) < 1e-6 && DRSound.settings.gameVol === 50));
   await A.click('body', { position: { x: 5, y: 600 } });
   check('tapping outside closes the panel', await A.evaluate(() => document.getElementById('audio-panel').hidden));
   await A.click('#btn-audio');
@@ -175,7 +181,12 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   check('volume slider drives the ambience bus (0 -> silent) and persists', await A.evaluate(() => { return new Promise(r => setTimeout(() => r(DRSound.bus.amb.gain.value < 0.01 && localStorage.getItem('dr_amb_vol') === '0'), 300)); }));
   await A.fill('#set-vol', '100');
   check('volume 100 maps to bus gain 1.4', await A.evaluate(() => new Promise(r => setTimeout(() => r(Math.abs(DRSound.bus.amb.gain.value - 1.4) < 0.02), 300))));
-  await A.fill('#set-vol', '60');
+  await A.fill('#set-game-vol', '100');
+  check('game sounds slider 100 = the mastered level (gain 1.0), saved as dr_game_vol', await A.evaluate(() => new Promise(r => setTimeout(() => r(Math.abs(DRSound.bus.game.gain.value - 1) < 0.02 && localStorage.getItem('dr_game_vol') === '100'), 300))));
+  await A.fill('#set-game-vol', '0');
+  check('game sounds slider 0 silences the turn-based sounds but not the ambience', await A.evaluate(() => new Promise(r => setTimeout(() => r(DRSound.bus.game.gain.value < 0.01 && DRSound.bus.amb.gain.value > 0.5), 300))));
+  await A.fill('#set-game-vol', '50');
+  await A.fill('#set-vol', '20');
   await A.uncheck('#set-radio');
   check('radio toggle persists (dr_radio_on = 0)', await A.evaluate(() => localStorage.getItem('dr_radio_on') === '0'));
   await A.click('body', { position: { x: 5, y: 600 } });
@@ -193,6 +204,7 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   check('ambience off stops the bed independently of radio', await A.evaluate(() => new Promise(r => setTimeout(() => r(!DRAmbience.state.bed && localStorage.getItem('dr_amb_on') === '0'), 600))));
   await A.check('#set-amb');
   check('ambience back on restarts the bed', await A.evaluate(() => new Promise(r => setTimeout(() => r(!!DRAmbience.state.bed), 600))));
+  await A.click('body', { position: { x: 5, y: 700 } });   // close the settings panel so it cannot cover the ROLL button
 
   // ---------------------------------------------------------------- the ~3 s cap, late rule, chatter, finish
   const rAll = await rec(A);
@@ -209,7 +221,7 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await sleep(500);
   const ch = (await rec(A)).at.slice(nAt).filter(x => x.tag === 'chatter');
   check('background chatter plays (click + line + squelch per line) on the chatter bus', ch.length >= 3 && ch.every(x => x.bus === 'chatter' && x.ok), ch.length);
-  check('chatter bus is much quieter than game cues (bus gain 0.35)', await A.evaluate(() => Math.abs(DRSound.bus.chatter.gain.value - 0.35) < 1e-6));
+  check('chatter follows the ambience slider (0.35 x ambience volume / 60)', await A.evaluate(() => Math.abs(DRSound.bus.chatter.gain.value - 0.35 * DRSound.settings.ambVol / 60) < 1e-6));
   const ductMin = (await rec(A)).duck.reduce((m, d) => Math.min(m, d.chat), 1);
   check('chatter ducks to about -18 dB (0.126) while a game cue/call plays', ductMin < 0.2, ductMin);
 

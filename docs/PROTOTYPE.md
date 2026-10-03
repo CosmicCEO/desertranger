@@ -17,6 +17,10 @@ desertranger/                 <- upload this folder to htdocs/desertranger
   board/desert-ranger.json    deploy COPY of /board/desert-ranger.json (not in git; made by
                               dev/make-assets.sh). In a repo checkout the code falls back to
                               /board/, so there is one master copy. Clients load it via api.php?a=board
+  audio/                      shipped sound (mp3 + manifest.json) and the listening sheet audio/review.html.
+                              review.html is DELIBERATELY part of the deploy (the whole desertranger/ folder is
+                              uploaded; .htaccess only blocks config/sql/md files): open /desertranger/audio/review.html
+                              to audition every clip. CREDITS.md in the same folder is not served (md is blocked).
   lib/rules.php               PURE rules engine (no DB/HTTP), all game rules live here
   lib/game.php                DB layer: loads state, calls the engine, saves in one transaction
   lib/db.php                  config + PDO connection
@@ -194,6 +198,11 @@ Set these values:
   - **Cookie**: the seat cookie sets `Secure` only when the page is served over HTTPS, so resume works on http too.
   - **Avoid**: features like `crypto.randomUUID`, the clipboard API, service workers, and wake lock would need HTTPS (or `localhost`). The prototype avoids them on purpose.
 - Make sure the phone isn't on a guest or "isolated" Wi-Fi network. Many of those block device-to-device traffic.
+- **No sound on an iPhone?** The first thing to check is the **silent switch** on the side of the phone (orange showing = muted): iPhones
+  silence web audio when it is on, and games and web pages are expected to respect it. (This was the cause of the one "no sound" report
+  during the demo-mode test.) Then volume, and tap "Tap to enable sound" if it is shown. The ⚙ panel in the game has a **Test sound**
+  button: it plays a dice sound and shows the audio state ("Audio is running, N clips loaded"), which tells you at once whether the page
+  or the phone is the problem. `?debug=1` adds a footer with the same information plus the last landing pick.
 
 ### Troubleshooting (MAMP)
 | Symptom | Fix |
@@ -279,6 +288,37 @@ The simulation fires two taps at the same instant from separate processes, and e
   when it updates `last_seen_at`, at most once every 20 s per player.
 - Every action writes event rows: one log line, plus the animation steps (walk path, jump,
   swap, die value), plus the cue. A "loses this turn" skip gets its own line.
+
+### Solo demo mode
+
+In the lobby, the host alone sees a **PLAY SOLO DEMO** button under the "Need 2+ players" button (hidden from everyone
+else, and hidden once a second player has joined). It starts the game at once with just the host plus two computer rivals
+(`?demobots=0` or `1` on the page URL changes the number of rivals); everything else is the normal game: rolls, moves,
+square events, radio calls, crowd cheers, ambience. A small **DEMO** tag shows in the game header. **End demo** (or **Back to
+lobby** after the finish) returns the same room to a clean lobby.
+
+- The 2-player minimum is skipped **only** for the demo start (`api.php?a=start` with `demo: true`, host alone in the lobby).
+  A normal start still answers 409 "Need at least 2 players".
+- No schema change: the demo flag is the payload of the game's `start` event; the state response reports `game.demo` and flags
+  the rivals with `players[].bot`.
+- The rivals are ordinary player rows. Their seat tokens are returned once, to the host, in the `start` response; the host's page
+  keeps them in `localStorage` (`dr_rivals_<CODE>`) and rolls for them through the normal `roll`/`choose` actions after a short
+  pause (they take shortcuts and never swap). If the host clears localStorage mid-demo the rivals stop moving; End demo still works.
+- `api.php?a=enddemo` (host only) deletes the rivals and the demo's log, puts the host back on the start square and sets the room
+  back to `lobby`. It refuses (409) on any game that was not started as a demo, so a normal game can never be reset.
+- Tests: `php tests/demo_game.php <baseUrl>` (API, includes the 2-player-minimum checks) and
+  `node dev/audio/demo_browser_test.js <baseUrl>` (one phone in headless Chrome).
+
+### Sound settings (⚙ panel next to the speaker button)
+
+Saved per device in `localStorage`; 🔊 mutes everything.
+- **Ambience** on/off and **Ambience volume** (default **20 %**, `dr_amb_vol`): the desert bed, the critters and the background
+  radio chatter. It plays in the **lobby** as well as in the game (from the audio-unlock tap, never on the home screen). The board
+  view is 6 dB louder. The background chatter scales with this slider.
+- **Game sounds volume** (default **50 %**, `dr_game_vol`): the turn-based sounds, meaning dice, landing radio calls, quotable
+  lines and the crowd cheer/aww. 100 % is the level the clips were mastered at; 50 % is half of that.
+- **Radio chatter** on/off (`dr_radio_on`): off = no landing calls, quotables or background chatter (dice and crowd stay).
+- **Test sound**: plays a dice sound through the game's audio and shows the audio state.
 
 ### Synced audio
 - **Cues**:
