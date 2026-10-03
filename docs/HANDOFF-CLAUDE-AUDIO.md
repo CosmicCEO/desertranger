@@ -757,16 +757,16 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
 **Acceptance:** 54 quotables are shipped (or flagged), loudness is −16 ±1 LU, the treatment matches `audio-lines.json`, and the budget is ≤ 1.3 MB.
 
 ### Phase 4: Dispatch / R55 / 273 chatter (plan E) (≈ 45 min of generation)
-- [ ] 4.1 Generate all 39 chatter lines (`--phase 4`), 12 exchanges. Each line is a separate clip; the client stitches them.
+- [x] 4.1 Generate all 39 chatter lines (`--phase 4`), 12 exchanges. Each line is a separate clip; the client stitches them.
   - Dispatch is the separate operator voice. R55 is a male ranger distinct from the Senior Ranger and 273. Ranger 273 runs the nature walks.
   - Use **Burro Bend Cafe** exactly as written: it's the client's real 1980-82 hangout in Ocotillo Wells, across the highway from the ranger station.
-- [ ] 4.2 The Latin plant names in exchanges 9-12 can't be word-checked, because `whisper_ignore` skips them. Listen for gross failures in the review sheet instead: half a word missing, or the line running long. Try `--pron` takes and keep the better one. Taxonomy as given in the plan:
+- [x] 4.2 The Latin plant names in exchanges 9-12 can't be word-checked, because `whisper_ignore` skips them. Listen for gross failures in the review sheet instead: half a word missing, or the line running long. Try `--pron` takes and keep the better one. Taxonomy as given in the plan:
   - *Larrea tridentata* / Zygophyllaceae (creosote)
   - *Fouquieria splendens* / Fouquieriaceae (ocotillo)
   - *Bursera microphylla* / Burseraceae (elephant tree)
   - *Washingtonia filifera* / Arecaceae (fan palm)
   - *Agave deserti* / Asparagaceae (desert agave)
-- [ ] 4.3 QA → master → review (the review page shows lines grouped by exchange). **Commit + push.**
+- [x] 4.3 QA → master → review (the review page shows lines grouped by exchange). **Commit + push.**
 
 **Acceptance:** all 12 exchanges are complete, the budget is ≤ 0.9 MB, and no line exceeds its `max_sec` × 1.15.
 

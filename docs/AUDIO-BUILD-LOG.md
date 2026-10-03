@@ -1,5 +1,5 @@
 # Audio build log (branch audio-build)
-_Last updated: 2026-10-03 08:04 CT by Claude Code_
+_Last updated: 2026-10-03 08:46 CT by Claude Code_
 
 ## Status
 | Phase | State | Notes |
@@ -8,7 +8,7 @@ _Last updated: 2026-10-03 08:04 CT by Claude Code_
 | 1 Dice + ambience + critters | done | quail skipped, 1.4 skipped (see below); critters need a listen |
 | 2 Radio + landing calls | done (43 flagged length-only) | stitch demos not auditioned (cannot listen) |
 | 3 Quotables | done (12 OVER-CAP) | 54/54 shipped; crowd + sweetener built |
-| 4 Chatter | not started | |
+| 4 Chatter | done | 39/39 pass; Latin names unheard (proxy check only) |
 | 5 Client integration | done on the mock; MAMP run pending | 5.1-5.11 ticked; 5.12 and a MAMP run (open question) remain |
 | 6 QA + wrap-up | not started | |
 
@@ -16,6 +16,7 @@ _Last updated: 2026-10-03 08:04 CT by Claude Code_
 macOS 27.0 (arm64, Apple Silicon), 26 GiB free at start. Work done in a git worktree, `~/Developer/anza-borrego-challenge-audio`, on branch `audio-build` (the user's own clone stays on `main`). Homebrew installed: ffmpeg 9.0.2 (all 6 required filters present), espeak-ng, Python 3.11.17 (.venv-cb) and 3.12.15 (.venv-tts), node 26.10.0. PHP for the tests will be MAMP's own (`/Applications/MAMP/bin/php/`), not a brew install. Venvs: `.venv-cb` Python 3.11.17, chatterbox-tts 0.1.7, torch 2.6.0, **MPS available: yes** (freeze in `audio-work/pip-freeze-cb.txt`); `.venv-tts` Python 3.12.15, kokoro 0.9.4, faster-whisper 1.2.1 (`audio-work/pip-freeze-tts.txt`). Kokoro also auto-installed spaCy `en_core_web_sm` 3.8.0 via pip (MIT, free). Model downloads are slow here (~0.5 MB/s inbound); the Chatterbox weights were still downloading at 02:15 CT.
 
 ## Done (newest first)
+- 2026-10-03 08:46 CT Phase 4 done: all 39 chatter lines (12 exchanges) shipped and **39/39 pass the Whisper check on the first pass**, 652 KB of 922 KB, every clip -16 +-1 LU, none over its max_sec x 1.15. Burro Bend lines are used exactly as written. Latin plant names (exchanges 9-12) are exempt from the word-check, so as a proxy for gross failures I compared Whisper's transcript with each exempt word: all 16 matched with similarity >= 0.75 (Larrea tridentata, Zygophyllaceae, Fouquieria splendens, Fouquieriaceae, Bursera microphylla, Burseraceae, Washingtonia filifera, Arecaceae-family names, Agave deserti, Asparagaceae). **Not listened to**: please give exchanges 9-12 a listen on the review page (grouped there by exchange). No `--pron` takes were needed.
 - 2026-10-03 08:04 CT Phase 3 done: all 54 quotables shipped (1,017 KB of 1,331 KB; -16 LUFS +-1 for every one, crowd q51 at -14; worst true peak -1.7 dBTP; treatment matches audio-lines.json). The 12 Senior Ranger squares are exactly 1, 9, 12, 14, 16, 22, 29, 41, 46, 48, 49, 50. q51a/b are layered from 3 crowd voices; q35a/b carry the crowd sweetener (3 "whoa" shouts under the last 0.6 s at -12 dB, `tools/audio/make_sweetener.py`: run `master.py --ids q35a,q35b` and then `make_sweetener.py mix` again if q35 is ever re-mastered). **42/54 pass, 12 are FAIL-after-ladder (OVER-CAP, length-only, 0 word errors).** QA tool fix: em/en dashes are now word separators in `qa_check.py` (they were being folded away and merging words; this had falsely failed 6 lines).
 - 2026-10-03 06:09 CT Phase 2 done: 16 openers, 104 place names, 3 dispatch replies generated (Chatterbox on MPS, ~12 s/take, 9 takes max per failing line), Whisper-checked, mastered at -16 LUFS. **80/123 pass, 43 are FAIL-after-ladder, and every one of those is length-only (0 word errors; see Skipped).** Budgets: openers+places 928 KB (<= 1126 KB), replies 42 KB (<= 60 KB), radio fx 40 KB; all clips within 1 LU of target. `tools/audio/run_phase.sh` drives a phase (generate -> QA -> ladder -> master). Fixes made on the way: `qa_check.py` merges spelled-out letters ("V I P" = "VIP"); `master.py` encodes radio-treatment voice at 48 kbps (the chain band-limits to ~3 kHz) so the openers+places budget holds.
 - 2026-10-03 03:29 CT Phase 1 complete: CC0 critters added (crow 5 KB, coyote 15 KB, hawk 16 KB, all -26.0 LUFS +-0.1) from public Freesound previews. A research subagent found the candidates; **I re-checked the license box on each of the three pages myself (reads "Creative Commons 0")**. Trim ranges came from energy profiling, so **nobody has listened to these three: please audition amb-crow-01, amb-coyote-01 and amb-hawk-01 on the review page** (hawk source has "Optical, Vintage" tags: may carry slight hiss; coyote source title says "dogs howling" but is tagged coyote and described as coyotes). Totals: dice 27 KB, ambience+critters 822 KB, radio fx 40 KB. Script: `tools/audio/make_critters.py`.
