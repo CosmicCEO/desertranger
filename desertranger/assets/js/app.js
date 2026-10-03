@@ -413,6 +413,7 @@
     $('die').textContent = '–';
     $('game-error').textContent = '';
     S.bv.queue = [];
+    if (S.state) S.bv.setPlayers(S.state.players, null);   // drops the computer rivals' pieces right away
     if (Radio) Radio.setActive(false);
     if (Amb) Amb.reset();
   }
