@@ -136,3 +136,8 @@ body.board-mode .piece .nm { font-size: clamp(9px, 1vw, 18px); }
 .aud-vol { flex-direction: column; align-items: stretch; gap: 2px; padding: 6px 0; }
 .aud-vol input[type=range] { display: block; width: 100%; min-height: 36px; margin: 0; padding: 0; border: 0; background: transparent; accent-color: var(--terra); }
 .audio-panel .hint { margin: 4px 0 0; }
+
+/* Solo demo: small tag in the game header, and the lobby button under "Need 2+ players" */
+.demo-tag { font: .8rem Bungee, sans-serif; letter-spacing: .12em; background: var(--gold); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 8px; padding: 2px 8px; }
+#btn-demo { margin-top: 4px; }

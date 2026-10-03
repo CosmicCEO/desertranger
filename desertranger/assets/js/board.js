@@ -64,6 +64,11 @@
     var self = this;
     this.players = players;
     this.activeId = activeId;
+    var present = {};
+    players.forEach(function (p) { present[p.id] = true; });
+    Object.keys(this.pieces).forEach(function (id) {   // a finished demo removes its computer rivals: drop their pieces
+      if (!present[id]) { self.pieces[id].remove(); delete self.pieces[id]; delete self.shown[id]; }
+    });
     players.forEach(function (p) {
       if (!self.pieces[p.id]) {
         var el = document.createElement('div');

@@ -17,6 +17,8 @@
   var DEBUG = Q.get('debug') === '1';
   var POLL_MS = 1000, POLL_HIDDEN_MS = 4000;
 
+  // Solo demo: the host starts a game alone, plus this many computer rivals (0-2; ?demobots=0 gives a pure solo game).
+  var DEMO_BOTS = Q.has('demobots') ? Math.max(0, Math.min(2, parseInt(Q.get('demobots'), 10) || 0)) : 2;
   var LATE_MS = 250;   // same late rule as sync.js: older than this, animate at once and skip the audio
   var Clock = window.DRClock, Sound = window.DRSound, Radio = window.DRRadio, Amb = window.DRAmbience;
   var $ = function (id) { return document.getElementById(id); };
@@ -25,7 +27,8 @@
     code: null, token: null, vehicles: {}, board: null, bv: null,
     state: null, lastEventId: 0, firstLoad: true,
     pollTimer: null, inflight: false, selVehicle: null,
-    polls: 0, pollTimes: [], lastPollRtt: null
+    polls: 0, pollTimes: [], lastPollRtt: null,
+    rivals: {}, botTimer: null, botBusy: false, gameShown: false   // solo demo: computer rivals' seat tokens (host's page only)
   };
 
   // ------------------------------------------------------------------ helpers
@@ -39,10 +42,10 @@
   }
 
   /** Call the API. GET when body is undefined. Every response is also a clock-sync sample. */
-  function api(action, body, query) {
+  function api(action, body, query, tokenOverride) {
     var url = 'api.php?a=' + action + (query || '');
     var opt = { headers: {}, cache: 'no-store', credentials: 'same-origin' };
-    if (S.token) opt.headers['X-Player-Token'] = S.token;
+    if (tokenOverride || S.token) opt.headers['X-Player-Token'] = tokenOverride || S.token;
     if (body !== undefined) {
       opt.method = 'POST';
       opt.headers['Content-Type'] = 'application/json';
@@ -79,6 +82,16 @@
 
   function gameUrl(extra) {
     return location.origin + location.pathname + '?g=' + S.code + (extra || '');
+  }
+
+  function loadRivals(code) {
+    try { return JSON.parse(localStorage.getItem('dr_rivals_' + code)) || {}; } catch (e) { return {}; }
+  }
+  function saveRivals() {
+    try {
+      if (Object.keys(S.rivals).length) localStorage.setItem('dr_rivals_' + S.code, JSON.stringify(S.rivals));
+      else localStorage.removeItem('dr_rivals_' + S.code);
+    } catch (e) { /* private mode: the rivals just stop moving after a reload */ }
   }
 
   function rememberSeat(code, token) {
@@ -214,10 +227,12 @@
 
     var status = j.game.status;
     if (status === 'lobby' && !BOARD_MODE) {
+      if (S.gameShown) resetGameView();   // a demo was ended: back to a clean lobby
       show('lobby');
       renderLobby();
     } else {
       show('game');
+      S.gameShown = true;
       S.bv.setPlayers(j.players, j.game.currentId);
       renderGame();
     }
@@ -268,6 +283,10 @@
     $('btn-start').hidden = !isHost;
     $('btn-start').disabled = st.players.length < 2;
     $('btn-start').textContent = st.players.length < 2 ? 'Need 2+ players' : 'Start game';
+    // Solo demo: only the host, and only while nobody else has joined (a normal game still needs 2+).
+    $('btn-demo').hidden = !(isHost && st.players.length === 1);
+    $('btn-demo').disabled = false;
+    $('demo-hint').hidden = $('btn-demo').hidden;
     $('lobby-wait').hidden = isHost;
   }
 
@@ -329,14 +348,73 @@
       var li = document.createElement('li');
       if (p.id === g.currentId) li.className = 'current';
       li.appendChild(pieceImg(p.vehicle));
-      li.appendChild(document.createTextNode(p.name + (p.id === me ? ' (you)' : '')));
+      li.appendChild(document.createTextNode(p.name + (p.id === me ? ' (you)' : p.bot ? ' (computer)' : '')));
       var wh = document.createElement('span');
       wh.className = 'where';
       wh.textContent = p.pos + ' · ' + S.bv.squareName(p.pos) + (p.skip ? ' · skips ' + p.skip : '');
       li.appendChild(wh);
       ul.appendChild(li);
     });
-    $('btn-new').hidden = g.status !== 'finished';
+    // Solo demo: DEMO tag for everyone watching; the host gets End demo / Back to lobby instead of New game.
+    $('demo-tag').hidden = !g.demo;
+    $('btn-end-demo').hidden = !(g.demo && !BOARD_MODE && me === g.hostId);
+    $('btn-end-demo').textContent = g.status === 'finished' ? 'Back to lobby' : 'End demo';
+    $('btn-new').hidden = g.status !== 'finished' || !!g.demo;
+    botTick();
+  }
+
+  /** The host's page rolls for the computer rivals (they are normal players; their seat tokens were handed to the host). */
+  function botTick() {
+    var st = S.state;
+    if (!st || BOARD_MODE || S.botTimer || S.botBusy) return;
+    var g = st.game;
+    if (!g.demo || g.status !== 'active' || st.meId !== g.hostId || animating()) return;
+    var actor = playerById(g.pending ? g.pending.playerId : g.currentId);
+    if (!actor || !actor.bot || !S.rivals[actor.id]) return;
+    var turn = g.turn, token = S.rivals[actor.id], pend = g.pending;
+    S.botTimer = setTimeout(function () {
+      S.botTimer = null;
+      if (!S.state || S.state.game.turn !== turn || animating()) { botTick(); return; }   // moved on meanwhile: look again
+      var body = { code: S.code, turn: turn, key: newKey() }, kind = 'roll';
+      if (pend) { kind = 'choose'; body.action = pend.type === 'shortcut' ? 'shortcut' : 'skip'; }   // rivals take shortcuts, never swap
+      S.botBusy = true;
+      api(kind, body, undefined, token).catch(function () { /* the next poll shows where things stand */ })
+        .then(function () { S.botBusy = false; poll(); });
+    }, 1400 + Math.random() * 1200);   // a human-ish pause so the race has some rhythm
+  }
+
+  function startDemo() {
+    Sound.unlock();   // this tap is the iOS audio gesture
+    $('btn-demo').disabled = true;
+    $('btn-start').disabled = true;
+    $('lobby-error').textContent = '';
+    api('start', { code: S.code, demo: true, bots: DEMO_BOTS }).then(function (j) {
+      S.rivals = {};
+      (j.rivals || []).forEach(function (r) { S.rivals[r.id] = r.token; });
+      saveRivals();
+    }).catch(function (e) { $('lobby-error').textContent = e.message; }).then(poll);
+  }
+
+  function endDemo() {
+    var g = S.state && S.state.game;
+    if (!g || !g.demo) return;
+    if (g.status === 'active' && !confirm('End the demo and go back to the lobby?')) return;
+    clearTimeout(S.botTimer); S.botTimer = null;
+    api('enddemo', { code: S.code }).then(function () { S.rivals = {}; saveRivals(); })
+      .catch(function (e) { $('game-error').textContent = e.message; }).then(poll);
+  }
+
+  /** Back in the lobby after a demo: empty the game screen's log and die, stop the ambience, stop the rivals. */
+  function resetGameView() {
+    S.gameShown = false;
+    clearTimeout(S.botTimer); S.botTimer = null;
+    S.rivals = {}; saveRivals();
+    $('log').textContent = '';
+    $('die').textContent = '–';
+    $('game-error').textContent = '';
+    S.bv.queue = [];
+    if (Radio) Radio.setActive(false);
+    if (Amb) Amb.reset();
   }
 
   function lastTurnWasRollAgain() {
@@ -427,6 +505,8 @@
       $('btn-start').disabled = true;
       api('start', { code: S.code }).catch(function (e) { $('lobby-error').textContent = e.message; }).then(poll);
     };
+    $('btn-demo').onclick = startDemo;
+    $('btn-end-demo').onclick = endDemo;
     $('btn-roll').onclick = function () { Sound.unlock(); if (Radio) Radio.localShake(); act('roll', {}); };
     $('btn-sound').onclick = function () { Sound.unlock(); $('sound-overlay').hidden = true; };
     $('sound-overlay').onclick = function () { Sound.unlock(); $('sound-overlay').hidden = true; };
@@ -485,6 +565,7 @@
       }
       if (code) {
         S.code = code;
+        S.rivals = loadRivals(code);
         S.token = BOARD_MODE ? null : localStorage.getItem('dr_token_' + code); // cookie is the fallback
         startPolling();
       } else {

@@ -20,6 +20,7 @@ class ApiError extends Exception
 
 const DR_MAX_PLAYERS = 8;
 const DR_MIN_PLAYERS = 2;
+const DR_MAX_DEMO_RIVALS = 2;   // computer-controlled vehicles in a solo demo
 
 /** The 8 pieces. Key = art file name (assets/img/pieces/<key>.png), value = display label. */
 function dr_vehicles()
@@ -253,8 +254,16 @@ function dr_join_game(PDO $db, $code, $name, $vehicle)
     }
 }
 
-/** Host starts the game. */
-function dr_start_game(PDO $db, $code, $token)
+/**
+ * Host starts the game.
+ *
+ * $demo = single-player demo: the host is alone in the lobby and the 2-player minimum is skipped (ONLY here; a normal
+ * start still needs DR_MIN_PLAYERS). The host may add 0-2 computer rivals: they are ordinary player rows, and their seat
+ * tokens are returned ONCE to the host, whose page rolls for them through the normal roll/choose actions. The demo flag
+ * is stored in the payload of the game's 'start' event (no schema change).
+ * Returns the rivals as [['id' => .., 'token' => ..], ...] (empty for a normal game or a double tap).
+ */
+function dr_start_game(PDO $db, $code, $token, $demo = false, $rivals = DR_MAX_DEMO_RIVALS)
 {
     $db->beginTransaction();
     try {
@@ -266,14 +275,80 @@ function dr_start_game(PDO $db, $code, $token)
         }
         if ($g['status'] !== 'lobby') {
             $db->rollBack();
-            return; // already started: treat as success (double tap)
+            return array(); // already started: treat as success (double tap)
         }
-        if (count($players) < DR_MIN_PLAYERS) {
+        $out = array();
+        if ($demo) {
+            if (count($players) !== 1) {
+                throw new ApiError('The solo demo is only for the host on their own.', 409);
+            }
+            $rivals = max(0, min(DR_MAX_DEMO_RIVALS, (int)$rivals));
+            $free = array_values(array_diff(array_keys(dr_vehicles()), array($me['vehicle'])));
+            for ($i = 0; $i < $rivals; $i++) {
+                list($rivalToken, $rivalId) = dr_join_insert($db, $g['id'], $i + 1, 'Rival ' . ($i + 1), $free[$i]);
+                $out[] = array('id' => $rivalId, 'token' => $rivalToken);
+            }
+        } elseif (count($players) < DR_MIN_PLAYERS) {
             throw new ApiError('Need at least 2 players.', 409);
         }
         $db->prepare("UPDATE games SET status = 'active', turn_number = 1, current_seat = ?, updated_at = ? WHERE id = ?")
            ->execute(array($players[0]['seat'], dr_now_sql(), $g['id']));
-        dr_add_event($db, $g['id'], 1, 'start', 'Game on! ' . $players[0]['display_name'] . ' rolls first.');
+        if ($demo) {
+            dr_add_event($db, $g['id'], 1, 'start',
+                'Demo game on! ' . $players[0]['display_name'] . ' rolls first'
+                . (count($out) ? ', racing ' . count($out) . ' computer rival' . (count($out) > 1 ? 's' : '') : ', solo') . '.',
+                array('demo' => true));
+        } else {
+            dr_add_event($db, $g['id'], 1, 'start', 'Game on! ' . $players[0]['display_name'] . ' rolls first.');
+        }
+        $db->commit();
+        return $out;
+    } catch (Exception $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        throw $e;
+    }
+}
+
+/** Was this game started as a solo demo? (The flag lives in the payload of its 'start' event.) */
+function dr_is_demo(PDO $db, $gameId)
+{
+    $st = $db->prepare("SELECT payload FROM events WHERE game_id = ? AND type = 'start' ORDER BY id LIMIT 1");
+    $st->execute(array($gameId));
+    $payload = $st->fetchColumn();
+    $data = $payload ? json_decode($payload, true) : null;
+    return is_array($data) && !empty($data['demo']);
+}
+
+/**
+ * Host ends a solo demo: the computer rivals and the demo's log are removed, the host goes back to the start square,
+ * and the same room is a lobby again. Refuses on anything that is not a demo game, so a normal game can never be reset.
+ */
+function dr_end_demo(PDO $db, $code, $token)
+{
+    $db->beginTransaction();
+    try {
+        $g = dr_find_game($db, $code, true);
+        $players = dr_players($db, $g['id']);
+        $me = dr_player_for_token($players, $token);
+        if (!$me || (int)$me['id'] !== (int)$g['host_player_id']) {
+            throw new ApiError('Only the host can end the demo.', 403);
+        }
+        if ($g['status'] === 'lobby') {
+            $db->rollBack();
+            return; // already back in the lobby (double tap)
+        }
+        if (!dr_is_demo($db, $g['id'])) {
+            throw new ApiError('Only a demo game can be ended this way.', 409);
+        }
+        $db->prepare('DELETE FROM players WHERE game_id = ? AND id <> ?')->execute(array($g['id'], $g['host_player_id']));
+        $db->prepare('UPDATE players SET position = 0, skip_turns = 0 WHERE id = ?')->execute(array($g['host_player_id']));
+        $db->prepare('DELETE FROM events WHERE game_id = ? AND turn_number >= 1')->execute(array($g['id']));
+        $db->prepare("UPDATE games SET status = 'lobby', turn_number = 0, current_seat = ?, pending_json = NULL,
+                             winner_player_id = NULL, last_action_key = NULL, updated_at = ? WHERE id = ?")
+           ->execute(array($me['seat'], dr_now_sql(), $g['id']));
+        dr_add_event($db, $g['id'], 0, 'join', 'Demo ended: back in the lobby.');
         $db->commit();
     } catch (Exception $e) {
         if ($db->inTransaction()) {
@@ -460,6 +535,7 @@ function dr_state(PDO $db, $code, $since, $token)
         );
     }
 
+    $demo = $g['status'] !== 'lobby' && dr_is_demo($db, $g['id']);
     $pl = array();
     $currentId = null;
     foreach ($players as $p) {
@@ -470,6 +546,7 @@ function dr_state(PDO $db, $code, $since, $token)
             'seat'    => (int)$p['seat'],
             'pos'     => (int)$p['position'],
             'skip'    => (int)$p['skip_turns'],
+            'bot'     => $demo && (int)$p['id'] !== (int)$g['host_player_id'],   // computer rival in a solo demo
         );
         if ((int)$p['seat'] === (int)$g['current_seat']) {
             $currentId = (int)$p['id'];
@@ -489,6 +566,7 @@ function dr_state(PDO $db, $code, $since, $token)
             'hostId'    => (int)$g['host_player_id'],
             'winnerId'  => $g['winner_player_id'] === null ? null : (int)$g['winner_player_id'],
             'pending'   => $pending,
+            'demo'      => $demo,
         ),
         'players' => $pl,
         'meId'    => $me ? (int)$me['id'] : null,

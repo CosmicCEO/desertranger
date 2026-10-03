@@ -173,6 +173,14 @@
     }, 30000);
   }
 
+  /** Back in the lobby (a demo was ended): stop everything and be ready to start again with the next game. */
+  function reset() {
+    clearTimeout(st.stopTimer); st.stopTimer = null;
+    st.finished = false; st.active = false; st.startedC = false; st.landedAt = null; st.nextChatterAt = null;
+    stopBed();
+    clearTimeout(st.chatterTimer); st.chatterTimer = null;
+  }
+
   function noteLanding(sq) { st.landedSq = sq; st.landedAt = Date.now(); }
   function setMyPos(pos, hazard) { st.hazard = !!hazard; }
 
@@ -187,7 +195,7 @@
   })();
 
   window.DRAmbience = {
-    setActive: setActive, finish: finish, noteLanding: noteLanding, setMyPos: setMyPos,
+    setActive: setActive, finish: finish, reset: reset, noteLanding: noteLanding, setMyPos: setMyPos,
     chatterNow: tryChatter,   // test/debug hook: run the chatter scheduler's decision now
     state: st,
     debugLine: function () {

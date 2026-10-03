@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#C3623B">
 <link rel="icon" href="assets/img/pieces/bronco-orange.png">
 <title>Desert Ranger</title>
-<link rel="stylesheet" href="assets/css/style.css?v=2">
+<link rel="stylesheet" href="assets/css/style.css?v=3">
 </head>
 <body>
 <!--
@@ -59,6 +59,8 @@
     <ul id="lobby-players" class="player-list"></ul>
   </div>
   <button id="btn-start" class="btn big" type="button" hidden>Start game</button>
+  <button id="btn-demo" class="btn big sage" type="button" hidden>PLAY SOLO DEMO</button>
+  <p id="demo-hint" class="center hint" hidden>Try the full sound and feel on your own: it starts right away, with computer rivals that roll by themselves.</p>
   <p id="lobby-wait" class="center hint" hidden>Waiting for the host to start…</p>
   <p id="lobby-error" class="error" role="alert"></p>
   <p class="center hint">Shared screen / TV: open <span id="lobby-board-link"></span></p>
@@ -69,6 +71,7 @@
   <header class="game-head">
     <span class="logo">Desert Ranger</span>
     <span class="code-chip" id="game-code"></span>
+    <span class="demo-tag" id="demo-tag" hidden>DEMO</span>
     <button id="btn-zoom" class="icon-btn" type="button" title="Zoom board">🔍</button>
     <button id="btn-mute" class="icon-btn" type="button" title="Sound on/off">🔊</button>
     <button id="btn-audio" class="icon-btn" type="button" title="Audio settings" aria-label="Audio settings" aria-haspopup="true" aria-expanded="false">⚙</button>
@@ -97,6 +100,7 @@
       <p id="game-error" class="error" role="alert"></p>
       <ul id="player-list" class="player-list"></ul>
       <ol id="log" class="log"></ol>
+      <button id="btn-end-demo" class="btn big sage" type="button" hidden>End demo</button>
       <a id="btn-new" class="btn big sage" href="./" hidden>New game</a>
     </aside>
   </div>
@@ -110,9 +114,9 @@
 <footer id="debug" class="debug" hidden></footer>
 
 <script src="assets/js/sync.js?v=2"></script>
-<script src="assets/js/board.js?v=2"></script>
+<script src="assets/js/board.js?v=3"></script>
 <script src="assets/js/radio.js?v=1"></script>
-<script src="assets/js/ambience.js?v=1"></script>
-<script src="assets/js/app.js?v=2"></script>
+<script src="assets/js/ambience.js?v=2"></script>
+<script src="assets/js/app.js?v=3"></script>
 </body>
 </html>
