@@ -1,0 +1,23 @@
+{
+ "_about": "Voice casting for the Desert Ranger audio build. ref = Kokoro voice used to synthesise a ~10-12 s reference clip (make_refs.py), which Chatterbox then clones zero-shot (gen_lines.py). speed/pitch_st shape the reference; ex/cfg/temp are Chatterbox generate() params. 'alt' is the fallback reference if the main one fails the distinctness or QA checks. Do NOT clone any real person's voice.",
+ "dispatch":      {"ref": "af_sarah",   "speed": 1.05, "pitch_st": 0.0,  "ex": 0.40, "cfg": 0.50, "temp": 0.8, "alt": {"ref": "af_nova", "pitch_st": -0.5},
+                   "ref_text": "Copy that, unit two. Your location is logged. Fire crew is staging at the north gate, tow is en route from Borrego, and the road past mile marker nine stays closed until further notice. Advise when clear."},
+ "senior_ranger": {"ref": "af_kore",    "speed": 0.92, "pitch_st": -2.0, "ex": 0.50, "cfg": 0.50, "temp": 0.8, "alt": {"ref": "af_river", "pitch_st": -2.0},
+                   "ref_text": "Listen up. The wash is closed past the second marker, and I mean closed. Turn your vehicles around, check your water, and report back to me in ten minutes. No exceptions. No excuses. And yes, I did see that cactus. Everybody saw that cactus."},
+ "ranger_273":    {"ref": "am_michael", "speed": 1.00, "pitch_st": 0.0,  "ex": 0.50, "cfg": 0.50, "temp": 0.8, "alt": {"ref": "am_adam", "pitch_st": 0.0},
+                   "ref_text": "Alright folks, gather in close. This tall one with the red tips is the ocotillo. It looks dead most of the year, but give it one good rain and it leafs out in a couple of days. Family first, common name second. Watch your step on the way back."},
+ "r55":           {"ref": "am_liam",    "speed": 1.00, "pitch_st": -0.5, "ex": 0.55, "cfg": 0.45, "temp": 0.8, "alt": {"ref": "am_echo", "pitch_st": 0.0},
+                   "ref_text": "Yeah, Dispatch, I copy. I'm crossing the highway now, should be back in service in about twenty. It's a hundred and nine out here and the truck's air conditioning is making a noise I don't love. Over."},
+ "hr_rep":        {"ref": "af_heart",   "speed": 0.90, "pitch_st": 0.0,  "ex": 0.45, "cfg": 0.50, "temp": 0.8, "alt": {"ref": "af_bella", "pitch_st": 0.0},
+                   "ref_text": "Thank you for your patience. After careful review of the submitted documentation, the committee has reached a decision. Please direct any further questions to the human resources portal."},
+ "tow_guy":       {"ref": "am_fenrir",  "speed": 0.95, "pitch_st": -1.0, "ex": 0.60, "cfg": 0.40, "temp": 0.8, "alt": {"ref": "am_onyx", "pitch_st": -1.0},
+                   "ref_text": "Yeah, well, look, these things happen, buddy. The engine's shot, the tires are bald, and frankly I don't see it getting fixed anytime soon. Real shame."},
+ "nerdy_ranger":  {"ref": "am_eric",    "speed": 1.15, "pitch_st": 0.5,  "ex": 0.70, "cfg": 0.40, "temp": 0.8, "alt": {"ref": "am_puck", "pitch_st": 1.0},
+                   "ref_text": "Oh gosh, okay, so, um, technically the trail is closed! I did put up a sign. Actually I put up three signs. Did nobody read the signs? Oh no."},
+ "supervisor":    {"ref": "am_puck",    "speed": 0.95, "pitch_st": -0.5, "ex": 0.45, "cfg": 0.50, "temp": 0.8, "alt": {"ref": "am_adam", "pitch_st": 0.0},
+                   "ref_text": "Hey team, quick update from the beach. Signal's kind of spotty out here, so I'll keep it short. Everybody just do whatever the schedule says. Unless the schedule changed. Did the schedule change? Anyway, great work, see you Monday."},
+ "judge":         {"ref": "am_onyx",    "speed": 0.85, "pitch_st": -2.0, "ex": 0.35, "cfg": 0.30, "temp": 0.7, "alt": {"ref": "am_michael", "pitch_st": -3.0},
+                   "ref_text": "The court has reviewed the record. The defendant was observed... departing the designated trail. Twice. Counsel will refrain from describing the cactus as a witness. We will reconvene after lunch."},
+ "ranger_crowd":  {"refs": ["w_bella", "m_michael", "m_fenrir"], "ex": 0.70, "cfg": 0.40, "temp": 0.8,
+                   "_note": "Group lines (q51a/b). Build these three refs with the crowd_v2_refs.py recipe (Kokoro af_bella +1 st, am_michael 0 st, am_fenrir -1.5 st, speed 1.15, energetic text). Generate each voice separately, then layer (see master.py --crowd)."}
+}

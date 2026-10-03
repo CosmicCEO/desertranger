@@ -681,8 +681,8 @@ git add desertranger/audio tools/audio docs/AUDIO-BUILD-LOG.md && git commit -m 
 Work in order. Each phase ends with a commit and push, plus a log update. If a phase is blocked, log it and continue with the next phase where possible. Phase 5 depends on the assets, but it can start with whatever exists, because the client must degrade gracefully when a clip is missing.
 
 ### Phase 0: setup and a sample set (≈ 45 min)
-- [ ] 0.1 Check out `audio-build`, pull, confirm `git branch --show-current` = `audio-build`.
-- [ ] 0.2 Add the `.gitignore` lines (4.6). Create `tools/audio/` with the files from section 8. Create `docs/AUDIO-BUILD-LOG.md` from the template in section 11. Create `desertranger/audio/CREDITS.md` with the header table (Phase 1.6). **Commit.**
+- [x] 0.1 Check out `audio-build`, pull, confirm `git branch --show-current` = `audio-build`.
+- [x] 0.2 Add the `.gitignore` lines (4.6). Create `tools/audio/` with the files from section 8. Create `docs/AUDIO-BUILD-LOG.md` from the template in section 11. Create `desertranger/audio/CREDITS.md` with the header table (Phase 1.6). **Commit.**
 - [ ] 0.3 Set up both venvs and brew packages (4.1-4.3). Record `python --version`, `ffmpeg -version | head -1`, the torch version and MPS availability in the log.
 - [ ] 0.4 Smoke test: `make_refs.py` (all characters + `--crowd`), then `gen_lines.py --ids q22a,q23a,op-sr-01,pl-sr-39,rp-dis-01,ch02-2,ch09-2 --takes 2`, then `qa_check.py` on those IDs, then `master.py --fx` and `master.py --ids …`, then `build_review.py`. The pipeline must run end to end.
 - [ ] 0.5 Distinctness check (section 7). Fix with `--alt` refs if needed.
