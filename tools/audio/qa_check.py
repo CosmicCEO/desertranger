@@ -26,6 +26,7 @@ def n2w(n):
     return ONES[n // 100] + " " + ("" if n % 100 == 0 else n2w(n % 100))
 DROP = {"hundred", "and", "uh", "um"}
 def norm(t, ignore=()):
+    t = re.sub("[\u2012-\u2015\u2212]", " ", t)   # em/en dashes separate words ("westward\u2014please"); folding them away would merge the words
     t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode().lower()
     t = re.sub(r"\d+", lambda x: " " + n2w(x.group()) + " ", t)
     t = re.sub(r"[^a-z' ]+", " ", t.replace("-", " ")).replace("'", "")

@@ -747,12 +747,12 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
 - Budget: openers + places ≤ 1.1 MB.
 
 ### Phase 3: square quotables (plan D) (≈ 1 h of generation)
-- [ ] 3.1 Generate all 54 quotable lines (`--phase 3`): 27 squares × variants a/b, with characters and directions as in section 7. The **Senior Ranger** voices squares 1, 9, 12, 14, 16, 22, 29, 41, 46, 48, 49 and 50. Her delivery should be authoritative and clipped (calm, commanding, dry), not shouted.
-- [ ] 3.2 The crowd lines q51a/b are layered from 3 voices (8.6). For q35a/b, add the crowd sweetener (8.6).
-- [ ] 3.3 Each line ≤ 2.7 s after trimming, with atempo allowed up to 1.15×.
+- [x] 3.1 Generate all 54 quotable lines (`--phase 3`): 27 squares × variants a/b, with characters and directions as in section 7. The **Senior Ranger** voices squares 1, 9, 12, 14, 16, 22, 29, 41, 46, 48, 49 and 50. Her delivery should be authoritative and clipped (calm, commanding, dry), not shouted.
+- [x] 3.2 The crowd lines q51a/b are layered from 3 voices (8.6). For q35a/b, add the crowd sweetener (8.6).
+- [x] 3.3 Each line ≤ 2.7 s after trimming, with atempo allowed up to 1.15×.
   - Known long lines: q03a "Congratulations! Your promotion comes with a Sacramento transfer.", q14a, q27a, q28a, q31b, q41a. If one still won't fit, keep its best take, flag it in the log as `OVER-CAP`, and have the client prefer the other variant (see 5.4).
   - **Don't rewrite the script text.** Put shorter wording suggestions in the log's open questions.
-- [ ] 3.4 QA → retake ladder → master → review. **Commit + push.**
+- [x] 3.4 QA → retake ladder → master → review. **Commit + push.**
 
 **Acceptance:** 54 quotables are shipped (or flagged), loudness is −16 ±1 LU, the treatment matches `audio-lines.json`, and the budget is ≤ 1.3 MB.
 
