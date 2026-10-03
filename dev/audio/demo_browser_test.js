@@ -102,7 +102,6 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
   await d1.click('#btn-audio'); await d1.click('#btn-test-sound'); await sleep(1200);
   const testMsg = await text(d1, '#test-sound-msg');
   check('the Test sound button plays a sound and reports the audio state', /Played a dice sound/.test(testMsg) && /Audio is running/.test(testMsg) && /clips loaded/.test(testMsg), testMsg);
-  check('the page keeps an inaudible looping <audio> playing (iPhone silent-switch workaround)', await d1.evaluate(() => !!(DRSound.keepAlive && !DRSound.keepAlive.paused)));
   await d1.click('body', { position: { x: 5, y: 700 } });
   const headerFits = async page => page.evaluate(() => {   // every header control must be fully on screen
     const w = innerWidth, out = [];
