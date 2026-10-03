@@ -16,7 +16,7 @@ SECTIONS = [("Phase 1: dice, ambience, critters", lambda c, l: c.get("kind") in 
             ("Phase 3: square quotables", lambda c, l: c.get("kind") == "quotable"),
             ("Phase 4: Dispatch / R55 / 273 chatter", lambda c, l: c.get("kind") == "chatter")]
 tot = sum(c["bytes"] for c in man.values())
-h = [f"""<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+h = [f"""<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=icon href="data:,">
 <title>Desert Ranger audio review</title><style>
 body{{font:15px/1.4 system-ui;margin:16px;background:#faf6ef;color:#2b2118}} table{{border-collapse:collapse;width:100%;margin-bottom:24px}}
 td,th{{border-bottom:1px solid #ddd;padding:4px 6px;text-align:left;vertical-align:top}} th{{background:#eadcc8;position:sticky;top:0}}

@@ -715,7 +715,7 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
     - **Kenney** packs.
   - Trim, de-noise lightly if needed (`afftdn=nf=-25`), mono, and normalize.
   - If you can't find a clean CC0 recording for a sound, skip it and log it.
-- [ ] 1.4 Optional square tie-in assets: a water trickle for Palm Canyon (square 2) and a second rattle variant for hazard squares. These are local only and low priority.
+- [ ] 1.4 Optional square tie-in assets: a water trickle for Palm Canyon (square 2) and a second rattle variant for hazard squares. These are local only and low priority. **(SKIPPED: optional, low priority; see AUDIO-BUILD-LOG.md)**
 - [x] 1.5 Register every file in `manifest.json` (`kind` `dice`/`amb`/`critter`). Check the budgets: dice ≤ 250 KB, ambience ≤ 1.5 MB.
 - [x] 1.6 `desertranger/audio/CREDITS.md` has one row per third-party file:
   `| file | source page URL | direct file URL | author | license | retrieved (CT) | changes |`.
@@ -869,7 +869,7 @@ Keep the existing style: ES5, IIFEs, no dependencies. Bump `?v=` on every script
 - [x] **5.11 Tests:**
   - Add `dev/audio/landing_test.js` (plain Node, no deps). It loads `radio.js`'s `pickLanding` (export it on `window.DRRadio`; the test can eval the file with a fake `window`) and checks the cases listed in 5.4, plus the 3 s fitting logic with fake durations.
   - Run it with `node dev/audio/landing_test.js`.
-- [ ] 5.12 **Commit + push** after each sub-step that works (5.1, 5.2-5.3, 5.4-5.5, 5.6-5.7, 5.8-5.10).
+- [x] 5.12 **Commit + push** after each sub-step that works (5.1, 5.2-5.3, 5.4-5.5, 5.6-5.7, 5.8-5.10).
 
 **Acceptance (all in the browser on MAMP, with two windows plus `?board=1`):**
 - Audio begins only after the audio-unlock tap.
@@ -884,15 +884,15 @@ Keep the existing style: ES5, IIFEs, no dependencies. Bump `?v=` on every script
 - No console errors.
 
 ### Phase 6: QA, review sheet and wrap-up (≈ 45 min)
-- [ ] 6.1 Rerun `qa_check.py` over **all** IDs. Every line is either `pass` or listed in the log as `FAIL-after-ladder` with what was tried.
-- [ ] 6.2 `build_review.py`. Open `http://localhost:8888/desertranger/audio/review.html` and confirm that every clip plays and that the stitch demos work.
-- [ ] 6.3 `php desertranger/tests/rules_test.php` (45/45), `php desertranger/tests/simulate_game.php http://localhost:8888/desertranger 4` (and 8), `node dev/audio/landing_test.js`, and the e2e (`dev/e2e`, see section 3). All must pass. Paste the summary lines into the log.
-- [ ] 6.4 **Console check:**
+- [x] 6.1 Rerun `qa_check.py` over **all** IDs. Every line is either `pass` or listed in the log as `FAIL-after-ladder` with what was tried.
+- [x] 6.2 `build_review.py`. Open `http://localhost:8888/desertranger/audio/review.html` and confirm that every clip plays and that the stitch demos work.
+- [x] 6.3 `php desertranger/tests/rules_test.php` (45/45), `php desertranger/tests/simulate_game.php http://localhost:8888/desertranger 4` (and 8), `node dev/audio/landing_test.js`, and the e2e (`dev/e2e`, see section 3). All must pass. Paste the summary lines into the log.
+- [x] 6.4 **Console check:**
   - Run the e2e with console capture. If it doesn't already collect `console.error` and `pageerror`, add that to `e2e.js`.
   - Also play 10+ turns by hand in Chrome and Safari if available. Expect zero errors; a `console.warn` for a deliberately missing optional asset is acceptable.
   - Also check the MAMP Apache access log for 404s on `/desertranger/audio/`.
-- [ ] 6.5 Size report: `du -ck desertranger/audio/*/ desertranger/audio/radio/*/` against the budgets. Put it in the log.
-- [ ] 6.6 Final log update and PR description (section 11). **Commit + push.**
+- [x] 6.5 Size report: `du -ck desertranger/audio/*/ desertranger/audio/radio/*/` against the budgets. Put it in the log.
+- [x] 6.6 Final log update and PR description (section 11). **Commit + push.**
 
 ---
 ## 10. QA rules
