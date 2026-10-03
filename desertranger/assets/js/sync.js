@@ -109,7 +109,8 @@
     listeners: [],      // called after unlock
     settings: {
       ambOn: lsGet('dr_amb_on', '1') === '1',
-      ambVol: Math.max(0, Math.min(100, parseInt(lsGet('dr_amb_vol', '60'), 10) || 0)),
+      ambVol: Math.max(0, Math.min(100, parseInt(lsGet('dr_amb_vol', '20'), 10) || 0)),     // background sound: default 20 %
+      gameVol: Math.max(0, Math.min(100, parseInt(lsGet('dr_game_vol', '50'), 10) || 0)),   // turn-based sounds: default 50 %
       radioOn: lsGet('dr_radio_on', '1') === '1'
     },
     settingListeners: [],
@@ -140,12 +141,13 @@
       var ctx = this.ctx, bus = this.bus;
       function gain(v, to) { var g = ctx.createGain(); g.gain.value = v; if (to) g.connect(to); return g; }
       bus.master = gain(this.muted ? 0 : 1, ctx.destination);
-      bus.cue = gain(1, bus.master);
-      bus.voice = gain(1, bus.master);
+      bus.game = gain(this.gameGain(), bus.master);   // volume slider for the turn-based sounds (cue + voice)
+      bus.cue = gain(1, bus.game);
+      bus.voice = gain(1, bus.game);
       bus.ambDuck = gain(1, bus.master);
       bus.amb = gain(this.ambGain(), bus.ambDuck);
       bus.chatterDuck = gain(1, bus.master);
-      bus.chatter = gain(0.35, bus.chatterDuck);   // chatter sits well below game cues
+      bus.chatter = gain(this.chatterGain(), bus.chatterDuck);   // chatter sits well below game cues; follows the ambience slider
     },
 
     /** Tier A: crowd clips + manifest + radio fx + dice. */
@@ -213,15 +215,23 @@
 
     // ---- settings (ambience on/off + volume, radio chatter on/off) ----
     ambGain: function () { return this.settings.ambVol / 100 * 1.4 * (this.boardMode ? 2 : 1); },   // board view: +6 dB
+    /** Background radio chatter is part of the background sound: 0.35 at the old default slider (60), scaling with it. */
+    chatterGain: function () { return 0.35 * (this.settings.ambVol / 60) * (this.boardMode ? 2 : 1); },
+    /** Turn-based sounds (dice, radio calls, quotes, crowd): 100 % = the level the clips were mastered at, 50 % = half. */
+    gameGain: function () { return this.settings.gameVol / 100; },
     setSetting: function (key, val) {
       this.settings[key] = val;
-      lsSet({ ambOn: 'dr_amb_on', ambVol: 'dr_amb_vol', radioOn: 'dr_radio_on' }[key], typeof val === 'boolean' ? (val ? '1' : '0') : String(val));
-      if (key === 'ambVol' && this.bus.amb) this.bus.amb.gain.setTargetAtTime(this.ambGain(), this.ctx.currentTime, 0.05);
+      lsSet({ ambOn: 'dr_amb_on', ambVol: 'dr_amb_vol', gameVol: 'dr_game_vol', radioOn: 'dr_radio_on' }[key], typeof val === 'boolean' ? (val ? '1' : '0') : String(val));
+      if (key === 'ambVol' && this.bus.amb) {
+        this.bus.amb.gain.setTargetAtTime(this.ambGain(), this.ctx.currentTime, 0.05);
+        this.bus.chatter.gain.setTargetAtTime(this.chatterGain(), this.ctx.currentTime, 0.05);
+      }
+      if (key === 'gameVol' && this.bus.game) this.bus.game.gain.setTargetAtTime(this.gameGain(), this.ctx.currentTime, 0.05);
       this.settingListeners.forEach(function (fn) { try { fn(key, val); } catch (e) { console.warn('setting listener', e); } });
     },
     setBoardMode: function (on) {
       this.boardMode = !!on;
-      if (this.bus.amb) this.bus.amb.gain.value = this.ambGain();
+      if (this.bus.amb) { this.bus.amb.gain.value = this.ambGain(); this.bus.chatter.gain.value = this.chatterGain(); }
     },
 
     // ---- time helpers ----

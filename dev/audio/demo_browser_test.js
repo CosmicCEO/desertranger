@@ -91,6 +91,8 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
   const d1 = await open('demo', phone);
   const code2 = await createGame(d1, 'Marigold', 'bronco-orange');
   await sleep(1000);
+  let lobbyWait = 0; while (!(await d1.evaluate(() => !!window.DRAmbience.state.bed)) && lobbyWait < 30000) { await sleep(500); lobbyWait += 500; }
+  check('lobby: the background sound plays at the 20 % default before the demo is started (' + Math.round(lobbyWait / 1000) + ' s)', await d1.evaluate(() => !!window.DRAmbience.state.bed && Math.abs(DRSound.bus.amb.gain.value - 0.28) < 0.01));
   await d1.click('#btn-demo');
   await d1.waitForSelector('#screen-game:not([hidden])');
   await sleep(1500);
@@ -146,7 +148,7 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
   check('lobby after the demo: 1 player, PLAY SOLO DEMO available again', (await d1.locator('#lobby-players li').count()) === 1 && await visible(d1, '#btn-demo'));
   const after = { log: await d1.locator('#log li').count(), bed: await d1.evaluate(() => !!window.DRAmbience.state.bed), pieces: await d1.locator('#board .piece').count() };
   check('game screen was reset: the log is empty', after.log === 0, after);
-  check('the ambience bed stopped in the lobby', after.bed === false, after);
+  check('the background sound keeps playing in the lobby after the demo', after.bed === true, after);
   check('only the host piece is left on the board', after.pieces === 1, after);
   await d1.screenshot({ path: SHOTS + 'lobby-after-demo-phone-390x844.png' });
 

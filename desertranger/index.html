@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#C3623B">
 <link rel="icon" href="assets/img/pieces/bronco-orange.png">
 <title>Desert Ranger</title>
-<link rel="stylesheet" href="assets/css/style.css?v=5">
+<link rel="stylesheet" href="assets/css/style.css?v=7">
 </head>
 <body>
 <!--
@@ -77,9 +77,10 @@
     <button id="btn-audio" class="icon-btn" type="button" title="Audio settings" aria-label="Audio settings" aria-haspopup="true" aria-expanded="false">⚙</button>
     <div id="audio-panel" class="audio-panel" role="dialog" aria-label="Audio settings" hidden>
       <label class="aud-row"><input id="set-amb" type="checkbox"><span>Ambience</span></label>
-      <label class="aud-row aud-vol"><span>Ambience volume <b id="set-vol-val">60</b></span><input id="set-vol" type="range" min="0" max="100" step="1" value="60"></label>
+      <label class="aud-row aud-vol"><span>Ambience volume <b id="set-vol-val">20</b></span><input id="set-vol" type="range" min="0" max="100" step="1" value="20"></label>
+      <label class="aud-row aud-vol"><span>Game sounds volume <b id="set-game-vol-val">50</b></span><input id="set-game-vol" type="range" min="0" max="100" step="1" value="50"></label>
       <label class="aud-row"><input id="set-radio" type="checkbox"><span>Radio chatter</span></label>
-      <p class="hint">Radio chatter covers ranger calls, quotable lines and background chatter. Crowd cheers and dice follow the 🔊 button.</p>
+      <p class="hint">Game sounds = dice, radio calls, quotes and crowd. Radio chatter off = no calls, quotes or background chatter. 🔊 mutes everything.</p>
       <button id="btn-test-sound" class="btn sage" type="button">Test sound</button>
       <p id="test-sound-msg" class="hint" aria-live="polite"></p>
     </div>
@@ -115,10 +116,10 @@
 
 <footer id="debug" class="debug" hidden></footer>
 
-<script src="assets/js/sync.js?v=3"></script>
+<script src="assets/js/sync.js?v=4"></script>
 <script src="assets/js/board.js?v=3"></script>
 <script src="assets/js/radio.js?v=1"></script>
-<script src="assets/js/ambience.js?v=2"></script>
-<script src="assets/js/app.js?v=4"></script>
+<script src="assets/js/ambience.js?v=3"></script>
+<script src="assets/js/app.js?v=5"></script>
 </body>
 </html>

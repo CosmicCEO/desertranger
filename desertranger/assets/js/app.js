@@ -245,7 +245,7 @@
     var status = j.game.status, me = playerById(j.meId), sq = me && S.board ? S.board.squares[me.pos] : null;
     if (Radio) Radio.setActive(status === 'active');
     if (Amb) {
-      Amb.setActive(status === 'active');
+      Amb.setActive(status === 'active' || status === 'lobby');   // background sound plays in the lobby too
       if (status === 'finished') Amb.finish();
       // local-only tie-in: the rattle is more likely while this device's own piece sits on a hazard square
       Amb.setMyPos(me ? me.pos : null, !!sq && (sq.type === 'loseTurn' || (sq.type === 'move' && sq.delta < 0)));
@@ -404,7 +404,7 @@
       .catch(function (e) { $('game-error').textContent = e.message; }).then(poll);
   }
 
-  /** Back in the lobby after a demo: empty the game screen's log and die, stop the ambience, stop the rivals. */
+  /** Back in the lobby after a demo: empty the game screen's log and die and stop the rivals. */
   function resetGameView() {
     S.gameShown = false;
     clearTimeout(S.botTimer); S.botTimer = null;
@@ -414,8 +414,7 @@
     $('game-error').textContent = '';
     S.bv.queue = [];
     if (S.state) S.bv.setPlayers(S.state.players, null);   // drops the computer rivals' pieces right away
-    if (Radio) Radio.setActive(false);
-    if (Amb) Amb.reset();
+    if (Radio) Radio.setActive(false);   // (the background sound just keeps playing in the lobby)
   }
 
   function lastTurnWasRollAgain() {
@@ -531,6 +530,8 @@
     $('set-amb').checked = cfg.ambOn;
     $('set-vol').value = cfg.ambVol;
     $('set-vol-val').textContent = cfg.ambVol;
+    $('set-game-vol').value = cfg.gameVol;
+    $('set-game-vol-val').textContent = cfg.gameVol;
     $('set-radio').checked = cfg.radioOn;
     $('btn-audio').onclick = function (e) {
       e.stopPropagation();
@@ -542,6 +543,7 @@
     document.addEventListener('click', function () { panel.hidden = true; $('btn-audio').setAttribute('aria-expanded', 'false'); });
     $('set-amb').onchange = function () { Sound.setSetting('ambOn', this.checked); };
     $('set-vol').oninput = function () { $('set-vol-val').textContent = this.value; Sound.setSetting('ambVol', +this.value); };
+    $('set-game-vol').oninput = function () { $('set-game-vol-val').textContent = this.value; Sound.setSetting('gameVol', +this.value); };
     $('set-radio').onchange = function () { Sound.setSetting('radioOn', this.checked); };
     // Test sound: plays one dice sound through the real audio graph and says what state the audio is in.
     $('btn-test-sound').onclick = function () {
