@@ -98,6 +98,68 @@ labels = f'''
 
 hr = balloon(0, 0, 170, 58, "Grievance upheld.", tail=(-24, 44), rot=-3, fs=21)
 
+page2 = f'''<section class="sheet">
+<div class="paper"></div>
+<svg class="grain" width="816" height="1056"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+<div class="frame"></div><div class="frame2"></div>
+<div class="page">
+  <div class="kicker">STATUS REPORT · OCT 3, 2026</div>
+  <h1>MILESTONE<br>COMPLETE</h1>
+  <div class="sub">Milestone 1 is built, checked on a real server and a real iPhone, and ready to play.</div>
+  {starburst(468, -6, 268, 196, "MILESTONE 1<br>DONE!", rot=4, fs=29)}
+  <div class="tech p2plan"><div class="bg"></div>
+    <h3>THE PLAN · WHERE WE ARE</h3>
+    <div class="miles"><div class="track"></div><div class="mrow">
+      <div class="m done"><div class="dot"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 11.5 L9 16.5 L18 5.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="t">Playable prototype</div><div class="t2">complete!</div></div>
+      <div class="m"><div class="dot">2</div><div class="t">Accounts &amp; saved games</div><div class="t2">up next</div></div>
+      <div class="m"><div class="dot">3</div><div class="t">Synchronized sound &amp; voices</div><div class="t2">first pass is in!</div></div>
+      <div class="m"><div class="dot">4</div><div class="t">Launch!</div></div>
+    </div></div>
+  </div>
+  <div class="p2cols">
+    <div class="card done"><div class="bg"></div>
+      <h2><img src="{A}/icons/dice-color.png">Delivered in Milestone 1</h2>
+      <ul>
+        <li><b>2 to 8 phones, one game.</b> Open a link, pick a rig, join with a 4-letter room code.</li>
+        <li><b>All 52 squares and the rules</b> of the hand-drawn board: shortcuts, swaps, roll again, lose a turn.</li>
+        <li><b>Your seat is remembered.</b> Reload or reopen the link and you are back in the race.</li>
+        <li><b>Big-screen board view</b> for a TV or tablet, and a <b>solo demo</b> with computer rivals.</li>
+        <li><b>Plain hosting:</b> runs on Apache / MySQL / PHP, tested on a Mac server.</li>
+      </ul>
+    </div>
+    <div class="card chg"><div class="bg"></div>
+      <h2><img src="{A}/icons/star-color.png">What changed since the concept sheet</h2>
+      <ul>
+        <li><b>Sound and voices arrived early:</b> 233 clips in all, with ten character voices, 54 lines on 27 squares and 104 radio place-name calls.</li>
+        <li><b>Same moment on every phone:</b> dice, radio calls and the crowd are timed to the server clock, and the moves start together.</li>
+        <li><b>Desert atmosphere:</b> wind, crickets, a coyote, a hawk, a rare rattlesnake, and 12 radio chatter conversations. It plays in the lobby too.</li>
+        <li><b>Sound controls:</b> ambience volume, game-sounds volume, radio chatter on or off.</li>
+      </ul>
+    </div>
+    <div class="card chk"><div class="bg"></div>
+      <h2><img src="{A}/icons/signpost-color.png">How we checked it</h2>
+      <ul>
+        <li><b>45 rule checks</b>, plus full 4- and 8-player games played through the live server.</li>
+        <li><b>Automated browser tests</b> with several phones and a board screen: same timing everywhere, no errors.</li>
+        <li><b>Played on a real iPhone</b> over Wi-Fi against a Mac server. First verdict: the timing feels right.</li>
+        <li><b>Every voice clip</b> was checked by speech recognition for the right words.</li>
+      </ul>
+      <div class="p2note">Not tried yet: Android phones and Safari on a computer.</div>
+    </div>
+    <div class="card nxt"><div class="bg"></div>
+      <h2><img src="{A}/icons/olla-color.png">What's next</h2>
+      <ul>
+        <li><b>Polish from the first playtest</b> (4 items logged): iPhone sound starts about 20 seconds late, sound after leaving the page, background sound after a win, and a drawing glitch behind moving pieces.</li>
+        <li><b>A sound-perfecting pass (later):</b> listen through the critters, the plant-name walks and the radio calls, and line up every written line with its sound file. 55 clips run a little long, though the words are right.</li>
+        <li><b>Milestone 2:</b> username and password accounts, and saved games.</li>
+        <li><b>Then:</b> finish the sound and voices pass, and launch.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer">Invented by Jeffery Price, R273. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Status as of Oct 3, 2026.</div>
+</div>
+</section>'''
+
 html=f'''<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{{font-family:Bungee;src:url(fonts/Bungee-Regular.ttf)}}
 @font-face{{font-family:BungeeShade;src:url(fonts/BungeeShade-Regular.ttf)}}
@@ -107,8 +169,8 @@ html=f'''<!doctype html><html><head><meta charset="utf-8"><style>
 @page{{size:8.5in 11in;margin:0}}
 :root{{--cream:#F4ECD8;--ink:#3A2A1E;--terra:#C3623B;--mari:#E9A23B;--sage:#7E9168;--sagel:#C9D3B4;--sand:#E8D7B4}}
 *{{box-sizing:border-box;margin:0;padding:0}}
-html,body{{width:816px;height:1056px}}
-body{{background:var(--cream);font-family:Nunito,sans-serif;color:var(--ink);position:relative;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+html,body{{width:816px}}
+body{{background:var(--cream);font-family:Nunito,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 .paper{{position:absolute;inset:0;background:
  radial-gradient(ellipse at 15% 10%,rgba(255,250,235,.7),transparent 55%),
  radial-gradient(ellipse at 90% 95%,rgba(214,186,140,.35),transparent 60%);}}
@@ -169,7 +231,7 @@ li b{{font-weight:800}}
 .droop span{{display:inline-block}}
 .who{{position:absolute;font-family:Caveat;font-weight:700;font-size:15px;color:#6d4a2f;white-space:nowrap}}
 /* bottom */
-.bottom{{position:absolute;top:832px;left:0;right:0;height:122px;display:grid;grid-template-columns:1fr 1fr;gap:22px}}
+.bottom{{position:absolute;top:828px;left:0;right:0;height:132px;display:grid;grid-template-columns:1fr 1fr;gap:22px}}
 .tech{{position:relative;padding:13px 16px}}
 .tech .bg{{position:absolute;inset:0;border:2px solid var(--ink);border-radius:12px;background:rgba(255,250,238,.75);filter:url(#rough)}}
 h3{{font-family:Bungee;font-size:13.5px;position:relative;color:var(--sage);letter-spacing:.4px}}
@@ -185,11 +247,33 @@ h3{{font-family:Bungee;font-size:13.5px;position:relative;color:var(--sage);lett
 .m div.t{{font-size:11.2px;font-weight:800;line-height:1.2;margin-top:6px}}
 .footer{{position:absolute;left:0;right:0;bottom:-8px;text-align:center;font-size:10px;color:#6d5a48;letter-spacing:.3px}}
 .hrwrap{{position:relative;height:72px;margin-top:4px}}
+
+.sheet{{position:relative;width:816px;height:1056px;overflow:hidden;break-after:page}}
+.sheet:last-of-type{{break-after:auto}}
+.stamp{{position:absolute;right:14px;top:-9px;transform:rotate(4deg);border:2.5px solid var(--terra);border-radius:9px;padding:3px 10px 4px;color:var(--terra);font-family:Bungee;text-align:center;line-height:1.1;background:rgba(244,236,216,.55);box-shadow:inset 0 0 0 2px rgba(195,98,59,.22);filter:url(#rough)}}
+.stamp b{{display:block;font-size:11.5px;letter-spacing:.8px;font-weight:normal}}
+.stamp span{{font-size:8px;letter-spacing:1.6px}}
+.m.done .dot{{background:var(--sage);font-size:0}}
+.m.done .dot svg{{display:block;margin:5px auto 0}}
+.m .t2{{font-family:Caveat;font-weight:700;font-size:13.5px;line-height:1;color:var(--terra);margin-top:2px}}
+/* page 2: status report */
+.p2plan{{position:absolute;top:226px;left:0;right:0;height:132px}}
+.p2cols{{position:absolute;top:374px;left:0;right:0;display:grid;grid-template-columns:1fr 1fr;gap:18px 22px}}
+.p2cols .card{{height:286px;padding:15px 15px 10px 17px}}
+.p2cols li{{font-size:12.3px;line-height:1.34;margin-bottom:6px}}
+.card.done .bg{{background:rgba(201,211,180,.45)}}
+.card.chg .bg{{background:rgba(233,162,59,.16)}}
+.card.chk .bg{{background:rgba(214,227,230,.55)}}
+.card.nxt .bg{{background:rgba(255,250,238,.8)}}
+.card.chk li::before{{background:#5f8693}}
+.card.nxt li::before{{background:var(--mari)}}
+.p2note{{font-family:Caveat;font-weight:700;font-size:15px;color:#6d4a2f;position:absolute;left:19px;right:12px;bottom:9px;line-height:1.05}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute"><defs>
 <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3.2"/></filter>
 <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix values="0 0 0 0 0.45  0 0 0 0 0.35  0 0 0 0 0.2  0 0 0 1.2 -0.35"/></filter>
 </defs></svg>
+<section class="sheet">
 <div class="paper"></div>
 <svg class="grain" width="816" height="1056"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
 <div class="frame"></div><div class="frame2"></div>
@@ -198,9 +282,9 @@ h3{{font-family:Bungee;font-size:13.5px;position:relative;color:var(--sage);lett
   <h1>DESERT<br>RANGER</h1>
   <div class="sub">The hand-drawn family board game, now playable on any phone.</div>
   <div class="intro">An original Anza-Borrego race from <b>Start</b> to <b>Finish</b> across <b>52 real places</b>: Font's Point, Fish Creek, Hawk Canyon, Ocotillo Wells, Una Palma. Packed with ranger-life mishaps like <i>"Backing accident, lose 2 turns (ouch!)"</i> and <i>"Supervisor on vacation, move ahead 5."</i></div>
-  <div class="r1"><div class="lbl">MEET RANGER 1</div>
+  <div class="r1"><div class="lbl">MEET R273</div>
     <div class="pola"><div class="tape2"></div><img src="img/ranger1.jpg" alt="Jeffery Price"><div class="badge">#273</div></div>
-    <div class="rcap"><b>Jeffery Price</b> ·<br>Ranger 1, the inventor ·<br>Badge #273 ·<br>Anza-Borrego ranger, <span style="white-space:nowrap">1980–1982</span></div></div>
+    <div class="rcap"><b>Jeffery Price</b> ·<br>R273, the inventor ·<br>Badge #273 ·<br>Anza-Borrego ranger, <span style="white-space:nowrap">1980–1982</span></div></div>
   <div class="photo"><div class="tape"></div><img src="img/board-thumb.jpg"><div class="cap">From the original hand-drawn board</div></div>
 
   <div class="cols">
@@ -211,15 +295,17 @@ h3{{font-family:Bungee;font-size:13.5px;position:relative;color:var(--sage);lett
         <li><b>Same room or remote</b>: play together over a phone call.</li>
         <li><b>One six-sided die.</b> Roll and race, with shortcuts, swaps and lose-a-turn hazards.</li>
         <li><b>Saved games</b>: pick up right where you left off.</li>
+        <li><b>Solo demo</b>: try it alone, with computer rivals.</li>
       </ul>
+      <div class="stamp"><b>MILESTONE 1<br>COMPLETE</b><span>OCT 3, 2026</span></div>
       <img class="cicon" src="{A}/icons/signpost-color.png" style="right:14px;bottom:12px;height:58px;transform:rotate(4deg)">
       <img class="cicon" src="{A}/icons/olla-color.png" style="right:78px;bottom:12px;height:34px">
     </div>
     <div class="card special"><div class="bg"></div>
       <h2><img src="{A}/icons/star-color.png">What makes it special</h2>
       <ul>
-        <li><b>Shared moments:</b> every phone plays the same laugh, cheer or "awww" at the same instant.</li>
-        <li><b>Character voice lines</b> from the HR rep, the tow truck guy and the nerdy ranger.</li>
+        <li><b>Shared moments:</b> every phone hears the same dice, radio call, cheer or "awww" at the same instant.</li>
+        <li><b>Character voices on 27 squares</b>: the HR rep, tow truck guy, nerdy ranger, judge and more.</li>
         <li><b>Original artwork</b> preserved from the hand-drawn board.</li>
         <li><b>Choose your rig</b> from eight 1980s off-roaders.</li>
       </ul>
@@ -246,17 +332,19 @@ h3{{font-family:Bungee;font-size:13.5px;position:relative;color:var(--sage);lett
       </ul>
     </div>
     <div class="tech"><div class="bg"></div>
-      <h3>THE PLAN</h3>
+      <h3>THE PLAN · 1 OF 4 DONE</h3>
       <div class="miles"><div class="track"></div><div class="mrow">
-        <div class="m"><div class="dot">1</div><div class="t">Playable prototype</div></div>
-        <div class="m"><div class="dot">2</div><div class="t">Accounts &amp; saved games</div></div>
-        <div class="m"><div class="dot">3</div><div class="t">Synchronized sound &amp; voices</div></div>
+        <div class="m done"><div class="dot"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 11.5 L9 16.5 L18 5.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="t">Playable prototype</div><div class="t2">complete!</div></div>
+        <div class="m"><div class="dot">2</div><div class="t">Accounts &amp; saved games</div><div class="t2">up next</div></div>
+        <div class="m"><div class="dot">3</div><div class="t">Synchronized sound &amp; voices</div><div class="t2">first pass is in!</div></div>
         <div class="m"><div class="dot">4</div><div class="t">Launch!</div></div>
       </div></div>
     </div>
   </div>
-  <div class="footer">Invented by Jeffery Price, Ranger 1. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Concept preview.</div>
+  <div class="footer">Invented by Jeffery Price, R273. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Status as of Oct 3, 2026: Milestone 1 complete.</div>
 </div>
+</section>
+{page2}
 </body></html>'''
 (OUT/"desert-ranger-pitch.html").write_text(html)
 print("ok")
