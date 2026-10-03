@@ -683,8 +683,8 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
 ### Phase 0: setup and a sample set (≈ 45 min)
 - [x] 0.1 Check out `audio-build`, pull, confirm `git branch --show-current` = `audio-build`.
 - [x] 0.2 Add the `.gitignore` lines (4.6). Create `tools/audio/` with the files from section 8. Create `docs/AUDIO-BUILD-LOG.md` from the template in section 11. Create `desertranger/audio/CREDITS.md` with the header table (Phase 1.6). **Commit.**
-- [ ] 0.3 Set up both venvs and brew packages (4.1-4.3). Record `python --version`, `ffmpeg -version | head -1`, the torch version and MPS availability in the log.
-- [ ] 0.4 Smoke test: `make_refs.py` (all characters + `--crowd`), then `gen_lines.py --ids q22a,q23a,op-sr-01,pl-sr-39,rp-dis-01,ch02-2,ch09-2 --takes 2`, then `qa_check.py` on those IDs, then `master.py --fx` and `master.py --ids …`, then `build_review.py`. The pipeline must run end to end.
+- [x] 0.3 Set up both venvs and brew packages (4.1-4.3). Record `python --version`, `ffmpeg -version | head -1`, the torch version and MPS availability in the log.
+- [x] 0.4 Smoke test: `make_refs.py` (all characters + `--crowd`), then `gen_lines.py --ids q22a,q23a,op-sr-01,pl-sr-39,rp-dis-01,ch02-2,ch09-2 --takes 2`, then `qa_check.py` on those IDs, then `master.py --fx` and `master.py --ids …`, then `build_review.py`. The pipeline must run end to end.
 - [ ] 0.5 Distinctness check (section 7). Fix with `--alt` refs if needed.
 - [ ] 0.6 **Sample set** (the plan's checkpoint, "Review those samples before committing to the complete voice set"). Build a small representative set:
   - one opener+place stitch per rotation voice
@@ -700,13 +700,13 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
 **Acceptance:** the pipeline works; the sample set is committed and listed in `review.html`; versions are logged.
 
 ### Phase 1: dice, ambience bed, critters (plan A + C) (≈ 1 h)
-- [ ] 1.1 **Dice (CC0, Kenney "Casino Audio" 1.1, checked Oct 2, 2026):**
+- [x] 1.1 **Dice (CC0, Kenney "Casino Audio" 1.1, checked Oct 2, 2026):**
   - Download `https://kenney.nl/media/pages/assets/casino-audio/2472606a04-1721639069/kenney_casino-audio.zip` (page: https://kenney.nl/assets/casino-audio; `License.txt` inside says CC0). If the URL has changed, take the zip link from the page.
   - Use `Audio/dice-shake-1..3.ogg` (1.4-1.5 s) for the **shake** and `Audio/die-throw-1..4.ogg` (0.47-0.73 s, a single die, which matches the game) for the **clatter**.
   - Make `dice/dice-shake-01.mp3`: trim to ≈ 0.7 s with a 120 ms fade-out, mono, −20 LUFS. You may also make a seamless loop version, `dice-shake-loop.mp3`, for hold-to-shake.
   - Make `dice/dice-clatter-01..04.mp3` from die-throw-1..4: mono, −18 LUFS or peak mode.
   - Every file must be < 50 KB. Add a CREDITS row for each.
-- [ ] 1.2 **Ambience bed:** `amb/amb-bed-01.mp3`. Use the 8.3 recipe (90 s loop, −28 LUFS, 64 kbps mono ≈ 720 KB). You may blend in a CC0 wind recording if it clearly sounds better.
+- [x] 1.2 **Ambience bed:** `amb/amb-bed-01.mp3`. Use the 8.3 recipe (90 s loop, −28 LUFS, 64 kbps mono ≈ 720 KB). You may blend in a CC0 wind recording if it clearly sounds better.
 - [ ] 1.3 **Critters** (one-shots, each ≤ 6 s, −26 LUFS):
   - Synthesize crickets, the rattlesnake rattle (rare) and the distant truck with the 8.4 recipes.
   - Source the crow/raven caw, coyote yip, quail and hawk screech as **CC0** recordings:
