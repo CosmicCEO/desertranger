@@ -728,18 +728,18 @@ Work in order. Each phase ends with a commit and push, plus a log update. If a p
 **Acceptance:** all files exist, play, meet their loudness targets (±1 LU) and stay inside the budgets. Every third-party file has a CC0 credits row with its URL. Nothing is non-CC0.
 
 ### Phase 2: radio DSP chain and landing calls (plan B) (≈ 1-1.5 h of generation)
-- [ ] 2.1 `master.py --fx` → `radio/fx/radio-click-01.mp3`, `radio-squelch-01..03.mp3`, `radio-hiss-loop.mp3` (≤ 60 KB total).
-- [ ] 2.2 Generate **openers**: 8 per rotation voice (`op-sr-*`, `op-r273-*`, 16 total).
+- [x] 2.1 `master.py --fx` → `radio/fx/radio-click-01.mp3`, `radio-squelch-01..03.mp3`, `radio-hiss-loop.mp3` (≤ 60 KB total).
+- [x] 2.2 Generate **openers**: 8 per rotation voice (`op-sr-*`, `op-r273-*`, 16 total).
   - Each must be ≤ 1.5 s after trimming (master may apply up to 1.15× atempo).
   - Delivery should keep an upward "continuing" intonation.
   - If they run long, rerun with `--ex <base+0.15>` for brisker delivery.
-- [ ] 2.3 Generate **place names**: all 52 squares × 2 voices (`pl-sr-00..51`, `pl-r273-00..51`, 104 clips), each ≤ 1.2 s.
+- [x] 2.3 Generate **place names**: all 52 squares × 2 voices (`pl-sr-00..51`, `pl-r273-00..51`, 104 clips), each ≤ 1.2 s.
   - The spoken phrases are in `text`; e.g. square 43 is spoken "Font's Point" while the board prints FONTS POINT.
   - Action squares have **proposed** location phrases. Mark them for review in the log.
   - Pronunciation: run the plain text first. Only if a name fails the check (or obviously sounds wrong), retake with `--pron`, which substitutes the respellings from `pronounce` (Ocotillo "oh-koh-TEE-yoh", Yaqui "YAH-kee", Vallecito "vy-yeh-SEE-toh", olla "OY-yah", cholla "CHOY-yah", …).
-- [ ] 2.4 Optional **dispatch replies** `rp-dis-01..03`. Plan D forbids stacking them after a quotable on the same landing, so they're only for chatter or future use. Generate them if time allows.
-- [ ] 2.5 QA → retake ladder → master → `build_review.py`. The review page has stitched-call demo buttons; check that a few stitches sound continuous (no clicks, gaps < 80 ms).
-- [ ] 2.6 **Commit + push.**
+- [x] 2.4 Optional **dispatch replies** `rp-dis-01..03`. Plan D forbids stacking them after a quotable on the same landing, so they're only for chatter or future use. Generate them if time allows.
+- [x] 2.5 QA → retake ladder → master → `build_review.py`. The review page has stitched-call demo buttons; check that a few stitches sound continuous (no clicks, gaps < 80 ms).
+- [x] 2.6 **Commit + push.**
 
 **Acceptance:**
 - 16 openers and 104 places are shipped, each passing the Whisper check or explicitly flagged.

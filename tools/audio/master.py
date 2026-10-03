@@ -13,6 +13,7 @@ RADIO = ("highpass=f=300:poles=2,highpass=f=300:poles=2,lowpass=f=3000:poles=2,l
          "volume=8dB,asoftclip=type=tanh,volume=-8dB,acrusher=bits=12:mix=0.25:mode=log,highpass=f=300,lowpass=f=3200")
 CLEAN = "highpass=f=80,acompressor=threshold=-20dB:ratio=2.5:attack=8:release=120:makeup=1,equalizer=f=3500:t=q:w=1:g=1.5"
 TARGET = {"radio": -16.0, "clean": -16.0, "crowd": -14.0}
+KBPS = {"radio": 48, "clean": 64, "crowd": 64}   # the radio chain band-limits to ~3 kHz, so 48 kbps mono is transparent and keeps the budgets
 def sh(*a): subprocess.run(a, check=True)
 def ff(*a): sh("ffmpeg", "-hide_banner", "-loglevel", "error", "-y", *a)
 def meas(f):
@@ -85,6 +86,6 @@ for i in ids:
         d0 = dur(f"{WORK}/{i}.trim.wav"); mx = l.get("max_sec", 9)
         tempo = f"atempo={min(1.15, d0 / mx):.3f}," if d0 > mx else ""      # pitch-preserving speed-up, max +15 %
         ff("-i", f"{WORK}/{i}.trim.wav", "-af", f"{tempo}{RADIO if t == 'radio' else CLEAN}", "-ac", "1", tmp)
-    r = norm_mp3(tmp, f"{OUT}/{l['file']}", TARGET[t])
+    r = norm_mp3(tmp, f"{OUT}/{l['file']}", TARGET[t], KBPS[t])
     register(i, l["file"], character=l["character"], text=l["text"], square=l["square"], kind=l["kind"], treatment=t,
              qa=q["status"], take=os.path.basename(q["pick"]), **r)

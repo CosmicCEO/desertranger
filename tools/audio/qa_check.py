@@ -29,7 +29,16 @@ def norm(t, ignore=()):
     t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode().lower()
     t = re.sub(r"\d+", lambda x: " " + n2w(x.group()) + " ", t)
     t = re.sub(r"[^a-z' ]+", " ", t.replace("-", " ")).replace("'", "")
-    return [w for w in t.split() if w not in DROP and w not in ignore]
+    toks = [w for w in t.split() if w not in DROP and w not in ignore]
+    out, run = [], False   # spelled-out letters ("V I P", "H R") are heard by Whisper as one word ("VIP", "HR"): merge runs of single letters
+    for w in toks:
+        if len(w) == 1 and w not in ("a", "i") or (len(w) == 1 and run):
+            if run: out[-1] += w
+            else: out.append(w)
+            run = True
+        else:
+            out.append(w); run = False
+    return out
 def edits(r, h):
     d = list(range(len(h) + 1))
     for i in range(1, len(r) + 1):
