@@ -198,6 +198,11 @@ Set these values:
   - **Cookie**: the seat cookie sets `Secure` only when the page is served over HTTPS, so resume works on http too.
   - **Avoid**: features like `crypto.randomUUID`, the clipboard API, service workers, and wake lock would need HTTPS (or `localhost`). The prototype avoids them on purpose.
 - Make sure the phone isn't on a guest or "isolated" Wi-Fi network. Many of those block device-to-device traffic.
+- **No sound on an iPhone?** The first thing to check is the **silent switch** on the side of the phone (orange showing = muted): iPhones
+  silence web audio when it is on, and games and web pages are expected to respect it. (This was the cause of the one "no sound" report
+  during the demo-mode test.) Then volume, and tap "Tap to enable sound" if it is shown. The ⚙ panel in the game has a **Test sound**
+  button: it plays a dice sound and shows the audio state ("Audio is running, N clips loaded"), which tells you at once whether the page
+  or the phone is the problem. `?debug=1` adds a footer with the same information plus the last landing pick.
 
 ### Troubleshooting (MAMP)
 | Symptom | Fix |
