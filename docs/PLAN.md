@@ -79,6 +79,8 @@ Hand-off doc for the builder (Grok CLI on the lab Mac). Starting from nothing. O
 - Nothing secret gets stored on the client.
 
 ## Milestones
+> **Status note (Oct 3, 2026):** this is the original engineering breakdown (M0 to M6). What was built differs: a plain-JavaScript client with no build step, and a PHP/MySQL polling server. The client-facing milestones on the pitch sheet are **1 Playable prototype (complete, tag `milestone-1`)**, 2 Accounts & saved games, 3 Synchronized sound & voices (first pass done), 4 Launch. Current status, test results and gaps are in `docs/PROTOTYPE.md`.
+
 1. **M0 setup:** repo with `/api` (PHP) and `/client` (Vite), a local PHP/MySQL setup, SQL migration files, PHPUnit and Vitest.
 2. **M1 game rules in PHP:** pure functions (board JSON in, turn results out), with PHPUnit tests including chained squares and the win rule.
 3. **M2 accounts:** sign-up, login, logout, sessions, CSRF, and the MySQL tables.

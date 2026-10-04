@@ -384,19 +384,28 @@ lets a logged-in user reclaim their seat without the token.
   - Flow: create, join by link, start, 10 actions including a shortcut choice, then resume after reload and resume with only the cookie (localStorage cleared). No console errors.
   - Cue scheduling: all three unlocked devices scheduled the cue for the same server time, with clock offsets of 0–2 ms (same machine).
 
+### Test results (Oct 3, 2026, lab Mac: MAMP + MySQL, one iPhone)
+The code at tag `milestone-1`, served by MAMP on the lab Mac:
+- `rules_test.php`: **45/45** on PHP 8.3.30 (MAMP) and on PHP 7.4.33 (MAMP's older PHP); every PHP file passes `php -l` under 7.4.
+- `simulate_game.php` with **4 and with 8 players: ALL PASSED** against MAMP's PHP + MySQL. `tests/demo_game.php` (solo demo, plus the check that normal games still need 2 players): **ALL PASSED**, 36 checks. `dev/audio/play_at_test.php`: 4/4.
+- Headless Chrome: `dev/audio/browser_test.js` **48/48** (host phone, guest phone and board view, against the mock API in `dev/audio/mock_server.js`); `dev/audio/demo_browser_test.js` **34/34** (real MAMP, one 390x844 phone plus a regular two-phone game); `dev/e2e/e2e.js` 10 turns with zero console errors (mock API); `dev/audio/review_check.js` 6/6 (all 233 clips decode).
+- Audio: 233 clips, 3.45 MB. The speech-recognition check passes 161 of 216 lines; the other 55 are length-only (the words are right). Loudness is within 1 LU of target.
+- **Real iPhone over Wi-Fi** (`http://<mac-ip>:8888/desertranger/`): the solo demo was played and the game timing was judged well paced. The first run had no sound because of the iPhone silent switch (expected: web audio respects it). Playtest findings are tracked as issues #5 to #8.
+
 ## Known gaps / not yet done
-- **Not tested on real phones or by ear.** Audio sync was verified only in headless Chrome on one
-  machine, where every clock is the same. Cross-device offset estimation is implemented but
-  untested on real Wi-Fi or cellular. iOS Safari, the silent switch, and Bluetooth speaker latency are untested.
-- **Not run on a real Mac/MAMP.** The MAMP defaults were emulated on Linux (see test results).
-- **Not tested on the Network Solutions host itself.** PHP 7.4 + MySQL 5.7 was emulated in Docker.
+- **Verified on one real iPhone only** (the solo demo, over Wi-Fi). Not yet verified: **two or more real phones playing together**, the original v1 criterion "laugh and sad cues sound simultaneous on at least 3 phones, by ear", Android, Safari on a computer, Bluetooth speaker latency, and cellular. Cross-device clock sync is implemented but has only been exercised on one machine.
+- **The sounds have not been fully auditioned.** The three CC0 critter clips (crow, coyote, hawk), the plant-name nature walks (chatter exchanges 9 to 12) and the stitched radio calls were checked by loudness, length and speech recognition only. 55 clips run longer than their length caps (words correct), and the written lines and the sound files still need a perfecting pass.
+- **iPhone sound polish (open issues #5 to #8):** the background sound starts 20 to 30 s late; it stops 30 s after a win instead of continuing; sound may stay off after leaving and returning to the page; and a ghost shadow shows behind pieces moving up (a change was made, it needs a phone check). The iPhone silent switch mutes the game, as intended.
+- **Not tested on the Network Solutions host itself (the largest open item).** The account's reported specs (Oct 3, 2026): Debian, **PHP 7.4.10**, **MySQL 5.7.44**, SFTP on a non-standard port, CGI active. That is the stack already emulated in Docker (PHP 7.4 + MySQL 5.7.44), so version compatibility is expected to be fine. What is still unknown: the `.htaccess` limits, the database host name and connection limits, HTTPS, and the final URL and folder.
   The `.htaccess` options (`Options -Indexes`, `FilesMatch`) may be restricted on some shared plans.
-  If you get a 500 error, remove the offending lines.
+  If you get a 500 error, remove the offending lines. Since then the code was also checked on the Mac under PHP 7.4.33 (syntax of every PHP file, `rules_test.php` 45/45, `play_at_test.php` 4/4).
 - No turn timeout or skipping of absent players. Nobody can leave, kick, or rematch. A stalled player blocks the game.
 - You can't join after the game starts. Spectators can use the board view.
-- No rate limiting on game creation and no cleanup of old games.
+- **No rate limiting on game creation and no cleanup of old games:** finished and test rooms accumulate. `dev/cleanup-test-rooms.sql` previews old rooms and removes them by date.
+- **Solo demo:** the computer rivals' controls live in the host's browser storage, so clearing it mid-demo stops the rivals (End demo still works).
 - `aww` fires fairly often (about 1 in 3 actions in simulations, because every lose-turn counts). Tune it with the client.
 - Tabs that are hidden or slow to poll skip cues that arrive more than 250 ms late. That is intended.
 - Board coordinates are still "approximate, to be re-traced". The pieces line up well on the flat image.
 - Only one board. The rules engine accepts any board JSON with the same square types.
 - Local Apache on the build box serves plain HTTP on 8098. HTTPS on 8443 was not configured.
+- **A self-contained Xcode app** is an open decision: issue #11.
