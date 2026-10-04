@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Desert Ranger</title>
+<link rel="icon" type="image/png" href="assets/img/pieces/bronco-orange.png">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
+<style>
+  .about { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  .about h1 { font-family: BungeeShade, Bungee, sans-serif; color: var(--terra); font-size: 2.6rem; text-align: center; margin: 6px 0 4px; font-weight: normal; line-height: 1; }
+  .about .tagline { margin-bottom: 18px; }
+  .about h2 { font: 1.3rem Bungee, sans-serif; color: var(--terra); margin: 0 0 8px; font-weight: normal; }
+  .about p, .about li { line-height: 1.5; font-size: 1.02rem; }
+  .about .card { margin: 14px 0; }
+  .about .who { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+  .about .who figure { margin: 0; flex: 0 0 auto; background: #fffaf0; padding: 8px 8px 10px; box-shadow: 2px 4px 10px rgba(60,40,20,.28); transform: rotate(-2deg); }
+  .about .who img { display: block; width: 190px; height: 190px; object-fit: cover; border-radius: 3px; }
+  .about .who figcaption { font: 700 1rem Caveat, cursive; color: var(--ink2); text-align: center; margin-top: 6px; }
+  .about .who .text { flex: 1 1 260px; }
+  .about .board img { width: 100%; height: auto; border: 2px solid var(--ink); border-radius: 12px; display: block; }
+  .about .board figcaption { font: 700 1rem Caveat, cursive; color: var(--ink2); text-align: center; margin-top: 6px; }
+  .about .board { margin: 0; }
+  .about ul { padding-left: 20px; margin: 6px 0; }
+  .about .places { columns: 2 200px; column-gap: 24px; }
+  .about .links a { color: var(--terra); font-weight: 800; }
+  .about .back { margin-top: 18px; }
+  .about .foot { text-align: center; font-size: .85rem; color: var(--ink2); margin-top: 22px; }
+</style>
+</head>
+<body>
+<main class="about">
+  <h1>Desert Ranger</h1>
+  <p class="tagline">A hand-drawn board game from the Anza-Borrego desert, now playable on any phone.</p>
+
+  <section class="card who">
+    <figure><img src="assets/img/about-ranger.jpg" alt="Jeffery Price, ranger R273"><figcaption>Jeffery Price, R273</figcaption></figure>
+    <div class="text">
+      <h2>The ranger who made it</h2>
+      <p><b>Jeffery Price</b> invented Desert Ranger. He was an Anza-Borrego ranger from 1980 to 1982, badge number <b>273</b>, and on the radio he was <b>R273</b>. The board is full of what a ranger's day is really like: a vandalized sign, a vehicle that breaks down, a supervisor on vacation, a trip to court.</p>
+      <p>The original board was drawn by hand. This web version keeps that artwork and the places, and adds the sounds of the desert and the voices of the people you meet along the way.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>How it plays</h2>
+    <ul>
+      <li><b>2 to 8 players</b>, each on their own phone, in the same room or over a phone call.</li>
+      <li>Open the link, pick one of eight 1980s off-road rigs, and join with a 4-letter room code.</li>
+      <li>Roll one six-sided die and race from <b>Start</b> to <b>Finish</b> across <b>52 squares</b>.</li>
+      <li>Shortcuts, swaps, roll-again squares and lose-a-turn hazards decide who gets there first.</li>
+      <li>Every phone hears the same dice, radio call, cheer or "awww" at the same moment.</li>
+    </ul>
+  </section>
+
+  <figure class="card board">
+    <img src="assets/img/board-2000.jpg" alt="The Desert Ranger board" loading="lazy">
+    <figcaption>The board, from the original hand-drawn artwork</figcaption>
+  </figure>
+
+  <section class="card">
+    <h2>Real places in the park</h2>
+    <p>Most of the place-name squares are real spots in Anza-Borrego Desert State Park and the desert around it, such as:</p>
+    <ul class="places">
+      <li>Palm Canyon</li><li>Sandstone Canyon</li><li>Turkey Track</li><li>Harper Flat</li>
+      <li>Coyote Canyon</li><li>Grapevine Canyon</li><li>Dos Cabezas</li><li>Ocotillo Wells</li>
+      <li>Fault Wash</li><li>Middle Willows</li><li>Vallecito</li><li>Arroyo Salado</li>
+      <li>Hawk Canyon</li><li>Sheep Canyon</li><li>Tamarisk Grove</li><li>Yaqui Pass</li>
+      <li>Una Palma</li><li>Bow Willow</li><li>17 Palms</li><li>Fish Creek</li>
+      <li>Font's Point</li><li>Barrel Springs</li><li>Sunset Mountain</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>About the park</h2>
+    <p>Anza-Borrego Desert State Park is the largest state park in California, about 600,000 acres in San Diego County with hundreds of miles of dirt roads, wilderness areas and hiking trails. It was created in 1932 and takes its name from the explorer Juan Bautista de Anza and <i>borrego</i>, the Spanish word for sheep.</p>
+    <p class="links">
+      <a href="https://www.parks.ca.gov/?page_id=638" target="_blank" rel="noopener">Anza-Borrego Desert State Park (California State Parks)</a><br>
+      <a href="https://theabf.org" target="_blank" rel="noopener">Anza-Borrego Foundation</a>
+    </p>
+  </section>
+
+  <a class="btn big sage back" href="./">Play Desert Ranger</a>
+  <p class="foot">Invented by Jeffery Price, R273. &copy; 2026 Jerod Price. All rights reserved.</p>
+</main>
+</body>
+</html>

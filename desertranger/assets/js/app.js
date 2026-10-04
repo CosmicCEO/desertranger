@@ -271,7 +271,7 @@
     var st = S.state, me = st.meId, isHost = me === st.game.hostId;
     $('lobby-code').textContent = st.game.code;
     $('lobby-link').textContent = location.host + location.pathname;
-    $('lobby-board-link').textContent = gameUrl('&board=1').replace(/^https?:\/\//, '');
+    $('lobby-board-link').href = gameUrl('&board=1');   // a real button: opens the shared-screen view in a new window
     $('lobby-count').textContent = st.players.length;
     var ul = $('lobby-players');
     ul.textContent = '';
@@ -512,6 +512,10 @@
       api('start', { code: S.code }).catch(function (e) { $('lobby-error').textContent = e.message; }).then(poll);
     };
     $('btn-demo').onclick = startDemo;
+    $('btn-copy-board').onclick = function () {   // for a TV that is typed by hand: copy the address, or show it to read out
+      var u = gameUrl('&board=1'), done = function (ok) { $('copy-msg').textContent = ok ? 'Copied.' : u; };
+      try { navigator.clipboard.writeText(u).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+    };
     $('btn-end-demo').onclick = endDemo;
     $('btn-roll').onclick = function () { Sound.unlock(); if (Radio) Radio.localShake(); act('roll', {}); };
     $('btn-sound').onclick = function () { Sound.unlock(); $('sound-overlay').hidden = true; };

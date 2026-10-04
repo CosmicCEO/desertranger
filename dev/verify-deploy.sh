@@ -25,7 +25,7 @@ b=$(body "$BASE/api.php?a=board"); grep -q '"squares"' <<<"$b" && ok "api.php?a=
 
 echo "Pages and files"
 ix=$(body "$BASE/index.html"); [ "$(code "$BASE/index.html")" = 200 ] && grep -q 'Desert' <<<"$ix" && ok "index.html" || bad "index.html missing or wrong"
-for p in assets/css/style.css assets/js/app.js assets/js/radio.js assets/js/ambience.js assets/js/sync.js assets/js/board.js assets/img/board-2000.jpg assets/img/pieces/bronco-orange.png assets/fonts/Bungee-Regular.ttf assets/audio/crowd-cheer-v2.mp3; do
+for p in assets/css/style.css assets/js/app.js assets/js/radio.js assets/js/ambience.js assets/js/sync.js assets/js/board.js assets/img/board-2000.jpg about.html assets/img/about-ranger.jpg assets/img/pieces/bronco-orange.png assets/fonts/Bungee-Regular.ttf assets/audio/crowd-cheer-v2.mp3; do
   [ "$(code "$BASE/$p")" = 200 ] && ok "$p" || bad "$p is missing (200 expected)"; done
 
 echo "Sound"
