@@ -20,6 +20,10 @@ DirectoryIndex index.html
   ExpiresByType image/png  "access plus 30 days"
   ExpiresByType audio/mpeg "access plus 30 days"
   ExpiresByType font/ttf   "access plus 30 days"
+  # The host stamps ~4 h on static files. HTML and JSON must be re-checked every time so an update shows at once
+  # (scripts are versioned with ?v=, sound files with ?v=<hash>).
+  ExpiresByType text/html  "access plus 0 seconds"
+  ExpiresByType application/json "access plus 0 seconds"
 </IfModule>
 AddType font/ttf .ttf
 AddType audio/mpeg .mp3

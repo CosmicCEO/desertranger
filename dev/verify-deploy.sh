@@ -19,7 +19,7 @@ echo "Checking $BASE"
 case "$BASE" in https://*) ok "HTTPS address" ;; *) warn "plain http: fine for testing, but turn on the host's SSL certificate for real use" ;; esac
 
 echo "PHP and the database"
-t=$(body "$BASE/api.php?a=time"); grep -q '"ok":true' <<<"$t" && ok "api.php?a=time answers (PHP runs)" || bad "api.php?a=time did not answer with {\"ok\":true,...}  (got: $(echo "$t" | head -c 120))"
+t=$(body "$BASE/api.php?a=time"); grep -q '"ok":true' <<<"$t" && ok "api.php?a=time answers (PHP runs)" || bad "api.php?a=time did not answer with {\"ok\":true,...}. NOTE: on this host a PHP file that is missing ALSO answers 500, so first check api.php was uploaded (got: $(echo "$t" | head -c 80 | tr -d '\n'))"
 i=$(body "$BASE/api.php?a=info"); grep -q 'bronco-orange' <<<"$i" && ok "api.php?a=info lists the vehicles (config.php and the database login work)" || bad "api.php?a=info failed: config.php missing/wrong, tables not installed, or database unreachable  (got: $(echo "$i" | head -c 120))"
 b=$(body "$BASE/api.php?a=board"); grep -q '"squares"' <<<"$b" && ok "api.php?a=board returns the board (board/desert-ranger.json uploaded)" || bad "api.php?a=board has no board data: upload desertranger/board/desert-ranger.json"
 
@@ -39,6 +39,18 @@ c=$(body "$BASE/config.php"); if grep -qiE "db_pass|db_user|password" <<<"$c"; t
 for p in config.sample.php lib/schema.sql lib/game.php; do
   s=$(code "$BASE/$p"); case "$s" in 403|404) ok "$p is blocked ($s)" ;; 200) [ "$p" = "lib/game.php" ] && { g=$(body "$BASE/$p"); grep -q '<?php' <<<"$g" && bad "lib/game.php is served as TEXT: PHP source is exposed" || ok "lib/game.php runs as PHP (empty output)"; } || warn "$p is readable (not secret, but .htaccess did not block it)" ;; *) warn "$p returned $s" ;; esac; done
 [ "$(code "$BASE/install.php")" = 200 ] && warn "install.php is still there: after the tables exist, delete it (it refuses to run again, but remove it anyway)" || ok "install.php is gone (or blocked)"
+
+echo "Caching (the host puts a cache in front of the site)"
+h=$(curl -sI -m 20 "$BASE/api.php?a=time"); grep -qi 'no-store' <<<"$h" && ok "api.php replies carry Cache-Control: no-store" || warn "api.php replies are not marked no-store (expected only while api.php is not answering yet)"
+grep -qi '^age: *[1-9]' <<<"$h" && bad "api.php?a=time was served from a cache (Age header): game state would be stale" || ok "api.php replies are not served from a cache (no Age header)"
+t1=$(body "$BASE/api.php?a=time" | grep -o '"t":[0-9]*' | cut -d: -f2); sleep 1.2; t2=$(body "$BASE/api.php?a=time" | grep -o '"t":[0-9]*' | cut -d: -f2)
+if [ -z "${t1:-}" ] || [ -z "${t2:-}" ]; then warn "two-calls cache test skipped: api.php?a=time is not answering yet"
+elif [ $((t2 - t1)) -ge 1000 ]; then ok "two api.php?a=time calls 1.2 s apart return different times (not cached)"
+else bad "api.php?a=time returned (nearly) the same time twice: a cache is answering instead of PHP"; fi
+for p in index.html audio/manifest.json; do
+  ma=$(curl -sI -m 20 "$BASE/$p" | tr -d '\r' | grep -i '^cache-control' | grep -o 'max-age=[0-9]*' | cut -d= -f2)
+  if [ -z "${ma:-}" ]; then ok "$p has no long cache time"; elif [ "$ma" -le 600 ]; then ok "$p is cached at most ${ma} s"; else warn "$p is cached for ${ma} s: after an update players may see the old version for that long (check the .htaccess Expires lines, or ask the host)"; fi
+done
 
 echo "Speed"
 ms=$(curl -s -m 20 -o /dev/null -w '%{time_total}' "$BASE/api.php?a=time" | awk '{printf "%d", $1 * 1000}'); [ "${ms:-9999}" -lt 800 ] && ok "api.php?a=time answered in ${ms} ms" || warn "api.php?a=time took ${ms} ms (the game polls once a second per phone)"

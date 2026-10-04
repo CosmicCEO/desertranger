@@ -6,6 +6,9 @@ Extends the short "Deploy to Network Solutions" section of `docs/PROTOTYPE.md` w
 - Debian, **PHP 7.4.10**, **MySQL 5.7.44**, CGI active, **SFTP on a non-standard port (2222)**.
 - A **shared account**: the folders under `htdocs` are other websites. The game goes in **its own new folder, `htdocs/desertranger/`**, and nothing else is touched. The top-level `.htaccess` only says `DirectoryIndex index.html index.php`, so it does not interfere.
 - This is the stack already tested: PHP 7.4 + MySQL 5.7.44 in Docker, and PHP 7.4.33 on the lab Mac (syntax of every PHP file, `rules_test.php` 45/45).
+- **There is a cache in front of the site** (seen on a test file: `Cache-Control: max-age=14400`, an `Age` header, and a `request_id` cookie added by the host). `api.php` sends `no-store`, and the game's `.htaccess` asks for HTML and JSON to be re-checked every time; `dev/verify-deploy.sh` tests both.
+- **On this host a PHP file that does not exist answers 500, not 404** (checked before anything was uploaded; missing `.txt`, `.html`, `.sql` answer 404). So a 500 on `api.php` before the upload is normal. After the upload, read it like this: if `index.html` loads but `api.php` gives 500, PHP or `config.php` is the problem; if static files give 500 too, suspect `.htaccess`.
+- HTTPS is already on for the site's address (the `hello.txt` test worked over https).
 - Unknown until we try: the final domain and HTTPS, the database host name, `.htaccess` limits, and MySQL connection limits.
 (Keep hostnames, account paths and logins in your password manager, not here.)
 
@@ -29,14 +32,16 @@ Cyberduck (installed on the lab Mac). Open Connection: protocol **SFTP**, port *
 ## If something fails
 | Symptom | Likely cause and fix |
 |---|---|
-| 500 on every page | The host rejects a directive in `.htaccess` (most likely `Options -Indexes`). On the server, comment out that line and retry. If still 500, use the fallback below. |
+| 500 on every page, static files too | The host rejects a directive in `.htaccess` (most likely `Options -Indexes`). On the server, comment out that line and retry. If still 500, use the fallback below. |
+| 500 only on `.php` addresses (static files load) | On this host a missing PHP file also gives 500, so first check the PHP file was uploaded. If it is there: a PHP error or a bad `config.php`; set `'debug' => true` briefly. |
 | `api.php?a=time` works, `a=info` says "Server error." | Database login or host wrong, tables not installed, or the user lacks rights. Set `'debug' => true` briefly, read the message, then set it back to false. |
 | install.php shows a red cross for PHP | Choose PHP 7.4 or newer in the control panel. |
 | Page shows PHP source or blank | PHP is not running in that folder: ask the host. |
 | Sound silent on iPhone | The silent switch (expected), or tap **Test sound** in the gear panel. |
 | mp3 served with the wrong type | `.htaccess` `AddType audio/mpeg .mp3` was blocked: ask the host to allow it or add the MIME type in the control panel. |
 | Polling errors or "too many connections" | Shared MySQL connection limit. Ask the host for `max_user_connections`; tell us before changing the polling interval. |
-| Old files after an update | Browsers cache; the scripts use `?v=` numbers, so hard-refresh. |
+| Game state looks frozen or stale | A cache is answering instead of PHP: `dev/verify-deploy.sh` says so (FAIL on the two-calls test or an `Age` header). Ask the host to exclude `api.php` from caching. |
+| Old files after an update | The host caches static files for hours; HTML and JSON are set to re-check, scripts use `?v=` numbers. Hard-refresh; if `index.html` still lags, the verify script's caching lines show the cache time. |
 
 Fallback `.htaccess` (only if the full one gives a 500; keeps the secrets blocked):
 ```
