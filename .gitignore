@@ -53,3 +53,6 @@ audio-work/
 .venv-cb/
 .venv-tts/
 __pycache__/
+
+# upload folder built by dev/make-deploy-folder.sh
+deploy/

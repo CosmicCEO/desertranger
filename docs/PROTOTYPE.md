@@ -249,6 +249,8 @@ PDO driver, DB connection and server version) before saying "Already installed".
 
 If the host still runs Apache 2.2, the `.htaccess` files include 2.2-style deny rules.
 
+**For the client's Network Solutions account, follow `docs/DEPLOY-NS.md`** (shared-account safe, a clean upload folder from `dev/make-deploy-folder.sh`, and `dev/verify-deploy.sh` to check the live site). `docs/HANDOFF-NS-DEPLOY.md` is the hand-off for an AI assistant helping with it.
+
 ## How it works
 
 ### Rules engine (`lib/rules.php`)
