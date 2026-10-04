@@ -322,6 +322,7 @@ Saved per device in `localStorage`; 🔊 mutes everything.
 - **Game sounds volume** (default **50 %**, `dr_game_vol`): the turn-based sounds, meaning dice, landing radio calls, quotable
   lines and the crowd cheer/aww. 100 % is the level the clips were mastered at; 50 % is half of that.
 - **Radio chatter** on/off (`dr_radio_on`): off = no landing calls, quotables or background chatter (dice and crowd stay).
+- **Landing calls after a chain (Wave 2):** when a square carries the piece on (a move, goto or shortcut square such as 35 to 39 or 41 to 12), the quotable line of the first square plays and is then followed by the short place name of the square the piece finally stops on (for example "Fish Creek"). The quote keeps the 3 s cap; with the place name the whole call may run to 5.5 s, and the place name is dropped if it would not fit (`CAP_S`, `CAP_CHAIN_S` in `radio.js`).
 - **Test sound**: plays a dice sound through the game's audio and shows the audio state.
 
 ### Synced audio

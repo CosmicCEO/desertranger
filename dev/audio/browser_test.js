@@ -166,6 +166,7 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   const t3 = (await rec(A)).turns[2];
   console.log('       landing on A (square 22):', t3 && t3.landing);
   check('square 22 plays its quotable line (q22), not the generic call', !!t3 && /^quote q22[ab]/.test(t3.landing || ''), t3 && t3.landing);
+  check('22 sends the piece on to 32: after the quote the radio names the final square (Yaqui Pass, pl-*-32)', !!t3 && /^quote q22[ab] \+ pl-(sr|r273)-32$/.test(t3.landing || ''), t3 && t3.landing);
   const t3b = (await rec(B)).turns[2];
   check('both phones pick the same quotable', t3 && t3b && t3.landing === t3b.landing, [t3 && t3.landing, t3b && t3b.landing]);
 
@@ -212,8 +213,9 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   // ---------------------------------------------------------------- the ~3 s cap, late rule, chatter, finish
   const rAll = await rec(A);
   const perTurn = rAll.turns.map(t => rAll.at.filter(x => x.tag === 'call' && x.serverMs >= t.T + t.end - 1 && x.serverMs < t.T + t.end + 3500));
-  const longest = Math.max.apply(null, perTurn.map(cs => cs.length ? (cs[cs.length - 1].serverMs + cs[cs.length - 1].dur * 1000) - cs[0].serverMs : 0));
-  check('every landing call stays within ~3 s (click + clips + squelch, real clip lengths)', longest <= 3100, longest);
+  const callLen = cs => cs.length ? (cs[cs.length - 1].serverMs + cs[cs.length - 1].dur * 1000) - cs[0].serverMs : 0;
+  const overCap = perTurn.map((cs, k) => { const t = rAll.turns[k], chain = /^quote q\d+[ab] \+ pl-/.test((t && t.landing) || ''); const len = callLen(cs); return len > (chain ? 5600 : 3100) ? [t && t.landing, Math.round(len)] : null; }).filter(Boolean);
+  check('every landing call stays within ~3 s; a quote + the final square after a chain within 5.5 s (real clip lengths)', overCap.length === 0, overCap);
   check('a sound that is more than 250 ms late is skipped, not played out of sync', await A.evaluate(() => { const b = DRSound.buffers['dice-clatter-01']; const sk = DRSound.stats.skipped; const w = DRSound.at(b, DRClock.serverNow() - 1000, { bus: 'cue' }); return w === null && DRSound.stats.skipped === sk + 1; }));
   check('slightly late (<250 ms) still plays, starting inside the clip', await A.evaluate(() => { const b = DRSound.buffers['dice-clatter-01']; const w = DRSound.at(b, DRClock.serverNow() - 120, { bus: 'cue' }); return !!w && (w.end - w.start) < b.duration - 0.05; }));
 
