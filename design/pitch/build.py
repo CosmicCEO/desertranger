@@ -103,14 +103,14 @@ page2 = f'''<section class="sheet">
 <svg class="grain" width="816" height="1056"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
 <div class="frame"></div><div class="frame2"></div>
 <div class="page">
-  <div class="kicker">STATUS REPORT · OCT 3, 2026</div>
-  <h1>MILESTONE<br>COMPLETE</h1>
-  <div class="sub">Milestone 1 is built, checked on a real server and a real iPhone, and ready to play.</div>
-  {starburst(468, -6, 268, 196, "MILESTONE 1<br>DONE!", rot=4, fs=29)}
+  <div class="kicker">STATUS REPORT · OCT 4, 2026</div>
+  <h1>WAVE 1<br>COMPLETE</h1>
+  <div class="sub">Wave 1 (Milestone 1) is built, live on the client's own hosting, and play-tested on the web.</div>
+  {starburst(468, -6, 268, 196, "WAVE 1<br>LIVE!", rot=4, fs=29)}
   <div class="tech p2plan"><div class="bg"></div>
     <h3>THE PLAN · WHERE WE ARE</h3>
     <div class="miles"><div class="track"></div><div class="mrow">
-      <div class="m done"><div class="dot"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 11.5 L9 16.5 L18 5.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="t">Playable prototype</div><div class="t2">complete!</div></div>
+      <div class="m done"><div class="dot"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 11.5 L9 16.5 L18 5.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="t">Playable prototype</div><div class="t2">live now!</div></div>
       <div class="m"><div class="dot">2</div><div class="t">Accounts &amp; saved games</div><div class="t2">up next</div></div>
       <div class="m"><div class="dot">3</div><div class="t">Synchronized sound &amp; voices</div><div class="t2">first pass is in!</div></div>
       <div class="m"><div class="dot">4</div><div class="t">Launch!</div></div>
@@ -118,13 +118,13 @@ page2 = f'''<section class="sheet">
   </div>
   <div class="p2cols">
     <div class="card done"><div class="bg"></div>
-      <h2><img src="{A}/icons/dice-color.png">Delivered in Milestone 1</h2>
+      <h2><img src="{A}/icons/dice-color.png">Delivered in Wave 1</h2>
       <ul>
         <li><b>2 to 8 phones, one game.</b> Open a link, pick a rig, join with a 4-letter room code.</li>
         <li><b>All 52 squares and the rules</b> of the hand-drawn board: shortcuts, swaps, roll again, lose a turn.</li>
         <li><b>Your seat is remembered.</b> Reload or reopen the link and you are back in the race.</li>
         <li><b>Big-screen board view</b> for a TV or tablet, and a <b>solo demo</b> with computer rivals.</li>
-        <li><b>Plain hosting:</b> runs on Apache / MySQL / PHP, tested on a Mac server.</li>
+        <li><b>Live on the client's own hosting:</b> plain Apache / MySQL / PHP, over HTTPS.</li>
       </ul>
     </div>
     <div class="card chg"><div class="bg"></div>
@@ -133,30 +133,30 @@ page2 = f'''<section class="sheet">
         <li><b>Sound and voices arrived early:</b> 233 clips in all, with ten character voices, 54 lines on 27 squares and 104 radio place-name calls.</li>
         <li><b>Same moment on every phone:</b> dice, radio calls and the crowd are timed to the server clock, and the moves start together.</li>
         <li><b>Desert atmosphere:</b> wind, crickets, a coyote, a hawk, a rare rattlesnake, and 12 radio chatter conversations. It plays in the lobby too.</li>
-        <li><b>Sound controls:</b> ambience volume, game-sounds volume, radio chatter on or off.</li>
+        <li><b>Live and tunable:</b> solo demo, two volume sliders, radio chatter on or off, a Test sound button.</li>
       </ul>
     </div>
     <div class="card chk"><div class="bg"></div>
       <h2><img src="{A}/icons/signpost-color.png">How we checked it</h2>
       <ul>
         <li><b>45 rule checks</b>, plus full 4- and 8-player games played through the live server.</li>
-        <li><b>Automated browser tests</b> with several phones and a board screen: same timing everywhere, no errors.</li>
-        <li><b>Played on a real iPhone</b> over Wi-Fi against a Mac server. First verdict: the timing feels right.</li>
+        <li><b>Automated browser tests</b> with several phones and a board screen, plus 29 checks of the live site: same timing everywhere, no errors.</li>
+        <li><b>Played on the live site</b> on phones and the shared screen (after a real iPhone trial over Wi-Fi). Sync is tight, with barely any offset.</li>
         <li><b>Every voice clip</b> was checked by speech recognition for the right words.</li>
       </ul>
-      <div class="p2note">Not tried yet: Android phones and Safari on a computer.</div>
+      <div class="p2note">Not confirmed yet: Android phones, and Safari on a computer.</div>
     </div>
     <div class="card nxt"><div class="bg"></div>
       <h2><img src="{A}/icons/olla-color.png">What's next</h2>
       <ul>
-        <li><b>Polish from the first playtest</b> (4 items logged): iPhone sound starts about 20 seconds late, sound after leaving the page, background sound after a win, and a drawing glitch behind moving pieces.</li>
-        <li><b>A sound-perfecting pass (later):</b> listen through the critters, the plant-name walks and the radio calls, and line up every written line with its sound file. 55 clips run a little long, though the words are right.</li>
-        <li><b>Milestone 2:</b> username and password accounts, and saved games.</li>
-        <li><b>Then:</b> finish the sound and voices pass, and launch.</li>
+        <li><b>Wave 2, sound:</b> iPhone sound that starts sooner and stays on, radio reports of the final square after a move, the spoken name "R273", Spanish place words.</li>
+        <li><b>Wave 2, screens:</b> ambient sound on the homepage, an About page, game counts, a way back from the lobby, bigger rigs on a PC.</li>
+        <li><b>To decide:</b> how a won game ends (rematch, winner as monitor), a buzzer nudge, and a self-contained app.</li>
+        <li><b>Then:</b> Milestone 2, accounts and saved games, and launch.</li>
       </ul>
     </div>
   </div>
-  <div class="footer">Invented by Jeffery Price, R273. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Status as of Oct 3, 2026.</div>
+  <div class="footer">Invented by Jeffery Price, R273. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Status as of Oct 4, 2026.</div>
 </div>
 </section>'''
 
@@ -297,7 +297,7 @@ h3{{font-family:Bungee;font-size:13.5px;position:relative;color:var(--sage);lett
         <li><b>Saved games</b>: pick up right where you left off.</li>
         <li><b>Solo demo</b>: try it alone, with computer rivals.</li>
       </ul>
-      <div class="stamp"><b>MILESTONE 1<br>COMPLETE</b><span>OCT 3, 2026</span></div>
+      <div class="stamp"><b>WAVE 1<br>COMPLETE</b><span>LIVE · OCT 4, 2026</span></div>
       <img class="cicon" src="{A}/icons/signpost-color.png" style="right:14px;bottom:12px;height:58px;transform:rotate(4deg)">
       <img class="cicon" src="{A}/icons/olla-color.png" style="right:78px;bottom:12px;height:34px">
     </div>
@@ -334,14 +334,14 @@ h3{{font-family:Bungee;font-size:13.5px;position:relative;color:var(--sage);lett
     <div class="tech"><div class="bg"></div>
       <h3>THE PLAN · 1 OF 4 DONE</h3>
       <div class="miles"><div class="track"></div><div class="mrow">
-        <div class="m done"><div class="dot"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 11.5 L9 16.5 L18 5.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="t">Playable prototype</div><div class="t2">complete!</div></div>
+        <div class="m done"><div class="dot"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 11.5 L9 16.5 L18 5.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="t">Playable prototype</div><div class="t2">live now!</div></div>
         <div class="m"><div class="dot">2</div><div class="t">Accounts &amp; saved games</div><div class="t2">up next</div></div>
         <div class="m"><div class="dot">3</div><div class="t">Synchronized sound &amp; voices</div><div class="t2">first pass is in!</div></div>
         <div class="m"><div class="dot">4</div><div class="t">Launch!</div></div>
       </div></div>
     </div>
   </div>
-  <div class="footer">Invented by Jeffery Price, R273. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Status as of Oct 3, 2026: Milestone 1 complete.</div>
+  <div class="footer">Invented by Jeffery Price, R273. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Status as of Oct 4, 2026: Wave 1 complete and live.</div>
 </div>
 </section>
 {page2}
