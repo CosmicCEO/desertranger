@@ -20,6 +20,7 @@ case "$BASE" in https://*) ok "HTTPS address" ;; *) warn "plain http: fine for t
 
 echo "PHP and the database"
 t=$(body "$BASE/api.php?a=time"); grep -q '"ok":true' <<<"$t" && ok "api.php?a=time answers (PHP runs)" || bad "api.php?a=time did not answer with {\"ok\":true,...}. NOTE: on this host a PHP file that is missing ALSO answers 500, so first check api.php was uploaded (got: $(echo "$t" | head -c 80 | tr -d '\n'))"
+st=$(body "$BASE/api.php?a=stats"); grep -q '"games":[0-9]' <<<"$st" && ok "api.php?a=stats answers (the homepage games counter; Wave 2 server files uploaded)" || bad "api.php?a=stats did not answer: upload the Wave 2 api.php and lib/game.php"
 i=$(body "$BASE/api.php?a=info"); grep -q 'bronco-orange' <<<"$i" && ok "api.php?a=info lists the vehicles (config.php and the database login work)" || bad "api.php?a=info failed: config.php missing/wrong, tables not installed, or database unreachable  (got: $(echo "$i" | head -c 120))"
 b=$(body "$BASE/api.php?a=board"); grep -q '"squares"' <<<"$b" && ok "api.php?a=board returns the board (board/desert-ranger.json uploaded)" || bad "api.php?a=board has no board data: upload desertranger/board/desert-ranger.json"
 
@@ -61,6 +62,7 @@ if [ "$FULL" = "--full" ]; then
   if [ -z "$PHPBIN" ]; then warn "no php on this Mac: skipped --full"; else
     for n in 4; do "$PHPBIN" "$here/desertranger/tests/simulate_game.php" "$BASE" $n 2>&1 | grep -q 'ALL PASSED' && ok "simulate_game.php ($n players) ALL PASSED" || bad "simulate_game.php ($n players) failed: run it by hand to see which check"; done
     "$PHPBIN" "$here/desertranger/tests/demo_game.php" "$BASE" 2>&1 | grep -q 'ALL PASSED' && ok "demo_game.php ALL PASSED (solo demo + the 2-player minimum)" || bad "demo_game.php failed: run it by hand to see which check"
+    "$PHPBIN" "$here/desertranger/tests/wave2_game.php" "$BASE" 2>&1 | grep -q 'ALL PASSED' && ok "wave2_game.php ALL PASSED (games counter, Knock-knock, Play again)" || bad "wave2_game.php failed: run it by hand to see which check"
   fi
 fi
 echo; echo "$pass OK, $warns warning(s), $fails FAIL"

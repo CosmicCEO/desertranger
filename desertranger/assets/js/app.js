@@ -161,6 +161,7 @@
       $('btn-resume').onclick = function () { location.href = '?g=' + last + (DEBUG ? '&debug=1' : ''); };
     }
     onCodeInput();
+    loadStats();
   }
 
   // ------------------------------------------------------------------ polling
@@ -206,7 +207,8 @@
     j.events.forEach(function (ev) {
       if (ev.id <= S.lastEventId) return;
       S.lastEventId = ev.id;
-      addLog(ev);
+      if (ev.type === 'nudge') { if (!wasFirst) showNudgeNote(ev.msg); }   // a knock is a sound and a short note, not a log line
+      else addLog(ev);
       if (wasFirst) return; // history: no replays
       var audioHandled = false;
       if (ev.data && ev.data.steps) {
@@ -251,6 +253,7 @@
   function audioState(j) {
     var status = j.game.status, me = playerById(j.meId), sq = me && S.board ? S.board.squares[me.pos] : null;
     if (Radio) Radio.setActive(status === 'active');
+    if (status === 'active' && Sound.unlocked && !S.nudgeLoaded) { S.nudgeLoaded = true; Sound.clip('nudge-01'); }   // load the knock so every phone can play it
     if (Amb) {
       Amb.setActive(true);   // background sound plays in the lobby and after a win too; it stops only when the page is left
       // local-only tie-in: the rattle is more likely while this device's own piece sits on a hazard square
@@ -366,6 +369,13 @@
     $('btn-end-demo').hidden = !(g.demo && !BOARD_MODE && me === g.hostId);
     $('btn-end-demo').textContent = g.status === 'finished' ? 'Back to lobby' : 'End demo';
     $('btn-new').hidden = g.status !== 'finished' || !!g.demo;
+    // "Play again": the host sends the same room and players back to the lobby; the others wait for the host.
+    var rematchable = g.status === 'finished' && !g.demo && !BOARD_MODE;
+    $('btn-rematch').hidden = !(rematchable && me === g.hostId);
+    $('rematch-wait').hidden = !(rematchable && me !== g.hostId);
+    // "Knock, knock": nudge a slow player. Only while someone else is on turn, never for computer rivals or the board screen.
+    $('btn-knock').hidden = !(!BOARD_MODE && g.status === 'active' && !mine && cur && !cur.bot && !g.demo);
+    $('btn-knock').disabled = !!S.knockCool;
     botTick();
   }
 
@@ -399,6 +409,40 @@
       (j.rivals || []).forEach(function (r) { S.rivals[r.id] = r.token; });
       saveRivals();
     }).catch(function (e) { $('lobby-error').textContent = e.message; }).then(poll);
+  }
+
+  /** Host: "Play again": a finished game goes back to the lobby with the same players. */
+  function rematch() {
+    Sound.unlock();
+    $('btn-rematch').disabled = true;
+    api('rematch', { code: S.code }).catch(function (e) { $('game-error').textContent = e.message; })
+      .then(function () { $('btn-rematch').disabled = false; poll(); });
+  }
+
+  /** "Knock, knock": every phone plays the sound at the same moment (the server stamps the play time). One every 5 s. */
+  function knock() {
+    Sound.unlock();
+    if (S.knockCool) return;
+    S.knockCool = true; $('btn-knock').disabled = true;
+    setTimeout(function () { S.knockCool = false; if (S.state) renderGame(); }, 5000);
+    api('nudge', { code: S.code }).catch(function (e) { showNudgeNote(e.message); });
+  }
+  function showNudgeNote(text) {
+    var n = $('nudge-note');
+    n.textContent = text; n.hidden = false;
+    clearTimeout(S.nudgeTimer);
+    S.nudgeTimer = setTimeout(function () { n.hidden = true; }, 5000);
+  }
+
+  /** Homepage: how many games are being played right now (a count only). Refreshed while the home screen is showing. */
+  function loadStats() {
+    clearTimeout(S.statsTimer);
+    if ($('screen-home').hidden) return;
+    api('stats').then(function (j) {
+      var n = j.games | 0, line = $('stats-line');
+      line.textContent = n === 0 ? 'No games being played right now. Start the first one!' : n === 1 ? '1 game being played right now' : n + ' games being played right now';
+      line.hidden = false;
+    }).catch(function () { $('stats-line').hidden = true; }).then(function () { S.statsTimer = setTimeout(loadStats, 45000); });
   }
 
   function endDemo() {
@@ -512,6 +556,8 @@
       api('start', { code: S.code }).catch(function (e) { $('lobby-error').textContent = e.message; }).then(poll);
     };
     $('btn-demo').onclick = startDemo;
+    $('btn-rematch').onclick = rematch;
+    $('btn-knock').onclick = knock;
     $('btn-copy-board').onclick = function () {   // for a TV that is typed by hand: copy the address, or show it to read out
       var u = gameUrl('&board=1'), done = function (ok) { $('copy-msg').textContent = ok ? 'Copied.' : u; };
       try { navigator.clipboard.writeText(u).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }

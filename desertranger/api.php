@@ -10,7 +10,10 @@
  *   GET  api.php?a=state&code=ABCD&since=N  -> game, players, events after N   (polled ~1/s)
  *   POST api.php?a=create  {name, vehicle}             -> {code, token}
  *   POST api.php?a=join    {code, name, vehicle}       -> {code, token}
+ *   GET  api.php?a=stats                    -> {games}      games being played now (homepage counter)
  *   POST api.php?a=start   {code}
+ *   POST api.php?a=rematch {code}           host only: a finished game back to the lobby, same players
+ *   POST api.php?a=nudge   {code}           "Knock, knock" to every phone (rate limited)
  *   POST api.php?a=roll    {code, turn, key}
  *   POST api.php?a=choose  {code, turn, key, action, target}
  *
@@ -123,6 +126,19 @@ try {
             requirePost();
             dr_end_demo($db, $code, dr_token_for($code));
             dr_out(array('ok' => true));
+
+        case 'rematch':
+            requirePost();
+            dr_rematch($db, $code, dr_token_for($code));
+            dr_out(array('ok' => true));
+
+        case 'nudge':
+            requirePost();
+            dr_nudge($db, $code, dr_token_for($code));
+            dr_out(array('ok' => true));
+
+        case 'stats':
+            dr_out(array('ok' => true) + dr_stats($db));
 
         case 'roll':
         case 'choose':

@@ -91,6 +91,9 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
   const gridInfo = p => p.evaluate(() => { const g = document.getElementById('vehicle-grid'), im = g.querySelector('img'); return { cols: getComputedStyle(g).gridTemplateColumns.split(' ').length, n: g.children.length, h: Math.round(im.getBoundingClientRect().height) }; });
   const gd = await gridInfo(desk);
   check('PC/Mac: the eight rigs are in 2 columns x 4 rows with large pictures', gd.cols === 2 && gd.n === 8 && gd.h >= 100, gd);
+  await desk.waitForFunction(() => { const l = document.getElementById('stats-line'); return l && !l.hidden; }, null, { timeout: 8000 }).catch(() => {});
+  const statsTxt = await text(desk, '#stats-line');
+  check('homepage shows how many games are being played right now (a count, from a=stats)', await visible(desk, '#stats-line') && /^(\d+ games being played right now|1 game being played right now|No games being played)/.test(statsTxt || ''), statsTxt);
   check('home name field placeholder is "e.g., Jeff"', (await desk.getAttribute('#in-name', 'placeholder')) === 'e.g., Jeff');
   const ph = await open('phoneHome', phone); await ph.goto(BASE); await ph.waitForSelector('#screen-home:not([hidden])'); await sleep(300);
   const gp = await gridInfo(ph);

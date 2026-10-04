@@ -170,6 +170,18 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   const t3b = (await rec(B)).turns[2];
   check('both phones pick the same quotable', t3 && t3b && t3.landing === t3b.landing, [t3 && t3.landing, t3b && t3b.landing]);
 
+  // ---------------------------------------------------------------- Knock, knock (every phone, same moment)
+  for (const pg of [A, B, C]) await pg.evaluate(() => { DRSound.buffers['nudge-01'] = DRSound.buffers['dice-clatter-01']; });   // the real clip ships with the voices PR
+  check('not my turn: the Knock, knock button is shown; for the player on turn and on the board screen it is not', await A.isVisible('#btn-knock') && !(await B.isVisible('#btn-knock')) && !(await C.isVisible('#btn-knock')));
+  const nk = [(await rec(A)).at.length, (await rec(B)).at.length, (await rec(C)).at.length];
+  await A.click('#btn-knock');
+  check('after a knock the button is disabled for a few seconds (rate limit)', await A.isDisabled('#btn-knock'));
+  await sleep(3500);
+  const kn = [(await rec(A)).at.slice(nk[0]), (await rec(B)).at.slice(nk[1]), (await rec(C)).at.slice(nk[2])].map(a => a.filter(x => x.tag === 'nudge-01'));
+  check('every phone and the board screen plays the knock once, at the same server time', kn.every(a => a.length === 1 && a[0].ok) && kn[0][0].serverMs === kn[1][0].serverMs && kn[1][0].serverMs === kn[2][0].serverMs, kn);
+  check('a knock is not added to the log', await A.evaluate(() => ![].some.call(document.querySelectorAll('#log li'), li => /knocked/.test(li.textContent))));
+  check('the knock note names who knocked', /Marigold knocked/.test(await A.textContent('#nudge-note')));
+
   // ---------------------------------------------------------------- settings panel
   await A.click('#btn-audio');
   await A.waitForSelector('#audio-panel:not([hidden])');
@@ -254,6 +266,17 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await sleep(300);
   check('audio running again: the bar is hidden and the bed was restarted', await A.evaluate(() => document.getElementById('sound-bar').hidden && !!DRAmbience.state.bed && DRAmbience.state.bed !== window.__bedBefore));
   await A.evaluate(() => { delete DRSound.ctx.state; });
+
+  // ---------------------------------------------------------------- Play again (rematch)
+  check('after a win the host sees Play again and the guest sees "Waiting for the host"', await A.isVisible('#btn-rematch') && !(await B.isVisible('#btn-rematch')) && await B.isVisible('#rematch-wait') && !(await C.isVisible('#btn-rematch')));
+  await A.click('#btn-rematch');
+  await A.waitForSelector('#screen-lobby:not([hidden])'); await B.waitForSelector('#screen-lobby:not([hidden])');
+  check('Play again: both phones are back in the same lobby with both players', (await A.textContent('#lobby-code')).trim() === code && (await B.textContent('#lobby-code')).trim() === code && (await A.textContent('#lobby-count')).trim() === '2' && (await B.textContent('#lobby-count')).trim() === '2');
+  check('the background sound keeps playing through the rematch', await A.evaluate(() => !!DRAmbience.state.bed));
+  check('the game screen was reset (empty log)', await A.evaluate(() => document.querySelectorAll('#log li').length === 0));
+  await A.click('#btn-start');
+  await A.waitForSelector('#screen-game:not([hidden])'); await B.waitForSelector('#screen-game:not([hidden])');
+  check('the rematch starts: host on turn, no winner banner', await A.evaluate(() => !/wins/.test(document.getElementById('turn-banner').textContent) && !document.getElementById('btn-roll').disabled));
 
   // ---------------------------------------------------------------- errors
   check('zero console errors / page errors on all pages', errors.length === 0, errors.slice(0, 8));

@@ -94,6 +94,19 @@ function api(action, q, body, token, res) {
     case 'create': { const gg = newGame(), p = addPlayer(gg, body.name, body.vehicle); return j({ ok: true, code: gg.code, token: p.token }); }
     case 'join': if (!g) return err('No game with that code.', 404); { const p = addPlayer(g, body.name, body.vehicle); return j({ ok: true, code: g.code, token: p.token }); }
     case 'start': if (!g || !me) return err('Not allowed.', 403); g.status = 'active'; g.turn = 1; addEvent(g, 'start', 'Game on! ' + g.players[0].name + ' rolls first.'); return j({ ok: true });
+    case 'stats': return j({ ok: true, games: Object.keys(games).filter(k => games[k].status !== 'finished').length });
+    case 'nudge':   // "Knock, knock": every phone plays it at the same server time; one per 5 s
+      if (!g || !me) return err('Join the game first.', 403);
+      if (g.status !== 'active') return err('Knock, knock works during a game.', 409);
+      if (g.lastNudge && Date.now() - g.lastNudge < 5000) return err('Easy there: wait a few seconds before knocking again.', 429);
+      g.lastNudge = Date.now(); addEvent(g, 'nudge', me.name + ' knocked: knock, knock!', { from: me.id }, 'nudge-01', true); return j({ ok: true });
+    case 'rematch':   // host only, finished games only: back to the lobby with the same players
+      if (!g || !me || me.id !== g.hostId) return err('Only the host can start a rematch.', 403);
+      if (g.status === 'lobby') return j({ ok: true });
+      if (g.status !== 'finished') return err('The game is not over yet.', 409);
+      g.players.forEach(p => { p.pos = 0; p.skip = 0; }); g.events = g.events.filter(e => e.type === 'join');
+      g.status = 'lobby'; g.turn = 0; g.cur = 0; g.winnerId = null; g.pending = null;
+      addEvent(g, 'join', 'Rematch: back in the lobby with the same players.'); return j({ ok: true });
     case 'state': if (!g) return err('No game with that code.', 404); return j(stateOf(g, me, +(q.get('since') || 0)));
     case 'roll': case 'choose': {
       if (!g || !me) return err('You are not in this game.', 403);

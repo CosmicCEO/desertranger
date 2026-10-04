@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#C3623B">
 <link rel="icon" href="assets/img/pieces/bronco-orange.png">
 <title>Desert Ranger</title>
-<link rel="stylesheet" href="assets/css/style.css?v=9">
+<link rel="stylesheet" href="assets/css/style.css?v=10">
 </head>
 <body>
 <!--
@@ -44,6 +44,7 @@
     <button id="btn-join" class="btn big" type="button" hidden>Join game</button>
     <button id="btn-create" class="btn big" type="button">Create new game</button>
   </div>
+  <p id="stats-line" class="center hint" hidden></p>
   <p class="center"><a class="about-link" href="about.html">About the game and the park</a></p>
 </section>
 
@@ -101,12 +102,16 @@
       <div id="action-bar" class="action-bar">
         <div id="die" class="die" aria-live="polite">–</div>
         <button id="btn-roll" class="btn huge" type="button" disabled>ROLL</button>
+        <button id="btn-knock" class="btn knock" type="button" hidden>Knock, knock</button>
       </div>
+      <p id="nudge-note" class="center hint" hidden></p>
       <div id="choices" class="choices"></div>
       <p id="game-error" class="error" role="alert"></p>
       <ul id="player-list" class="player-list"></ul>
       <ol id="log" class="log"></ol>
       <button id="btn-end-demo" class="btn big sage" type="button" hidden>End demo</button>
+      <button id="btn-rematch" class="btn big mari" type="button" hidden>Play again</button>
+      <p id="rematch-wait" class="center hint" hidden>Waiting for the host to start a rematch…</p>
       <a id="btn-new" class="btn big sage" href="./" hidden>New game</a>
     </aside>
   </div>
@@ -126,6 +131,6 @@
 <script src="assets/js/board.js?v=3"></script>
 <script src="assets/js/radio.js?v=1"></script>
 <script src="assets/js/ambience.js?v=4"></script>
-<script src="assets/js/app.js?v=7"></script>
+<script src="assets/js/app.js?v=8"></script>
 </body>
 </html>
