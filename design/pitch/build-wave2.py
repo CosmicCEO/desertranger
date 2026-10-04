@@ -69,7 +69,8 @@ page1 = f'''<section class="sheet">
         <li><b>Play again:</b> when someone wins, one button takes the same room and players back to the lobby.</li>
         <li><b>Knock, knock:</b> nudge a slow player. Every phone hears it at the same moment.</li>
         <li><b>Games being played</b> counter on the homepage.</li>
-        <li><b>Marigold gets a police light bar</b>, like Ranger Green.</li>
+        <li><b>Credits:</b> every sound source is named on the About page.</li>
+        
       </ul>
     </div>
   </div>
@@ -83,7 +84,7 @@ page2 = f'''<section class="sheet">
   <div class="kicker">THE ROAD AHEAD</div>
   <h1>HOW WE<br>GET THERE</h1>
   <div class="sub">Small updates to your own hosting, each one checked on the live site before the next.</div>
-  <div class="stamp" style="top:6px"><b>PLAN ONLY</b><span>NOTHING BUILT YET</span></div>
+  <div class="stamp" style="top:6px"><b>BUILT, TESTED</b><span>NOT LIVE YET</span></div>
   <div class="tech p2plan"><div class="bg"></div>
     <h3>THE ORDER · EACH BATCH IS ITS OWN UPDATE</h3>
     {miles([(True, "Wave 1", "live now!"), (False, "A &middot; Sound reliability", "first, biggest win"), (False, "B, C &middot; Screens, voices", None), (False, "D &middot; New features", None)])}
@@ -104,7 +105,7 @@ page2 = f'''<section class="sheet">
       <ul>
         <li><b>About page words and pictures:</b> the story of the game and the ranger, park details, photos, links, and who may be named.</li>
         <li><b>An iPhone look</b> at the piece shadow, and a note if sound is still silent (check the side switch first).</li>
-        <li><b>OK on the Marigold drawing</b> once the light bar is added.</li>
+        <li><b>Listen to the new voices</b> on the review page: R273, R55 drawn out, and the Spanish place words.</li>
         <li><b>"Clear the room code":</b> tell us what you had in mind.</li>
       </ul>
     </div>
