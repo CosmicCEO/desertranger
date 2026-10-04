@@ -107,6 +107,7 @@
     muted: lsGet('dr_muted', '0') === '1',
     boardMode: false,
     listeners: [],      // called after unlock
+    stateListeners: [], // called with ctx.state ('running' | 'suspended' | 'interrupted' ...) whenever running/not-running flips
     settings: {
       ambOn: lsGet('dr_amb_on', '1') === '1',
       ambVol: Math.max(0, Math.min(100, parseInt(lsGet('dr_amb_vol', '20'), 10) || 0)),     // background sound: default 20 %
@@ -126,7 +127,7 @@
         this.buildGraph();
         first = true;
       }
-      if (this.ctx.state === 'suspended') this.ctx.resume();
+      if (this.ctx.state !== 'running') this.resumeCtx();   // 'suspended', or 'interrupted' on iOS after a call / lock screen
       // Play one silent sample: some iOS versions only unlock on an actual start().
       var b = this.ctx.createBuffer(1, 1, 22050), s = this.ctx.createBufferSource();
       s.buffer = b; s.connect(this.ctx.destination); s.start(0);
@@ -137,8 +138,22 @@
       }
     },
 
+    /** Ask the browser to resume the audio (works inside a tap); never throws. */
+    resumeCtx: function () {
+      try { var p = this.ctx.resume(); if (p && p.catch) p.catch(function () { /* needs a tap: the next tap retries */ }); } catch (e) { /* ignore */ }
+    },
+
+    /** True when the user has started sound but the browser/phone is not playing it (paused by a call, lock screen ...). */
+    paused: function () { return !!(this.ctx && this.unlocked && this.ctx.state !== 'running'); },
+
     buildGraph: function () {
-      var ctx = this.ctx, bus = this.bus;
+      var ctx = this.ctx, bus = this.bus, self = this, wasRunning = false;
+      ctx.onstatechange = function () {
+        var run = ctx.state === 'running';
+        if (run === wasRunning) return;
+        wasRunning = run;
+        self.stateListeners.forEach(function (fn) { try { fn(ctx.state); } catch (e) { console.warn('state listener', e); } });
+      };
       function gain(v, to) { var g = ctx.createGain(); g.gain.value = v; if (to) g.connect(to); return g; }
       bus.master = gain(this.muted ? 0 : 1, ctx.destination);
       bus.game = gain(this.gameGain(), bus.master);   // volume slider for the turn-based sounds (cue + voice)
@@ -215,8 +230,8 @@
 
     // ---- settings (ambience on/off + volume, radio chatter on/off) ----
     ambGain: function () { return this.settings.ambVol / 100 * 1.4 * (this.boardMode ? 2 : 1); },   // board view: +6 dB
-    /** Background radio chatter is part of the background sound: 0.35 at the old default slider (60), scaling with it. */
-    chatterGain: function () { return 0.35 * (this.settings.ambVol / 60) * (this.boardMode ? 2 : 1); },
+    /** Background radio chatter is part of the background sound: 0.5 at slider 60 (a little more than the first release's 0.35), scaling with it. */
+    chatterGain: function () { return 0.5 * (this.settings.ambVol / 60) * (this.boardMode ? 2 : 1); },
     /** Turn-based sounds (dice, radio calls, quotes, crowd): 100 % = the level the clips were mastered at, 50 % = half. */
     gameGain: function () { return this.settings.gameVol / 100; },
     setSetting: function (key, val) {
@@ -267,7 +282,7 @@
       var ctx = this.ctx, delayMs = serverMs == null ? 0 : (serverMs - Clock.offset) - localNow();
       if (serverMs != null) this.stats.lastLateMs = Math.round(-delayMs);
       if (delayMs < -LATE_LIMIT_MS) { this.stats.skipped++; return null; }
-      if (ctx.state !== 'running') ctx.resume();   // 'suspended', or 'interrupted' on iOS after a call / lock screen
+      if (ctx.state !== 'running') this.resumeCtx();   // 'suspended', or 'interrupted' on iOS after a call / lock screen
       var busName = o.bus || 'cue', rate = o.rate || 1, off = o.offset || 0;
       var src = ctx.createBufferSource(), node = src;
       src.buffer = buf;

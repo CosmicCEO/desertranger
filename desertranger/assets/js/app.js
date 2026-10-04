@@ -237,7 +237,14 @@
       renderGame();
     }
     audioState(j);
+    updateSoundBar();
     if (wasFirst && !Sound.unlocked) $('sound-overlay').hidden = false;
+  }
+
+  /** "Sound paused" bar: the phone paused the audio after it was started and it is not muted. */
+  function updateSoundBar() {
+    var bar = $('sound-bar');
+    if (bar) bar.hidden = !(Sound.paused() && !Sound.muted);
   }
 
   /** Tell the audio layers whether the game is running (lazy-loading tiers B/C start then, never in the lobby). */
@@ -245,8 +252,7 @@
     var status = j.game.status, me = playerById(j.meId), sq = me && S.board ? S.board.squares[me.pos] : null;
     if (Radio) Radio.setActive(status === 'active');
     if (Amb) {
-      Amb.setActive(status === 'active' || status === 'lobby');   // background sound plays in the lobby too
-      if (status === 'finished') Amb.finish();
+      Amb.setActive(true);   // background sound plays in the lobby and after a win too; it stops only when the page is left
       // local-only tie-in: the rattle is more likely while this device's own piece sits on a hazard square
       Amb.setMyPos(me ? me.pos : null, !!sq && (sq.type === 'loseTurn' || (sq.type === 'move' && sq.delta < 0)));
     }
@@ -521,7 +527,24 @@
       $('board').classList.toggle('zoomed');
       if (S.state && S.state.meId) setTimeout(function () { S.bv.scrollTo(S.state.meId, $('board-wrap')); }, 50);
     };
-    document.addEventListener('visibilitychange', function () { if (!document.hidden && S.code) poll(); });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) { if (Sound.paused()) Sound.resumeCtx(); updateSoundBar(); }
+      if (!document.hidden && S.code) poll();
+    });
+    // Sound: the first tap anywhere on the home screen starts it (name field, rig, buttons); desert sound then plays on the home screen too.
+    var homeEls = ['touchend', 'click', 'keydown'], home = $('screen-home');
+    function homeTap() {
+      Sound.unlock();
+      if (Amb) Amb.setActive(true);
+      homeEls.forEach(function (ev) { home.removeEventListener(ev, homeTap, true); });
+    }
+    if (!BOARD_MODE) homeEls.forEach(function (ev) { home.addEventListener(ev, homeTap, true); });
+    // After a pause (call, lock screen, another app) any tap anywhere resumes the sound.
+    ['touchend', 'click', 'keydown'].forEach(function (ev) {
+      document.addEventListener(ev, function () { if (Sound.paused()) Sound.unlock(); }, true);
+    });
+    $('sound-bar').onclick = function () { Sound.unlock(); updateSoundBar(); };
+    Sound.stateListeners.push(updateSoundBar);
   }
 
   /** ⚙ panel: ambience on/off + volume, radio chatter on/off. Saved in localStorage (dr_amb_on, dr_amb_vol, dr_radio_on). */
