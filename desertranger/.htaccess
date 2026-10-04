@@ -27,3 +27,5 @@ DirectoryIndex index.html
 </IfModule>
 AddType font/ttf .ttf
 AddType audio/mpeg .mp3
+# The host sends no type for .json, so the ExpiresByType application/json rule above never matched (its cache then kept manifest.json for 4 h).
+AddType application/json .json
