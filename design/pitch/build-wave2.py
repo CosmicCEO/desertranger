@@ -12,7 +12,7 @@ CHECK = '<svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 11.5 L9 16.
 FRAME = '''<div class="paper"></div>
 <svg class="grain" width="816" height="1056"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
 <div class="frame"></div><div class="frame2"></div>'''
-FOOT = "Invented by Jeffery Price, R273. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Wave 2 plan as of Oct 4, 2026."
+FOOT = "Invented by Jeffery Price, R273. &nbsp;·&nbsp; © 2026 Jerod Price. All rights reserved. Wave 2 plan as of Oct 5, 2026."
 
 def miles(items):
     out = ""
@@ -26,7 +26,7 @@ page1 = f'''<section class="sheet">
 <div class="page">
   <div class="kicker">NEXT UP · BUILT FROM YOUR PLAY-TEST</div>
   <h1>WAVE 2<br>PLAN</h1>
-  <div class="sub">Eighteen improvements from playing Wave 1 on real phones, in four small batches.</div>
+  <div class="sub">Sixteen improvements from playing Wave 1 on real phones, in four small batches. Voice changes are on hold.</div>
   {starburst(468, -6, 268, 196, "YOU PLAYED IT.<br>NOW WE<br>TUNE IT!", rot=4, fs=25)}
   <div class="tech p2plan"><div class="bg"></div>
     <h3>WHAT YOU TOLD US WORKS</h3>
@@ -59,8 +59,7 @@ page1 = f'''<section class="sheet">
       <h2><img src="{A}/icons/star-color.png">C &middot; Voices and radio</h2>
       <ul>
         <li><b>Say where you ended up:</b> after a funny quote on a shortcut square, the radio also names the square you land on, like "Fish Creek".</li>
-        <li><b>"R two seven three"</b> everywhere, and R55 drawn out the way the real ranger said it.</li>
-        <li><b>Spanish place words</b> said properly: Vallecito, Cholla, Ocotillo, Olla, Yaqui.</li>
+        <li><b>On hold: voice changes</b> (the R273 and R55 call signs, the Spanish place words). The Wave 1 voices stay as they are until you give specific instructions.</li>
       </ul>
     </div>
     <div class="card nxt"><div class="bg"></div>
@@ -94,7 +93,7 @@ page2 = f'''<section class="sheet">
       <h2><img src="{A}/icons/court-gavel-color.png">Calls already made</h2>
       <ul>
         <li><b>Play again</b> comes first. Keep-playing-for-places, with the winner watching as monitor, comes later.</li>
-        <li><b>Knock, knock</b> is spoken, and every phone hears it.</li>
+        <li><b>Knock, knock</b> plays on every phone at the same moment; its sound is on hold with the voices.</li>
         <li><b>Lobby Home</b> keeps your seat, so Resume brings you back.</li>
         <li><b>Homepage counter</b> shows games only, no names or room codes.</li>
         <li><b>Rig grid</b> is 2 columns by 4 rows on a computer.</li>
@@ -105,7 +104,7 @@ page2 = f'''<section class="sheet">
       <ul>
         <li><b>About page words and pictures:</b> the story of the game and the ranger, park details, photos, links, and who may be named.</li>
         <li><b>An iPhone look</b> at the piece shadow, and a note if sound is still silent (check the side switch first).</li>
-        <li><b>Listen to the new voices</b> on the review page: R273, R55 drawn out, and the Spanish place words.</li>
+        <li><b>Your instructions for the voices:</b> which clips to change and how. Wave 1 sounds are back in place until then.</li>
         <li><b>"Clear the room code":</b> tell us what you had in mind.</li>
       </ul>
     </div>
