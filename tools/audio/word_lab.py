@@ -61,6 +61,25 @@ def clips(word, D):
     if sp.get("sent"): out.append(mk(sp["sent"].replace("-", ""), "sent", sp["sent"], 3 if not out else 1))
     return out
 
+# ---- round 2 (owner's Not-OK cards): more seeds for every conforming spelling plus new letters-only spellings, word-only clip, that card's voice ----
+ROUND2 = {("Vallecito", "senior_ranger"): ["vayeseeto", "vahyeseeto", "vayaseetoh", "vayasito", "bayaseeto"],
+          ("Olla", "senior_ranger"):      ["oyya", "oyyah", "ohyah", "oiyah"],
+          ("Yaqui", "senior_ranger"):     ["yakee", "yaki", "yahki", "Yaki"],
+          ("Yaqui", "ranger_273"):        ["yakee", "yaki", "yahki", "Yaki"]}
+def plan_round2(D, seeds=(4, 5, 6, 7, 8)):
+    items = []
+    for (w, v), extra in ROUND2.items():
+        c = clips(w, D)[0]; assert c["kind"] == "word"
+        cands = [x for x in candidates(w, c["surface"]) if x[2] in ("plain", "lower", "title")]
+        have = {s.lower() for _, s, _ in cands if _ != "plain"}
+        cands += [(f"x{i + 1}", s, fmt_of(f"x{i + 1}", s)) for i, s in enumerate(extra) if s.lower() not in have]
+        for cid, spell, fm in cands:
+            text = c["text"] if cid == "plain" else re.sub(r"\b" + re.escape(c["surface"]) + r"\b", lambda m: spell, c["text"], count=1, flags=re.I)
+            for sd in (seeds if not cid.startswith("x") else (1, 2, 3) + tuple(seeds)):
+                items.append(dict(word=w, voice=v, clip=c["tag"], kind="word", line_id=c["ids"][v], cand=cid, fmt=fm, spelling=spell, text=text, real_text=c["real_text"],
+                                  max_sec=c["max_sec"], seed=sd, file=f"{slug(w)}__{VOICE_TAG[v]}__{c['tag']}__{fm}-{cid}__s{sd}.wav", target=SPEC[w].get("target", w.lower()), round=2))
+    return items
+
 def slug(w): return re.sub(r"[^a-z0-9]", "", w.lower())
 
 def plan(D, words, voices):
@@ -79,10 +98,10 @@ def plan(D, words, voices):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--words"); ap.add_argument("--voices"); ap.add_argument("--dry", action="store_true"); ap.add_argument("--out", default="audio-work/wordlab")
-    ap.add_argument("--device", default="auto"); a = ap.parse_args()
+    ap.add_argument("--device", default="auto"); ap.add_argument("--round2", action="store_true", help="owner's Not-OK cards: more seeds + new spellings"); a = ap.parse_args()
     D = json.load(open("docs/audio-lines.json")); CAST = json.load(open("tools/audio/cast.json"))
     words = a.words.split(",") if a.words else list(SPEC); voices = a.voices.split(",") if a.voices else list(VOICE_TAG)
-    items = plan(D, words, voices); os.makedirs(f"{a.out}/takes", exist_ok=True)
+    items = plan_round2(D) if a.round2 else plan(D, words, voices); os.makedirs(f"{a.out}/takes", exist_ok=True)
     print(len(items), "files planned;", len({(i["voice"], i["clip"], i["text"], i["seed"]) for i in items}), "distinct renders", flush=True)
     if a.dry:
         for i in items[:: max(1, len(items) // 40)]: print(i["file"], "|", i["text"])

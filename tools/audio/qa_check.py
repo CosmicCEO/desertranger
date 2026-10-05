@@ -12,6 +12,10 @@ STRICT PRONUNCIATION GATE (no "loose" passes): for every table word in a line, t
 and the heard word(s) at that position must be within 1 character of EITHER the real word (ocotillo) OR the intended respelling (ocotiyo) and have the
 same syllable count; "oto", "ocoteel", "kaya shito", "yeah see toe" fail. Spelled-out letters ("O T O", "L-A-H") fail too. The evidence (what was heard,
 which one it matched) is stored per take and in the summary ("pron").
+TABLE-WORD LINES also get word_metrics.py's checks per table word (no fragmentation, no silence inside the word, no spelled-out letters / caps tokens) and
+word_lead.py's leading-artifact check (burst/click/stray sound/long lead-in/early onset <30 ms/stray first token). They are folded into "strict": a take with a pause inside
+the word or an artifact before it cannot pass. A fixable artifact (burst, click, lead-in) also gets a trimmed copy <take>_lf.wav (8 ms fade-in, starts 35 ms before the word)
+that is scored as one more take. Per-take evidence: wm_fail, lead_flags.
 A take PASSES when (after trimming silence) word errors <= allowed, the strict gate holds and duration <= max_sec.
 NEVER run this while gen_lines.py (Chatterbox) is running: one heavy model at a time."""
 import argparse, glob, json, os, re, unicodedata, warnings; warnings.filterwarnings("ignore")
@@ -19,6 +23,7 @@ import difflib, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); from pron import spelling   # shared table value -> respelling for a voice (per-voice override > default)
 import numpy as np, librosa
 from faster_whisper import WhisperModel
+import word_metrics as wm, word_lead   # issue #28: timing checks (pause inside a word, fragments, spelled letters) and the leading-artifact check, for lines with table words
 p = argparse.ArgumentParser(); p.add_argument("--ids"); p.add_argument("--phase", type=int)
 p.add_argument("--model", default="small.en")
 p.add_argument("--takes-dir", default="audio-work/takes"); p.add_argument("--qa-dir", default="audio-work/qa")   # Spanish options: --takes-dir audio-work/takes-alt --qa-dir audio-work/qa-alt
@@ -135,7 +140,10 @@ for i in ids:
     l = L[i]; voice = l["character"]; ign = set(l.get("whisper_ignore", [])); ref_text = l.get("qa_text", l["text"]); ref = norm(LEAD.sub("", ref_text, count=1), ign)
     allowed = 0 if len(ref) < 6 else max(1, len(ref) // 10)
     res = []
-    for f in sorted(glob.glob(f"{a.takes_dir}/{i}/*.wav")):
+    tw = [k for k in PRON if re.search(r"\b" + k + r"\b", ref_text, re.I)]
+    files = sorted(glob.glob(f"{a.takes_dir}/{i}/*.wav")); fi = 0
+    while fi < len(files):
+        f = files[fi]; fi += 1
         y, sr = librosa.load(f, sr=16000); yt, _ = librosa.effects.trim(y, top_db=40); dur = len(yt) / sr
         x = np.pad(yt, (4000, 4000)).astype(np.float32)
         plain = None
@@ -144,11 +152,21 @@ for i in ids:
             hyp_t = "".join(s.text for s in segs).strip(); e = errors(ref_text, hyp_t, ign, voice)
             if plain is None: plain = hyp_t     # the unprompted transcript (the hint pass biases Whisper towards the written word)
             if e <= allowed or not hint(l): break
-        if any(re.search(r"\b" + k + r"\b", ref_text, re.I) for k in PRON): e = errors(ref_text, plain, ign, voice)   # table-word lines: judged on the UNPROMPTED transcript only (the hint can hide stray words)
+        if tw: e = errors(ref_text, plain, ign, voice)   # table-word lines: judged on the UNPROMPTED transcript only (the hint can hide stray words)
         pok, ev = pron_gate(LEAD.sub("", ref_text, count=1), plain, voice); sp_ = spelled(ref_text, plain)
-        strict = pok and not sp_ and not spelled(ref_text, hyp_t)
+        strict = pok and not sp_ and not spelled(ref_text, hyp_t); wm_fail = []; lead_flags = []
+        if tw:                                  # timing + leading-artifact checks (word timestamps from the same model)
+            words = wm.whisper_words(yt, m); sil = wm.silences(yt); plain_ref = " ".join(norm(LEAD.sub("", ref_text, count=1), ign))
+            for k in tw:
+                mm = wm.measure(words, sil, plain_ref, "".join(norm(k)), [], spelling(PRON[k], voice), dur); vv = wm.verdict(mm, dur, l.get("max_sec", 9), None)
+                wm_fail += [f"{k}: {n}" for key, n in (("b_frag", "fragmented"), ("c_nosilence", "pause inside the word"), ("d_noletters", "spelled-out letters")) if not vv[key]]
+            ld = wm.lead_of(f, words, plain_ref); lead_flags = ld["flags"]
+            if lead_flags and not f.endswith("_lf.wav") and any(fl.split()[0].rstrip(":") in ("burst", "lead_in", "click") for fl in lead_flags):
+                yn, srn = librosa.load(f, sr=None, mono=True); y2, info = word_lead.fix_lead(yn, srn, ld["word_start"])
+                lf = f[:-4] + "_lf.wav"; wm.write_wav(lf, y2, srn); files.append(lf)
+            strict = strict and not wm_fail and not lead_flags
         ok = e <= allowed and strict and 0.3 <= dur <= l.get("max_sec", 9) * TEMPO_MAX and float(np.abs(y).max()) > 0.02
-        res.append(dict(file=f, heard=hyp_t, heard_plain=plain, errors=e, allowed=allowed, sec=round(dur, 2), ok=ok, strict_ok=strict, pron=ev, spelled=sp_))
+        res.append(dict(file=f, heard=hyp_t, heard_plain=plain, errors=e, allowed=allowed, sec=round(dur, 2), ok=ok, strict_ok=strict, pron=ev, spelled=sp_, wm_fail=wm_fail, lead_flags=lead_flags))
     good = [r for r in res if r["ok"]]
     if good:
         med = float(np.median([r["sec"] for r in good]))

@@ -19,6 +19,7 @@ usage:
   .venv-tts/bin/python tools/audio/word_metrics.py --report [--dir audio-work/wordlab]   # report.md + winners (writes the table in docs/audio-lines.json)
   .venv-tts/bin/python tools/audio/word_metrics.py --selftest                            # synthetic clips: 200 ms gap inside a word is flagged, clean passes"""
 import argparse, collections, json, os, re, subprocess, sys, tempfile, unicodedata, wave, warnings; warnings.filterwarnings("ignore")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import difflib
 import numpy as np
 
@@ -90,10 +91,23 @@ def load_trim(f):
     y, _ = librosa.load(f, sr=SR); yt, _ = librosa.effects.trim(y, top_db=40)
     return y, yt
 
+def trim_offset(f):
+    """Seconds the 40 dB trim removed from the start of the 16 kHz clip (Whisper times are relative to the trimmed clip)."""
+    import librosa
+    y, _ = librosa.load(f, sr=SR); _, idx = librosa.effects.trim(y, top_db=40); return idx[0] / SR
+def lead_of(f, words, ref_text):
+    """Leading-artifact check (word_lead.py) for one take file. words = whisper_words() of its trimmed clip. -> check_lead() dict."""
+    import librosa, word_lead
+    y, sr = librosa.load(f, sr=None, mono=True); off = trim_offset(f)
+    t0 = words[0][1] + off if words else None
+    ht = [t for w, _, _ in words for t in toks(w)]
+    return word_lead.check_lead(y, sr, t0, word_lead.stray_token(ht, toks(ref_text), align, lev))
+
 _MODEL = None
-def whisper_words(yt):
+def whisper_words(yt, model=None):
     """-> [(word, start, end)] in trimmed-clip seconds (the 0.25 s pad is removed)."""
     global _MODEL
+    if model is not None: _MODEL = model
     if _MODEL is None:
         from faster_whisper import WhisperModel
         _MODEL = WhisperModel("small.en", device="cpu", compute_type="int8", cpu_threads=max(4, (os.cpu_count() or 8) // 2))
@@ -199,6 +213,17 @@ def run_lab(d):
         out.write(json.dumps(rec) + "\n"); out.flush(); n += 1
         print(n, it["file"], "|", m["transcript"], "|", [(w.get("match"), w.get("n_frag"), w.get("silence_inside")) for w in m["words"]], "spelled" if m["spelled"] else "", flush=True)
     print("DONE", n, "scored")
+def run_lead(d):
+    """Leading-artifact check over every take in <d>/manifest.jsonl -> <d>/lead.jsonl (needs Whisper for the first word's onset)."""
+    man = [json.loads(x) for x in open(f"{d}/manifest.jsonl")]; out_path = f"{d}/lead.jsonl"
+    done = {json.loads(x)["file"] for x in open(out_path)} if os.path.exists(out_path) else set(); out = open(out_path, "a"); n = 0
+    for it in man:
+        if it["file"] in done: continue
+        f = f"{d}/takes/{it['file']}"; y, yt = load_trim(f); words = whisper_words(yt); r = lead_of(f, words, plain_text(man, it)); n += 1
+        out.write(json.dumps(dict(file=it["file"], word=it["word"], voice=it["voice"], clip=it["clip"], cand=it["cand"], fmt=it["fmt"], spelling=it["spelling"], seed=it["seed"],
+                                  lead_ok=r["ok"], flags=r["flags"], word_start=r["word_start"], lead_start=r["lead_start"], details=r["details"], first_words=words[:3], heard=" ".join(w for w, _, _ in words))) + "\n"); out.flush()
+        if not r["ok"] or n % 50 == 0: print(n, it["file"], r["flags"], flush=True)
+    print("DONE", n, "checked")
 def load_metrics(d):
     rows = [json.loads(x) for x in open(f"{d}/metrics.jsonl")]
     groups = collections.defaultdict(list)
@@ -256,9 +281,11 @@ def run_old_pass():
         v = r["v"]; print(f"{r['id']:11} {r['dir']:12} {r['take']:12} old ok={r['old']['ok']!s:5} new ok={v['ok']!s:5} {''.join('Y' if v[k] else 'n' for k in ('a_match','b_frag','c_nosilence','d_noletters','e_dur','f_len'))} {v['heard']!r} {[w.get('silence_inside') for w in r['m']['words']]}")
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--lab", action="store_true"); ap.add_argument("--old", action="store_true"); ap.add_argument("--report", action="store_true")
+    ap = argparse.ArgumentParser(); ap.add_argument("--lab", action="store_true"); ap.add_argument("--lead", action="store_true"); ap.add_argument("--old", action="store_true"); ap.add_argument("--report", action="store_true")
     ap.add_argument("--selftest", action="store_true"); ap.add_argument("--old-pass", action="store_true"); ap.add_argument("--dir", default="audio-work/wordlab"); a = ap.parse_args()
-    if a.selftest: sys.exit(selftest())
+    if a.selftest:
+        import word_lead; sys.exit(selftest() or word_lead.selftest())
+    if a.lead: run_lead(a.dir)
     if a.lab: run_lab(a.dir)
     if a.old: run_old()
     if a.old_pass: run_old_pass()
