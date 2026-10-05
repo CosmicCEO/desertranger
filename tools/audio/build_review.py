@@ -2,7 +2,9 @@
 """Generate desertranger/audio/review.html: one page listing every shipped clip with a play button,
 script text, what Whisper heard, QA status, length, loudness and size, plus stitched radio-call demos.
 Open: http://localhost:8888/desertranger/audio/review.html"""
-import json, os, html, re, glob
+import json, os, html, re, glob, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from pron import apply as apply_pron
 OUT = "desertranger/audio"
 man = json.load(open(f"{OUT}/manifest.json"))["clips"]
 L = json.load(open("docs/audio-lines.json"))
@@ -23,15 +25,27 @@ W2IDS = {l["id"] for l in W2}
 # landing calls after a chain square play the quote, then the FINAL square's place name (pl-* clip): quote square -> final square
 CHAIN = {1: 20, 3: 21, 9: 8, 16: 10, 22: 32, 23: 13, 27: 17, 28: 33, 35: 39, 40: 34, 41: 12, 48: 39}
 def spoken(l):                                                    # the TTS text exactly as gen_lines.py sends it (shared table applied)
-    t = l.get("tts_text", l["text"])
-    for k, v in PRON.items(): t = re.sub(r"\b" + k + r"\b", v if re.search(r"[a-z]", v) else "-".join(p.capitalize() for p in v.split("-")), t, flags=re.I)   # same as gen_lines.speak()
-    return t
+    return apply_pron(l.get("tts_text", l["text"]), PRON)
 def qa_info(cid):
     f = f"audio-work/qa/{cid}.json"
     if not os.path.exists(f): return ""
     q = json.load(open(f)); m = re.search(r"s(\d+)", os.path.basename(q["pick"])); n = int(m.group(1)) if m else 0
     rung = "pass 1 (seeds 1-3)" if n <= 3 else "rung 1 (seeds 4-6)" if n <= 6 else "rung 2 (seeds 7-9, faster pacing)"
     return f"{q['status']}, take {os.path.basename(q['pick'])[:-4]}, {rung}, {len(q['takes'])} takes, {min(t['errors'] for t in q['takes'] if t['file'] == q['pick'])} word errors"
+def pick_take(cid):
+    f = f"audio-work/qa/{cid}.json"
+    if not os.path.exists(f): return None, None
+    q = json.load(open(f)); return q, next((t for t in q["takes"] if t["file"] == q["pick"]), None)
+def evidence(cid):
+    q, t = pick_take(cid)
+    if not t or not t.get("pron"): return ""
+    return "<br>".join((f"<span class=ok>&#10003;</span> {html.escape(e['word'])}: heard &lsquo;{html.escape(e['heard'])}&rsquo; = {e['match']}" if e["ok"]
+                        else f"<span class=over>&#10007; {html.escape(e['word'])}: heard &lsquo;{html.escape(e['heard'])}&rsquo;, NO MATCH</span>") for e in t["pron"])
+def fail_reason(cid):
+    q, t = pick_take(cid)
+    return (q or {}).get("fail_reason")
+def play_file(path, label="&#9654;"):
+    return f"<button onclick=\"playFile('{path}')\">{label}</button>"
 def play_id(cid, label="&#9654;"):
     return f"<button onclick=\"playId('{cid}')\">{label}</button>"
 def place_cell(sq):
@@ -46,7 +60,7 @@ h = [f"""<!doctype html><meta charset=utf-8><meta name=viewport content="width=d
 <title>Desert Ranger audio review</title><style>
 body{{font:15px/1.4 system-ui;margin:16px;background:#faf6ef;color:#2b2118}} table{{border-collapse:collapse;width:100%;margin-bottom:24px}}
 .wrap{{overflow-x:auto}} .badge{{background:#c4581f;color:#fff;border-radius:4px;padding:0 5px;font-size:11px;font-weight:600;margin-left:4px;white-space:nowrap}}
-.box{{background:#fff;border:1px solid #d8c7ad;border-radius:6px;padding:8px 12px;margin:12px 0}} .over{{color:#b00020;font-weight:600}} .w2 td{{background:#fff7e8}} td:target{{outline:2px solid #c4581f}} tr:target td{{outline:2px solid #c4581f}}
+.box{{background:#fff;border:1px solid #d8c7ad;border-radius:6px;padding:8px 12px;margin:12px 0}} .over{{color:#b00020;font-weight:600}} .ok{{color:#2a7d2a;font-weight:600}} .w2 td{{background:#fff7e8}} td:target{{outline:2px solid #c4581f}} tr:target td{{outline:2px solid #c4581f}}
 td,th{{border-bottom:1px solid #ddd;padding:4px 6px;text-align:left;vertical-align:top}} th{{background:#eadcc8;position:sticky;top:0}}
 .FAIL{{background:#ffd9d0}} .pass{{}} button{{font-size:15px}} textarea{{width:100%;height:2.2em}} .small{{color:#776;font-size:12px}}
 </style><h1>Desert Ranger audio review</h1>
@@ -54,7 +68,8 @@ td,th{{border-bottom:1px solid #ddd;padding:4px 6px;text-align:left;vertical-ali
 <button onclick="exportNotes()">Export notes (JSON)</button> <button onclick="playAll(this)">Play section-by-section</button></p>
 """]
 # ---- Wave 2: what changed ----
-GROUPS = [("Call sign R273 (was 273 / Ranger 1)", lambda l: l["wave2"]["change"].startswith("call sign R273")),
+GROUPS = [("Respelling fix (words that must follow the shared table)", lambda l: l["wave2"]["change"].startswith("respelling fix")),
+          ("Call sign R273 (was 273 / Ranger 1)", lambda l: l["wave2"]["change"].startswith("call sign R273")),
           ("R55 drawn out (Rrrrrrr, fiiive, fiiive)", lambda l: l["wave2"]["change"].startswith("R55")),
           ("Spanish words (shared respelling table)", lambda l: l["wave2"]["change"].startswith("Spanish")),
           ("New: Knock, knock nudge", lambda l: l["wave2"]["change"].startswith("new clip"))]
@@ -64,11 +79,15 @@ if W2:
     for title, f in GROUPS:
         ls = [l for l in W2 if f(l)]
         if ls: h.append(f"<b>{html.escape(title)}:</b> " + " ".join(f"<a href='#c-{l['id']}'>{l['id']}</a>" for l in ls) + "<br>")
-    h.append("</div><div class=wrap><table><tr><th>play</th><th>id</th><th>old text &rarr; new text</th><th>spoken (TTS input)</th><th>QA</th><th>length vs cap</th><th>Whisper heard</th></tr>")
+    nd = [l["id"] for l in W2 if l["id"] in man and man[l["id"]].get("qa") == "FAIL" and fail_reason(l["id"]) == "pronunciation/words"]
+    ln_only = [l["id"] for l in W2 if l["id"] in man and man[l["id"]].get("qa") == "FAIL" and l["id"] not in nd]
+    if nd: h.append("<div class=box style='border-color:#b00020'><b class=over>Needs your decision (strict pronunciation gate FAILED, least-bad take shipped):</b> " + " ".join(f"<a href='#c-{i}'>{i}</a>" for i in nd) + "</div>")
+    if ln_only: h.append("<div class=box><b>Words and pronunciation pass, clip longer than its cap (FAIL = length only):</b> " + " ".join(f"<a href='#c-{i}'>{i}</a>" for i in ln_only) + "</div>")
+    h.append("</div><div class=wrap><table><tr><th>play</th><th>id</th><th>old text &rarr; new text</th><th>spoken (TTS input)</th><th>QA</th><th>strict gate evidence (Whisper, unprompted)</th><th>length vs cap</th><th>Whisper heard</th></tr>")
     for title, f in GROUPS:
         ls = [l for l in W2 if f(l)]
         if not ls: continue
-        h.append(f"<tr><th colspan=7>{html.escape(title)}</th></tr>")
+        h.append(f"<tr><th colspan=8>{html.escape(title)}</th></tr>")
         for l in ls:
             cid = l["id"]; c = man.get(cid); w = l["wave2"]
             if not c: continue
@@ -81,9 +100,41 @@ if W2:
                 d = c["sec"] - w["old_sec"]; big = abs(d) > 0.3 and cid[:2] in ("pl", "q0", "q1", "q2", "q3", "q4", "q5")
                 ln_ += f"<br><span class=small>was {w['old_sec']} s ({d:+.2f} s)</span>" + (" <span class=over>&gt;0.3 s change</span>" if big else "")
             qs = html.escape(qa_info(cid)) or html.escape(c.get("qa", ""))
+            fr = fail_reason(cid) if c.get("qa") == "FAIL" else None
+            if fr: qs += f" <span class=badge style='background:#b00020'>FAIL: {html.escape(fr)}</span>"
             h.append(f"<tr class='w2 {html.escape(c.get('qa', ''))}' id='c-{cid}'><td>{play_id(cid)}</td><td>{cid}<span class=badge>Wave 2</span><br><span class=small>{html.escape(c.get('character', ''))}</span></td>"
-                     f"<td>{txt}</td><td>{sp}</td><td class=small>{qs}</td><td>{ln_}</td><td class=small>{html.escape(qa.get(cid, {}).get('heard', ''))}</td></tr>")
+                     f"<td>{txt}</td><td>{sp}</td><td class=small>{qs}</td><td class=small>{evidence(cid)}</td><td>{ln_}</td><td class=small>{html.escape(qa.get(cid, {}).get('heard', ''))}</td></tr>")
     h.append("</table></div><p class=small>Old versions for comparison are not shipped (they would add mp3s to desertranger/audio): the previous clips are in git history, e.g. <code>git show origin/main:desertranger/audio/chatter/ch01-1.mp3</code>.</p>")
+R55 = json.load(open(f"{OUT}/alt/r55/info.json")) if os.path.exists(f"{OUT}/alt/r55/info.json") else {}
+if R55:
+    h.append("<h2 id=r55opts>R55 call sign: options (pick one)</h2><div class=box>The drawn-out spelling (Rrrrrrr, fiiive) made Chatterbox stutter and was dropped. "
+             "<b>Option A (shipped)</b> is a plain, natural &ldquo;R five five&rdquo;. <b>Option B (not shipped, not in manifest.json, never uploaded)</b> slows only the call sign "
+             "(pitch-preserving time-stretch x1.54 of the same take; the split is inside the natural pause, then the normal radio chain). "
+             "I cannot listen: the splice and loudness checks below are objective, how it sounds is yours to judge.</div><div class=wrap><table><tr><th>id</th><th>Option A: plain R five five (shipped)</th>"
+             "<th>Option B: slowed call sign (not shipped)</th><th>checks for B</th></tr>")
+    for cid, i in R55.items():
+        a_ = man[cid]
+        h.append(f"<tr><td>{cid}<br><span class=small>{html.escape(a_.get('text',''))}</span></td><td>{play_id(cid)} {a_['sec']} s</td><td>{play_file(i['file'])} {i['sec']} s</td>"
+                 f"<td class=small>call sign {i['call_sign_sec_natural']} s &rarr; {i['call_sign_sec_stretched']} s; splice jump {i['splice_jump']} (clip p99.9 step {i['clip_p999_step']}) "
+                 f"{'ok' if i['splice_ok'] else '<span class=over>CLICK RISK</span>'}; LUFS call sign {i['lufs_call_sign']} / rest {i['lufs_rest']} (diff {i['lufs_diff']} dB)</td></tr>")
+    h.append("</table></div>")
+SPO = json.load(open("docs/spanish-options.json")) if os.path.exists("docs/spanish-options.json") else {}
+if SPO:
+    h.append("<h2 id=spanishopts>Spanish options (pick one per clip)</h2><div class=box>Each clip with a table word has up to three readings. <b>A</b> = what shipped before this run, "
+             "<b>B</b> = best take with your respelling (VAYA-SEE-TOE, CHOYA, OCOTIYO, OYA, YACKY), <b>C</b> = best take with an alternative respelling. "
+             "The shipped one is marked. &lsquo;score&rsquo; is a Whisper-based proxy (how closely the heard word matches the written word or your respelling), not a listening test. "
+             "Tell us the letter per clip; we apply it with <code>python3 tools/audio/apply_choice.py &lt;id&gt; &lt;A|B|C&gt;</code>. These files are in <code>audio/alt/spanish/</code>, not in manifest.json, never deployed.</div>"
+             "<div class=wrap><table><tr><th>clip</th><th>A: before</th><th>B: your respelling</th><th>C: alternative respelling</th></tr>")
+    for cid, o in SPO.items():
+        cells = []
+        for k in "ABC":
+            c = o["candidates"].get(k)
+            if not c: cells.append("<td class=small>(none)</td>"); continue
+            ship = o.get("shipped", "A") == k
+            cells.append(f"<td{' style=background:#e6f4e6' if ship else ''}>{play_file(c['mp3'])} <b>{k}</b>{' SHIPPED' if ship else ''}<br><span class=small>{c['mp3_sec']} s, score {c['score']}, errors {c['errors']}<br>"
+                         f"heard: {html.escape(c['heard'])}<br>{html.escape(c.get('respelling_sent', ''))}</span></td>")
+        h.append(f"<tr id='s-{cid}'><td>{cid}<br><span class=small>{html.escape(o['text'])}</span></td>{''.join(cells)}</tr>")
+    h.append("</table></div>")
 h.append("<h2>Pronunciation table</h2><div class=box>Shared respellings sent to the voice model on every generation (docs/audio-lines.json, <code>pronunciations</code>); "
          "the Whisper check accepts the written word or the respelling. New in Wave 2: " + ", ".join(f"<b>{k.upper()}</b> = {html.escape(PRON[k])}" for k in ("Vallecito", "Cholla", "Ocotillo", "Olla", "Yaqui") if k in PRON) +
          ".<br><span class=small>Existing: " + ", ".join(f"{k} = {html.escape(v)}" for k, v in PRON.items() if k not in ("Vallecito", "Cholla", "Ocotillo", "Olla", "Yaqui")) + "</span></div>")
@@ -111,6 +162,7 @@ for title, f in SECTIONS:
     h.append("</table></div>")
 h.append("""<script>
 var M=%s, ctx, cur;
+function playFile(f){ if(cur){cur.pause();} cur=new Audio(f); cur.play(); }
 function playId(id){ if(cur){cur.pause();} cur=new Audio(M[id].file); cur.play(); }
 function play(b){ if(cur){cur.pause();} cur=new Audio(b.dataset.src); cur.play(); }
 function buf(id){ return fetch(M[id].file).then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>ctx.decodeAudioData(a,ok,no))); }

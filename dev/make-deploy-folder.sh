@@ -3,6 +3,7 @@
 #   bash dev/make-deploy-folder.sh [SRC=desertranger] [OUT=deploy/desertranger]
 # Run it in a checkout that has the binary assets (unzipped assets zip, or dev/make-assets.sh), i.e. the lab Mac clone.
 #  - NEVER copies config.php (it holds the database login), the tests, or markdown files.
+#  - NEVER copies audio/alt/ (option clips for the review page only; they are not in manifest.json).
 #  - Keeps audio/review.html (the listening page) unless you run it with NO_REVIEW=1.
 #  - Refuses to overwrite an existing OUT folder. Writes OUT plus DEPLOY-MANIFEST.txt next to it (every file and its size).
 set -euo pipefail
@@ -22,7 +23,7 @@ if [ ! -f "$SRC/board/desert-ranger.json" ]; then
   else w "board/desert-ranger.json missing (api.php?a=board will fail)"; fi
 fi
 
-excl=(--exclude 'config.php' --exclude 'tests/' --exclude '*.md' --exclude '.DS_Store' --exclude '._*' --exclude '*.log' --exclude '.git*')
+excl=(--exclude 'config.php' --exclude 'tests/' --exclude '*.md' --exclude '.DS_Store' --exclude '._*' --exclude '*.log' --exclude '.git*' --exclude 'audio/alt/')   # audio/alt/ = listening options (R55 slowed call sign, Spanish-word alternatives): never played by the game, never uploaded
 [ "${NO_REVIEW:-0}" = "1" ] && excl+=(--exclude 'audio/review.html')
 mkdir -p "$OUT"
 rsync -a "${excl[@]}" "$SRC"/ "$OUT"/

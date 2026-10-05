@@ -8,17 +8,23 @@ a deliberately drawn-out word ("fiiive" is heard as "phi, I've"), so 1-10 heard 
 instead of the bracketed words (something must be heard there); everything after the bracket is checked as usual.
 Words in the shared docs/audio-lines.json "pronunciations" table are respelled for the TTS, so the check accepts either the
 written word or something close to the respelling (a run of 1-4 heard words that sounds like it) for them.
-A take PASSES when (after trimming silence) word errors <= allowed and duration <= max_sec.
+STRICT PRONUNCIATION GATE (no "loose" passes): for every table word in a line, the UNPROMPTED Whisper transcript is aligned to the script word by word
+and the heard word(s) at that position must be within 1 character of EITHER the real word (ocotillo) OR the intended respelling (ocotiyo) and have the
+same syllable count; "oto", "ocoteel", "kaya shito", "yeah see toe" fail. Spelled-out letters ("O T O", "L-A-H") fail too. The evidence (what was heard,
+which one it matched) is stored per take and in the summary ("pron").
+A take PASSES when (after trimming silence) word errors <= allowed, the strict gate holds and duration <= max_sec.
 NEVER run this while gen_lines.py (Chatterbox) is running: one heavy model at a time."""
 import argparse, glob, json, os, re, unicodedata, warnings; warnings.filterwarnings("ignore")
 import difflib
 import numpy as np, librosa
 from faster_whisper import WhisperModel
 p = argparse.ArgumentParser(); p.add_argument("--ids"); p.add_argument("--phase", type=int)
-p.add_argument("--model", default="small.en"); a = p.parse_args()
+p.add_argument("--model", default="small.en")
+p.add_argument("--takes-dir", default="audio-work/takes"); p.add_argument("--qa-dir", default="audio-work/qa")   # Spanish options: --takes-dir audio-work/takes-alt --qa-dir audio-work/qa-alt
+a = p.parse_args()
 D = json.load(open("docs/audio-lines.json")); L = {l["id"]: l for l in D["lines"]}; PRON = D.get("pronunciations", {})
 ids = a.ids.split(",") if a.ids else [i for i, l in L.items() if a.phase is None or l["phase"] == a.phase]
-ids = [i for i in ids if glob.glob(f"audio-work/takes/{i}/*.wav")]
+ids = [i for i in ids if glob.glob(f"{a.takes_dir}/{i}/*.wav")]
 m = WhisperModel(a.model, device="cpu", compute_type="int8", cpu_threads=max(4, (os.cpu_count() or 8) // 2))
 TEMPO_MAX = 1.15   # master.py may speed a clip up by at most this (pitch-preserving atempo) to fit max_sec
 def hint(l):      # SHORT prompt with only this line's proper nouns; a long vocabulary prompt makes Whisper hallucinate
@@ -66,6 +72,46 @@ def collapse(h, r, ign):
             if best: h[best[1]:best[1] + best[2]] = [wt]
             else: break
     return h
+def syl(w):
+    v = lambda i: w[i] in "aeiou" or (w[i] == "y" and i > 0 and not (i + 1 < len(w) and w[i + 1] in "aeiou"))
+    return sum(1 for i in range(len(w)) if v(i) and not (i > 0 and v(i - 1)))
+def lev(a, b):
+    d = list(range(len(b) + 1))
+    for i in range(1, len(a) + 1):
+        prev, d[0] = d[0], i
+        for j in range(1, len(b) + 1):
+            cur = min(d[j] + 1, d[j - 1] + 1, prev + (a[i - 1] != b[j - 1])); prev, d[j] = d[j], cur
+    return d[len(b)]
+def align(r, h):
+    """spans[i] = the hyp tokens aligned to ref token i (insertions after a ref token are attached to it)."""
+    n, m_ = len(r), len(h); D = [[0] * (m_ + 1) for _ in range(n + 1)]
+    for i in range(n + 1): D[i][0] = i
+    for j in range(m_ + 1): D[0][j] = j
+    for i in range(1, n + 1):
+        for j in range(1, m_ + 1): D[i][j] = min(D[i - 1][j] + 1, D[i][j - 1] + 1, D[i - 1][j - 1] + (r[i - 1] != h[j - 1]))
+    spans = [[] for _ in range(n)]; i, j = n, m_
+    while i > 0 or j > 0:
+        if i > 0 and j > 0 and D[i][j] == D[i - 1][j - 1] + (r[i - 1] != h[j - 1]): spans[i - 1].insert(0, h[j - 1]); i -= 1; j -= 1
+        elif j > 0 and (i == 0 or D[i][j] == D[i][j - 1] + 1):
+            if i > 0: spans[i - 1].append(h[j - 1])
+            j -= 1
+        else: i -= 1
+    return spans
+def spelled(text, hyp_t):
+    run = lambda t: re.search(r"(?<![A-Za-z0-9'])[A-Za-z](?:[^A-Za-z0-9']+[A-Za-z](?![A-Za-z0-9'])){1,}", t)
+    return bool(run(hyp_t)) and not run(text)       # a script that itself spells letters ("V I P") is exempt
+def pron_gate(text, hyp_t):
+    """-> (ok, evidence) for every table word of the script line."""
+    r = norm(text); h = norm(hyp_t); sp_ = align(r, h); ev = []
+    for k, v in PRON.items():
+        if not re.search(r"\b" + k + r"\b", text, re.I): continue
+        wt, sp = "".join(norm(k)), "".join(norm(v))
+        for idx in [x for x, t in enumerate(r) if t == wt]:
+            span = sp_[idx]; j = "".join(span); sy = sum(syl(t) for t in span); m_ = None
+            for cand, label in ((wt, "written"), (sp, "respelling")):
+                if span and lev(j, cand) <= 1 and sy == syl(cand): m_ = label; break
+            ev.append(dict(word=k, heard=" ".join(span), match=m_, ok=m_ is not None))
+    return all(e["ok"] for e in ev), ev
 LEAD = re.compile(r"^\s*\[[^\]]*\]\s*[,.;:]?\s*")
 def errors(text, hyp_t, ign):
     lead = LEAD.match(text); text = text[lead.end():] if lead else text
@@ -82,30 +128,37 @@ def edits(r, h):
         for j in range(1, len(h) + 1):
             cur = min(d[j] + 1, d[j - 1] + 1, prev + (r[i - 1] != h[j - 1])); prev, d[j] = d[j], cur
     return d[len(h)]
-os.makedirs("audio-work/qa", exist_ok=True)
-summ = json.load(open("audio-work/qa/summary.json")) if os.path.exists("audio-work/qa/summary.json") else {}
+os.makedirs(a.qa_dir, exist_ok=True)
+summ = json.load(open(f"{a.qa_dir}/summary.json")) if os.path.exists(f"{a.qa_dir}/summary.json") else {}
 for i in ids:
     l = L[i]; ign = set(l.get("whisper_ignore", [])); ref_text = l.get("qa_text", l["text"]); ref = norm(LEAD.sub("", ref_text, count=1), ign)
     allowed = 0 if len(ref) < 6 else max(1, len(ref) // 10)
     res = []
-    for f in sorted(glob.glob(f"audio-work/takes/{i}/*.wav")):
+    for f in sorted(glob.glob(f"{a.takes_dir}/{i}/*.wav")):
         y, sr = librosa.load(f, sr=16000); yt, _ = librosa.effects.trim(y, top_db=40); dur = len(yt) / sr
         x = np.pad(yt, (4000, 4000)).astype(np.float32)
+        plain = None
         for prompt in (None, hint(l)):          # pass 1: no prompt; pass 2 (only if needed): proper-noun hint
             segs, _ = m.transcribe(x, beam_size=5, language="en", initial_prompt=prompt, condition_on_previous_text=False)
             hyp_t = "".join(s.text for s in segs).strip(); e = errors(ref_text, hyp_t, ign)
+            if plain is None: plain = hyp_t     # the unprompted transcript (the hint pass biases Whisper towards the written word)
             if e <= allowed or not hint(l): break
-        ok = e <= allowed and 0.3 <= dur <= l.get("max_sec", 9) * TEMPO_MAX and float(np.abs(y).max()) > 0.02
-        res.append(dict(file=f, heard=hyp_t, errors=e, allowed=allowed, sec=round(dur, 2), ok=ok))
+        if any(re.search(r"\b" + k + r"\b", ref_text, re.I) for k in PRON): e = errors(ref_text, plain, ign)   # table-word lines: judged on the UNPROMPTED transcript only (the hint can hide stray words)
+        pok, ev = pron_gate(LEAD.sub("", ref_text, count=1), plain); sp_ = spelled(ref_text, plain)
+        strict = pok and not sp_ and not spelled(ref_text, hyp_t)
+        ok = e <= allowed and strict and 0.3 <= dur <= l.get("max_sec", 9) * TEMPO_MAX and float(np.abs(y).max()) > 0.02
+        res.append(dict(file=f, heard=hyp_t, heard_plain=plain, errors=e, allowed=allowed, sec=round(dur, 2), ok=ok, strict_ok=strict, pron=ev, spelled=sp_))
     good = [r for r in res if r["ok"]]
     if good:
         med = float(np.median([r["sec"] for r in good]))
         pick = min(good, key=lambda r: (r["errors"], abs(r["sec"] - med)))
-    else:
-        pick = min(res, key=lambda r: (r["errors"], r["sec"]))
-    out = dict(id=i, text=ref_text, status="pass" if good else "FAIL", pick=pick["file"], takes=res)
-    json.dump(out, open(f"audio-work/qa/{i}.json", "w"), indent=1)
-    summ[i] = dict(status=out["status"], pick=pick["file"], heard=pick["heard"], errors=pick["errors"], sec=pick["sec"])
-    print(i, out["status"], pick["errors"], pick["sec"], "|", pick["heard"], flush=True)
-json.dump(summ, open("audio-work/qa/summary.json", "w"), indent=1)
+    else:       # nothing passes: prefer takes whose words AND pronunciation are right (length-only failures), shortest first
+        lenonly = [r for r in res if r["errors"] <= r["allowed"] and r["strict_ok"]]
+        pick = min(lenonly, key=lambda r: r["sec"]) if lenonly else min(res, key=lambda r: (r["errors"], not r["strict_ok"], r["sec"]))
+    reason = None if good else ("length only" if any(r["errors"] <= r["allowed"] and r["strict_ok"] for r in res) else "pronunciation/words")
+    out = dict(id=i, text=ref_text, status="pass" if good else "FAIL", fail_reason=reason, pick=pick["file"], takes=res)
+    json.dump(out, open(f"{a.qa_dir}/{i}.json", "w"), indent=1)
+    summ[i] = dict(status=out["status"], fail_reason=reason, pick=pick["file"], heard=pick["heard"], heard_plain=pick.get("heard_plain"), errors=pick["errors"], sec=pick["sec"], pron=pick.get("pron", []))
+    print(i, out["status"], reason or "", pick["errors"], pick["sec"], "|", pick["heard"], "|", "; ".join(f"{e['word']}: heard '{e['heard']}' -> {e['match'] or 'NO MATCH'}" for e in pick.get("pron", [])), flush=True)
+json.dump(summ, open(f"{a.qa_dir}/summary.json", "w"), indent=1)
 print("FAILS:", [k for k, v in summ.items() if v["status"] != "pass"])

@@ -7,15 +7,20 @@ writes audio-work/takes/<id>/s<seed>.wav (24 kHz mono) + takes.jsonl. Resumable:
 import argparse, json, os, re, sys, time, warnings; warnings.filterwarnings("ignore")
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
 import torch, torchaudio as ta
+from pron import apply as apply_pron      # speak(): no ALL-CAPS syllable ever reaches Chatterbox (it spells them letter by letter)
 from chatterbox.tts import ChatterboxTTS
 p = argparse.ArgumentParser()
 p.add_argument("--phase", type=int); p.add_argument("--ids"); p.add_argument("--chars")
 p.add_argument("--takes", type=int, default=3); p.add_argument("--seed0", type=int, default=1)
 p.add_argument("--device", default="auto"); p.add_argument("--alt", action="store_true")
 p.add_argument("--pron", action="store_true", help="substitute 'pronounce' respellings into the TTS text")
+p.add_argument("--pron-alt", action="store_true", help="use the ALTERNATIVE respellings (docs/audio-lines.json pronunciation_alternatives) on top of the shared table; "
+                                                       "takes go to audio-work/takes-alt/<id>/ (never picked by qa_check/master; used for the Spanish options)")
 p.add_argument("--ex", type=float); p.add_argument("--cfg", type=float); p.add_argument("--force", action="store_true")
 a = p.parse_args()
-D = json.load(open("docs/audio-lines.json")); L = D["lines"]; PRON = D.get("pronunciations", {}); CAST = json.load(open("tools/audio/cast.json"))
+D = json.load(open("docs/audio-lines.json")); L = D["lines"]; PRON = dict(D.get("pronunciations", {})); CAST = json.load(open("tools/audio/cast.json"))
+if a.pron_alt: PRON.update(D.get("pronunciation_alternatives", {}))
+TAKES = "audio-work/takes-alt" if a.pron_alt else "audio-work/takes"
 sel = [l for l in L if (a.phase is None or l["phase"] == a.phase)
        and (not a.ids or l["id"] in a.ids.split(","))
        and (not a.chars or l["character"] in a.chars.split(","))]
@@ -25,17 +30,10 @@ def load(dev):
 dev = a.device if a.device != "auto" else ("mps" if torch.backends.mps.is_available() else "cpu")
 m = load(dev); print("device", dev, "lines", len(sel), flush=True)
 log = open("audio-work/takes.jsonl", "a")
-def speak(v):
-    """All-caps respellings ("OYA", "VAYA-SEE-TOE") are read letter by letter by Chatterbox ("O.Y.A.", heard in the Wave 2 takes);
-    send them Title-Cased per hyphen part ("Oya", "Vaya-See-Toe") so they are read as words. Mixed-case respellings
-    (kah-BAY-sahs: caps = stress) are sent as written."""
-    return v if re.search(r"[a-z]", v) else "-".join(p.capitalize() for p in v.split("-"))
 def tts_text(l):
     t = l.get("tts_text", l["text"])
-    if a.pron:   # per-line retake respellings first (they win over the shared table)
-        for k, v in l.get("pronounce", {}).items(): t = re.sub(r"\b" + k + r"\b", v, t, flags=re.I)
-    for k, v in PRON.items(): t = re.sub(r"\b" + k + r"\b", speak(v), t, flags=re.I)   # shared table: EVERY generation
-    return t
+    if a.pron: t = apply_pron(t, l.get("pronounce", {}))   # per-line retake respellings first (they win over the shared table)
+    return apply_pron(t, PRON)                             # shared table: EVERY generation
 for l in sel:
     c = CAST[l["character"]]
     refs = [f"audio-work/refs/{r}.wav" for r in c["refs"]] if "refs" in c else \
@@ -44,10 +42,10 @@ for l in sel:
     ex = a.ex if a.ex is not None else g.get("ex", c["ex"]); cfg = a.cfg if a.cfg is not None else g.get("cfg", c["cfg"])
     cap = l.get("max_sec", 3.0) * 1.8 + 0.5           # runaway guard (Chatterbox occasionally babbles on)
     for ri, ref in enumerate(refs):
-        os.makedirs(f"audio-work/takes/{l['id']}", exist_ok=True)
+        os.makedirs(f"{TAKES}/{l['id']}", exist_ok=True)
         for s in range(a.seed0, a.seed0 + a.takes):
-            tag = f"s{s}" + (f"_v{ri}" if len(refs) > 1 else "") + ("_alt" if a.alt else "") + ("_pron" if a.pron else "")
-            fn = f"audio-work/takes/{l['id']}/{tag}.wav"
+            tag = f"s{s}" + (f"_v{ri}" if len(refs) > 1 else "") + ("_alt" if a.alt else "") + ("_pron" if a.pron else "") + ("_palt" if a.pron_alt else "")
+            fn = f"{TAKES}/{l['id']}/{tag}.wav"
             if os.path.exists(fn) and not a.force: continue
             torch.manual_seed(s); t0 = time.time()
             try:
