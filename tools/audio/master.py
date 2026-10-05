@@ -86,6 +86,11 @@ for i in ids:
         d0 = dur(f"{WORK}/{i}.trim.wav"); mx = l.get("max_sec", 9)
         tempo = f"atempo={min(1.15, d0 / mx):.3f}," if d0 > mx else ""      # pitch-preserving speed-up, max +15 %
         ff("-i", f"{WORK}/{i}.trim.wav", "-af", f"{tempo}{RADIO if t == 'radio' else CLEAN}", "-ac", "1", tmp)
+        if l.get("lead_sfx"):   # nudge-01: synthesized knock (tools/audio/make_nudge.py) + lead_gap (default 0.12 s), then the voice + tail_pad (already on the chain)
+            sfx = f"{WORK}/{l['lead_sfx']}.wav"
+            if not os.path.exists(sfx): print("skip (run make_nudge.py first)", i); continue
+            ff("-i", sfx, "-i", tmp, "-filter_complex", f"[0]aresample=48000,apad=pad_dur={l.get('lead_gap', 0.12)}[a];[1]aresample=48000,apad=pad_dur={l.get('tail_pad', 0)}[b];[a][b]concat=n=2:v=0:a=1",
+               "-ac", "1", f"{WORK}/{i}.lead.wav"); tmp = f"{WORK}/{i}.lead.wav"
     r = norm_mp3(tmp, f"{OUT}/{l['file']}", TARGET[t], KBPS[t])
     register(i, l["file"], character=l["character"], text=l["text"], square=l["square"], kind=l["kind"], treatment=t,
-             qa=q["status"], take=os.path.basename(q["pick"]), **r)
+             qa=q["status"], take=os.path.basename(q["pick"]), **({"note": "synthesized double wood-knock + voice"} if l.get("lead_sfx") else {}), **r)
