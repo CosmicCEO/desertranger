@@ -315,8 +315,10 @@ lobby** after the finish) returns the same room to a clean lobby.
 
 Saved per device in `localStorage`; 🔊 mutes everything.
 - **Ambience** on/off and **Ambience volume** (default **20 %**, `dr_amb_vol`): the desert bed, the critters and the background
-  radio chatter. It plays in the **lobby** as well as in the game (from the audio-unlock tap, never on the home screen). The board
-  view is 6 dB louder. The background chatter scales with this slider.
+  radio chatter. It starts on the **first tap** (on the home screen too, then the lobby and the game) and keeps playing after a
+  win; the bed starts within a second or two and the critters and chatter load behind it. The board view is 6 dB louder. The
+  background chatter scales with this slider. If the phone pauses the audio (call, lock screen, another app) a **"Sound paused.
+  Tap here to resume."** bar appears and any tap resumes it; the bed restarts.
 - **Game sounds volume** (default **50 %**, `dr_game_vol`): the turn-based sounds, meaning dice, landing radio calls, quotable
   lines and the crowd cheer/aww. 100 % is the level the clips were mastered at; 50 % is half of that.
 - **Radio chatter** on/off (`dr_radio_on`): off = no landing calls, quotables or background chatter (dice and crowd stay).
@@ -397,7 +399,7 @@ The code at tag `milestone-1`, served by MAMP on the lab Mac:
 ## Known gaps / not yet done
 - **Verified on one real iPhone only** (the solo demo, over Wi-Fi). Not yet verified: **two or more real phones playing together**, the original v1 criterion "laugh and sad cues sound simultaneous on at least 3 phones, by ear", Android, Safari on a computer, Bluetooth speaker latency, and cellular. Cross-device clock sync is implemented but has only been exercised on one machine.
 - **The sounds have not been fully auditioned.** The three CC0 critter clips (crow, coyote, hawk), the plant-name nature walks (chatter exchanges 9 to 12) and the stitched radio calls were checked by loudness, length and speech recognition only. 55 clips run longer than their length caps (words correct), and the written lines and the sound files still need a perfecting pass.
-- **iPhone sound polish (open issues #5 to #8):** the background sound starts 20 to 30 s late; it stops 30 s after a win instead of continuing; sound may stay off after leaving and returning to the page; and a ghost shadow shows behind pieces moving up (a change was made, it needs a phone check). The iPhone silent switch mutes the game, as intended.
+- **iPhone sound polish (Wave 2, needs a phone check):** the late start (#6), the stop after a win (#7) and sound after returning to the page (#8) were changed in Wave 2 and tested in headless Chrome only (it cannot produce the iPhone's "interrupted" state; that is simulated). They need a real iPhone check. The ghost shadow behind pieces (#5) has had a drawing change and still needs a phone check. The iPhone silent switch mutes the game, as intended.
 - **Not tested on the Network Solutions host itself (the largest open item).** The account's reported specs (Oct 3, 2026): Debian, **PHP 7.4.10**, **MySQL 5.7.44**, SFTP on a non-standard port, CGI active. That is the stack already emulated in Docker (PHP 7.4 + MySQL 5.7.44), so version compatibility is expected to be fine. What is still unknown: the `.htaccess` limits, the database host name and connection limits, HTTPS, and the final URL and folder.
   The `.htaccess` options (`Options -Indexes`, `FilesMatch`) may be restricted on some shared plans.
   If you get a 500 error, remove the offending lines. Since then the code was also checked on the Mac under PHP 7.4.33 (syntax of every PHP file, `rules_test.php` 45/45, `play_at_test.php` 4/4).

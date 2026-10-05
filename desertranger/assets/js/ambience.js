@@ -1,14 +1,15 @@
 /*
  * ambience.js - local-only desert sound: a quiet looping bed, random critter one-shots, and occasional
- * background radio chatter (Dispatch <-> R55 / Ranger 273). Never synchronized between devices.
+ * background radio chatter (Dispatch <-> R55 / R273). Never synchronized between devices.
  *
- * Starts after the audio-unlock tap, in the LOBBY as well as in the game (default volume 20 %); the bed, critters and
- * chatter lines are "tier C": fetched about 20 s after the tap at the latest (browser idle time), never on the home screen.
+ * Starts on the first tap (the audio unlock): on the HOME screen, in the LOBBY and in the game (default volume 20 %).
+ * The bed is fetched first and starts within a second or two of the tap; critters and chatter lines load behind it.
+ * It keeps playing after a win and when the room goes back to a lobby; it stops only when the page is left.
  *   bed        crossfade-looped (1.5 s equal-power) on the amb bus; ducks under cues/voice (see sync.js)
- *   critters   one every 20-60 s, random -8..0 dB, random pan, never the same twice, rattle is rare
- *   chatter    first exchange >= 90 s after unlock, then every 150-330 s; behind the "Radio chatter" toggle;
- *              postponed 20-40 s if a game cue is playing; ducked to -18 dB if one arrives mid-exchange
- * Timers stop 30 s after the game finishes (and start again if the room goes back to a lobby, e.g. a demo ended).
+ *   critters   one every CRITTER_MIN-CRITTER_MAX s, random -8..0 dB, random pan, never the same twice, rattle is rare
+ *   chatter    first exchange >= FIRST_CHATTER_MS after unlock, then every CHATTER_MIN-CHATTER_MAX s; behind the
+ *              "Radio chatter" toggle; postponed 20-40 s if a game cue is playing; ducked to -18 dB if one arrives mid-exchange
+ * If the phone pauses the audio (call, lock screen, another app) sync.js reports it and resume() restarts the bed.
  */
 (function () {
   'use strict';
@@ -18,12 +19,15 @@
     { stem: 'amb-coyote', w: 1 }, { stem: 'amb-quail', w: 1 }, { stem: 'amb-hawk', w: 1 }, { stem: 'amb-truck', w: 1 }
   ];
   var BURRO = { 1: true, 3: true, 6: true, 7: true };   // exchanges set at Burro Bend (tie-in: Ocotillo Wells, square 12)
-  var FIRST_CHATTER_MS = 90000;
+  // Tuning (seconds unless named ms): a little livelier than the first release.
+  var CRITTER_MIN = 15, CRITTER_MAX = 45;
+  var CHATTER_MIN = 100, CHATTER_MAX = 240;
+  var FIRST_CHATTER_MS = 60000, FIRST_CHATTER_JITTER = 20;
   var VOICE_AT = 0.1, SQ_GAP = 0.02;
 
   var st = {
-    active: false, finished: false, startedC: false, unlockAt: null,
-    bed: null, critterTimer: null, chatterTimer: null, stopTimer: null,
+    active: false, startedC: false, unlockAt: null, hadRunning: false,
+    bed: null, critterTimer: null, chatterTimer: null,
     lastCritter: null, lastExchange: null, landedAt: null, landedSq: null, hazard: false,
     nextChatterAt: null, chatterCount: 0, critterCount: 0
   };
@@ -57,7 +61,7 @@
   // ---------------------------------------------------------------- bed + critters
   function startBed() {
     var S = snd();
-    if (st.bed || !ready() || !S.settings.ambOn || st.finished || !S.buffers['amb-bed-01']) return;
+    if (st.bed || !ready() || !S.settings.ambOn || !S.buffers['amb-bed-01']) return;
     st.bed = S.loopBed(S.buffers['amb-bed-01'], { bus: 'amb', gain: 1, xfade: 1.5, fadeIn: 1.5 });
     scheduleCritter();
   }
@@ -68,12 +72,12 @@
 
   function scheduleCritter() {
     clearTimeout(st.critterTimer);
-    if (!st.bed || st.finished) return;
-    st.critterTimer = setTimeout(playCritter, rand(20, 60) * 1000);
+    if (!st.bed) return;
+    st.critterTimer = setTimeout(playCritter, rand(CRITTER_MIN, CRITTER_MAX) * 1000);
   }
   function playCritter() {
     var S = snd();
-    if (!ready() || !st.bed || st.finished) return;
+    if (!ready() || !st.bed) return;
     if (!document.hidden && !S.muted) {
       var pool = critterIds().filter(function (c) { return c.id !== st.lastCritter; });
       pool.forEach(function (c) { c.ww = c.w * (st.hazard && c.stem === 'amb-rattle' ? 4 : 1); });   // local tie-in: rattle near hazards
@@ -92,7 +96,7 @@
   // ---------------------------------------------------------------- background chatter
   function scheduleChatter(delayMs) {
     clearTimeout(st.chatterTimer);
-    if (st.finished || !st.startedC) return;
+    if (!st.startedC) return;
     st.nextChatterAt = Date.now() + delayMs;
     st.chatterTimer = setTimeout(tryChatter, delayMs);
   }
@@ -100,7 +104,7 @@
 
   function tryChatter() {
     var S = snd();
-    if (!ready() || st.finished) return;
+    if (!ready()) return;
     if (!S.settings.radioOn) { postpone(60, 120); return; }                 // toggle off: check again later
     if (S.muted || document.hidden) { postpone(20, 40); return; }
     var now = Date.now();
@@ -116,7 +120,7 @@
     if (!playExchange(+chosen, ex[chosen])) { postpone(20, 40); return; }
     st.lastExchange = +chosen;
     st.chatterCount++;
-    scheduleChatter(rand(150, 330) * 1000);
+    scheduleChatter(rand(CHATTER_MIN, CHATTER_MAX) * 1000);
   }
 
   /** Click -> line over hiss -> squelch for each line, 350-600 ms apart. Returns false if a game cue is in the way. */
@@ -139,44 +143,40 @@
     return true;
   }
 
-  // ---------------------------------------------------------------- loading (tier C) and lifecycle
-  function loadTierC() {
+  // ---------------------------------------------------------------- loading and lifecycle
+  /** The bed first (one clip), start it at once, then load the critters and chatter lines behind it. */
+  function maybeStart() {
     var S = snd();
-    if (st.startedC || !ready() || !st.active || st.finished) return;
-    st.startedC = true;
+    if (!ready() || !st.active || st.startedC) return;
+    st.startedC = true;   // set at once: every poll calls this, and it must not stack work
     S.manifestReady().then(function (m) {
-      var ids = Object.keys(m).filter(function (id) { return m[id].kind === 'amb' || m[id].kind === 'critter' || m[id].kind === 'chatter'; });
-      ids.sort(function (a, b) { return (m[a].kind === 'amb' ? 0 : 1) - (m[b].kind === 'amb' ? 0 : 1); });   // bed first
+      return S.clip('amb-bed-01').then(function () { return m; });
+    }).then(function (m) {
+      if (S.settings.ambOn) startBed();
+      var ids = Object.keys(m).filter(function (id) {
+        return id !== 'amb-bed-01' && (m[id].kind === 'amb' || m[id].kind === 'critter' || m[id].kind === 'chatter');
+      });
       return S.preload(ids, 4);
     }).then(function () {
-      if (S.settings.ambOn) startBed();
       var since = st.unlockAt === null ? 0 : Date.now() - st.unlockAt;
-      scheduleChatter(Math.max(FIRST_CHATTER_MS - since, 5000) + rand(0, 30) * 1000);
+      scheduleChatter(Math.max(FIRST_CHATTER_MS - since, 5000) + rand(0, FIRST_CHATTER_JITTER) * 1000);
     });
-  }
-  function maybeStart() {
-    if (!ready() || !st.active || st.finished || st.startedC) return;
-    // "20 s after start, or idle": wait for an idle moment, but never longer than 20 s.
-    if (window.requestIdleCallback) window.requestIdleCallback(loadTierC, { timeout: 20000 });
-    else setTimeout(loadTierC, 20000);
   }
 
   function setActive(on) {
     st.active = !!on;
-    if (on && (st.stopTimer || st.finished)) {   // the room is a lobby/game again after a finished one: wind back up
-      clearTimeout(st.stopTimer); st.stopTimer = null; st.finished = false; st.startedC = false;
-    }
     if (on) maybeStart();
   }
 
-  /** Game finished: let everything wind down, then stop all timers 30 s later. */
-  function finish() {
-    if (st.finished || st.stopTimer) return;
-    st.stopTimer = setTimeout(function () {
-      st.finished = true;
-      stopBed();
-      clearTimeout(st.chatterTimer); st.chatterTimer = null;
-    }, 30000);
+  /** Kept for old callers: the background sound no longer stops after a win. */
+  function finish() {}
+
+  /** The phone paused the audio and it is running again: restart the bed (its timer may have been frozen). */
+  function resume() {
+    if (!st.bed) { startBed(); return; }
+    st.bed.stop(0.15); st.bed = null;
+    clearTimeout(st.critterTimer); st.critterTimer = null;
+    startBed();
   }
 
   function noteLanding(sq) { st.landedSq = sq; st.landedAt = Date.now(); }
@@ -186,6 +186,11 @@
     var S = snd();
     if (!S) return;
     S.listeners.push(function () { st.unlockAt = Date.now(); maybeStart(); });
+    S.stateListeners.push(function (state) {
+      if (state !== 'running') return;
+      if (st.hadRunning) resume();   // back from a pause (call, lock screen, another app)
+      st.hadRunning = true;
+    });
     S.settingListeners.push(function (k, v) {
       if (k === 'ambOn') { if (v) startBed(); else stopBed(); }
       if (k === 'radioOn' && v && st.startedC && !st.chatterTimer) scheduleChatter(rand(60, 120) * 1000);
@@ -193,7 +198,7 @@
   })();
 
   window.DRAmbience = {
-    setActive: setActive, finish: finish, noteLanding: noteLanding, setMyPos: setMyPos,
+    setActive: setActive, finish: finish, resume: resume, noteLanding: noteLanding, setMyPos: setMyPos,
     chatterNow: tryChatter,   // test/debug hook: run the chatter scheduler's decision now
     state: st,
     debugLine: function () {

@@ -79,6 +79,9 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await sleep(1500);
   check('nothing audio is fetched on the home screen before the first tap', counts('host').A === undefined && counts('host').B === undefined && counts('host').crowd === undefined && counts('host').manifest === undefined, counts('host'));
 
+  await A.tap('#in-name');   // a touch on the home screen is the audio-unlock gesture: desert sound starts on the home screen too
+  let hw = 0; while (!(await A.evaluate(() => !!window.DRAmbience.state.bed)) && hw < 8000) { await sleep(250); hw += 250; }
+  check('home screen: the first touch starts the background sound within ' + hw + ' ms (bed first, <= 5 s)', hw <= 5000 && await A.evaluate(() => !!window.DRAmbience.state.bed && !document.getElementById('screen-home').hidden), hw);
   await A.fill('#in-name', 'Marigold');
   await A.click('.vehicle:has(img[src*="bronco-orange"])');
   await A.click('#btn-create');
@@ -88,8 +91,8 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   let c = counts('host');
   check('after the unlock tap: manifest + tier A (radio fx, dice) + crowd clips load', c.manifest >= 1 && c.A >= 10 && c.crowd >= 2, c);
   check('lobby: no tier B (the radio-call voices) yet; the background sound (tier C) may already load', !c.B, c);
-  let lw = 0; while (!(await A.evaluate(() => !!window.DRAmbience.state.bed)) && lw < 30000) { await sleep(500); lw += 500; }
-  check('the background sound plays in the LOBBY (before any game has started), within ' + Math.round(lw / 1000) + ' s', await A.evaluate(() => !!window.DRAmbience.state.bed), lw);
+  let lw = 0; while (!(await A.evaluate(() => !!window.DRAmbience.state.bed)) && lw < 8000) { await sleep(250); lw += 250; }
+  check('the background sound is still playing in the LOBBY (before any game has started)', await A.evaluate(() => !!window.DRAmbience.state.bed), lw);
   check('lobby background volume defaults to 20 % (bus gain 0.28)', await A.evaluate(() => Math.abs(DRSound.bus.amb.gain.value - 0.28) < 0.01 && DRSound.settings.ambVol === 20));
 
   const B = await open('guest', phone);
@@ -120,8 +123,8 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   const wantB = Object.values(man).filter(m => ['opener', 'place', 'quotable'].includes(m.kind)).length;   // only clips that exist in the manifest are requested
   check('game active: tier B (openers, place names, quotables) is fetched - every shipped one, nothing else (' + wantB + ' clips)', c.B === wantB, { got: c.B, want: wantB });
   check('tier B is throttled: never more than 4 clips in flight at once (peak ' + inflightB.host.max + ')', inflightB.host.max >= 1 && inflightB.host.max <= 4, inflightB.host);
-  let waited = 0; while (!counts('host').C && waited < 30000) { await sleep(500); waited += 500; }
-  check('tier C (ambience, chatter) is fetched within ~20 s of the start', !!counts('host').C && Date.now() - tStart < 32000, { waited, c: counts('host') });
+  const waited = 0;
+  check('tier C (ambience, chatter) was fetched at the unlock tap, long before the game starts', !!counts('host').C && Date.now() - tStart < 32000, { c: counts('host') });
   await sleep(2500);
   const recA0 = await rec(A);
   check('ambience bed is playing on the phone (bed started, amb bus alive)', await A.evaluate(() => !!window.DRAmbience.state.bed), null);
@@ -221,7 +224,7 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await sleep(500);
   const ch = (await rec(A)).at.slice(nAt).filter(x => x.tag === 'chatter');
   check('background chatter plays (click + line + squelch per line) on the chatter bus', ch.length >= 3 && ch.every(x => x.bus === 'chatter' && x.ok), ch.length);
-  check('chatter follows the ambience slider (0.35 x ambience volume / 60)', await A.evaluate(() => Math.abs(DRSound.bus.chatter.gain.value - 0.35 * DRSound.settings.ambVol / 60) < 1e-6));
+  check('chatter follows the ambience slider (0.5 x ambience volume / 60)', await A.evaluate(() => Math.abs(DRSound.bus.chatter.gain.value - 0.5 * DRSound.settings.ambVol / 60) < 1e-6));
   const ductMin = (await rec(A)).duck.reduce((m, d) => Math.min(m, d.chat), 1);
   check('chatter ducks to about -18 dB (0.126) while a game cue/call plays', ductMin < 0.2, ductMin);
 
@@ -232,16 +235,23 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await sleep(300);
   check('chatter is postponed when a cue/voice sound is scheduled in its window', (await rec(A)).at.slice(n2).filter(x => x.tag === 'chatter').length === 0);
 
-  // a win: 49 + 6 overshoots to 51; ambience and chatter timers stop 30 s after the game finishes
+  // a win: 49 + 6 overshoots to 51; the background sound keeps playing afterwards (it stops only when the page is left)
   await setpos(code, 0, 49); await setpos(code, 1, 49);
   await A.evaluate(() => { window.__finishAt = null; });
   await rollAs('host', 6);   // host's turn after the radio-off roll by the guest
   const fin = await A.evaluate(() => document.getElementById('turn-banner').textContent);
   check('the game finishes with a win', /wins/.test(fin), fin);
-  const t0w = Date.now();
-  check('timers are still running right after the win (30 s grace)', await A.evaluate(() => !DRAmbience.state.finished));
-  await sleep(Math.max(0, 33000 - (Date.now() - t0w)));
-  check('30 s after the game finishes the bed, critter and chatter timers have stopped', await A.evaluate(() => DRAmbience.state.finished && !DRAmbience.state.bed && !DRAmbience.state.critterTimer && !DRAmbience.state.chatterTimer));
+  await sleep(3000);
+  check('after the win the bed, critter and chatter timers keep running (no stop timer)', await A.evaluate(() => !!DRAmbience.state.bed && !!DRAmbience.state.critterTimer && !!DRAmbience.state.chatterTimer), await A.evaluate(() => JSON.stringify({ b: !!DRAmbience.state.bed, c: !!DRAmbience.state.critterTimer, h: !!DRAmbience.state.chatterTimer })));
+
+  // the phone pauses the audio (call, lock screen): the 'Sound paused' bar appears; when it runs again the bed restarts
+  await A.evaluate(() => { window.__fake = 'interrupted'; Object.defineProperty(DRSound.ctx, 'state', { get: () => window.__fake, configurable: true }); window.__bedBefore = DRAmbience.state.bed; DRSound.ctx.onstatechange(); });
+  await sleep(200);
+  check('audio interrupted: the "Sound paused. Tap here to resume." bar is shown', await A.evaluate(() => !document.getElementById('sound-bar').hidden));
+  await A.evaluate(() => { window.__fake = 'running'; DRSound.ctx.onstatechange(); });
+  await sleep(300);
+  check('audio running again: the bar is hidden and the bed was restarted', await A.evaluate(() => document.getElementById('sound-bar').hidden && !!DRAmbience.state.bed && DRAmbience.state.bed !== window.__bedBefore));
+  await A.evaluate(() => { delete DRSound.ctx.state; });
 
   // ---------------------------------------------------------------- errors
   check('zero console errors / page errors on all pages', errors.length === 0, errors.slice(0, 8));
