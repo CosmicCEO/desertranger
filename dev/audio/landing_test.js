@@ -19,6 +19,8 @@ const jump = (p, from, to) => ({ type: 'jump', player: p, from: from, to: to });
 const ev = (id, steps, type) => ({ id: id, type: type || 'turn', data: { steps: steps } });
 const quote = (sq, v) => ({ kind: 'quote', square: sq, ids: ['q' + ('0' + sq).slice(-2) + v, 'q' + ('0' + sq).slice(-2) + (v === 'a' ? 'b' : 'a')] });
 
+const chain = (sq, v, fin, fv) => Object.assign(quote(sq, v), { final: fin, fvoice: fv });
+
 // ---- quotable set matches docs/audio-lines.json ----
 const lines = JSON.parse(fs.readFileSync(path.join(__dirname, '../../docs/audio-lines.json'), 'utf8'));
 eq('quotable set == audio-lines.json squares[].quotable',
@@ -35,9 +37,12 @@ eq('shortcut jump (choose -> 33) gives a generic call at 33', R.pickLanding(ev(2
 eq('roll landing on 6 plays q06 (even id -> variant a first)', R.pickLanding(ev(30, [roll(1, 2), walk(1, 4, 6)]), Q), quote(6, 'a'));
 eq('roll landing on 31 plays q31 (odd id -> variant b first)', R.pickLanding(ev(31, [roll(1, 5), walk(1, 26, 31)]), Q), quote(31, 'b'));
 eq('overshoot win plays q51', R.pickLanding(ev(40, [roll(3, 6), walk(3, 49, 51)], 'win'), Q), quote(51, 'a'));
-eq('40 -> 34 plays q40, not the Court line', R.pickLanding(ev(42, [roll(1, 4), walk(1, 36, 40), jump(1, 40, 34)]), Q), quote(40, 'a'));
-eq('44, back 3 -> 41 -> 12 plays q41', R.pickLanding(ev(44, [roll(1, 2), walk(1, 42, 44), roll(1, 3), walk(1, 44, 41), jump(1, 41, 12)]), Q), quote(41, 'a'));
-eq('44, back 5 -> 39 plays q44', R.pickLanding(ev(44, [roll(1, 2), walk(1, 42, 44), roll(1, 5), walk(1, 44, 39)]), Q), quote(44, 'a'));
+eq('40 -> 34 plays q40, then names Court (34) as the final square', R.pickLanding(ev(42, [roll(1, 4), walk(1, 36, 40), jump(1, 40, 34)]), Q), chain(40, 'a', 34, 'sr'));
+eq('44, back 3 -> 41 -> 12 plays q41, then names 12', R.pickLanding(ev(44, [roll(1, 2), walk(1, 42, 44), roll(1, 3), walk(1, 44, 41), jump(1, 41, 12)]), Q), chain(41, 'a', 12, 'sr'));
+eq('44, back 5 -> 39 plays q44, then names Fish Creek (39)', R.pickLanding(ev(44, [roll(1, 2), walk(1, 42, 44), roll(1, 5), walk(1, 44, 39)]), Q), chain(44, 'a', 39, 'sr'));
+eq('35 + 4 -> 39 (odd id): q35 variant b, then Fish Creek in the Ranger 273 voice', R.pickLanding(ev(45, [roll(1, 3), walk(1, 32, 35), walk(1, 35, 39)]), Q), chain(35, 'b', 39, 'r273'));
+eq('a quote with no chain has no follow-up', R.pickLanding(ev(30, [roll(1, 2), walk(1, 4, 6)]), Q), quote(6, 'a'));
+eq('44 rolled back onto a quotable square: that square is the quote, no follow-up', R.pickLanding(ev(46, [roll(1, 2), walk(1, 42, 44), roll(1, 2), walk(1, 44, 42)]), Q), quote(42, 'a'));
 eq('swap choice plays nothing new', R.pickLanding(ev(50, [{ type: 'swap', player: 1, other: 2, playerTo: 9, otherTo: 31 }]), Q), null);
 eq('"decided not to swap" (no moves) plays nothing', R.pickLanding(ev(52, []), Q), null);
 eq('only loseTurn/skipped steps plays nothing', R.pickLanding(ev(54, [{ type: 'skipped', player: 1 }]), Q), null);
@@ -80,6 +85,24 @@ eq('generic: place clip missing -> skip', p, null);
 p = R.planCall(gen, 10, d({ 'op-sr-03': 1.2, 'pl-sr-39': 0.9, 'op-sr-04': 0.5 }), rad);
 eq('squelch variant follows the event id', p && p.squelch, 'radio-squelch-0' + (1 + 10 % 3));
 eq('planCall(null) -> null', R.planCall(null, 1, d({}), rad), null);
+
+// ---- planCall: quote + the final square's place name after a chain (cap CAP_CHAIN_S = 5.5 s) ----
+const radioQ = () => 'radio', cleanQ = id => id.charAt(0) === 'q' ? 'clean' : 'radio';
+const ch41 = chain(41, 'a', 12, 'sr');
+p = R.planCall(ch41, 44, d({ q41a: 2.0, 'pl-sr-12': 1.0 }), radioQ);
+eq('chain, radio quote: the place name continues the same transmission (gap 60 ms)', p && [p.ids, near(p.parts[1].at, 0.1 + 2.0 + 0.06), near(p.voiceEnd, 0.1 + 2.0 + 0.06 + 1.0), near(p.total, 0.1 + 2.0 + 0.06 + 1.0 + 0.02 + SQ), p.follow === undefined], [['q41a', 'pl-sr-12'], true, true, true, true]);
+p = R.planCall(chain(35, 'a', 39, 'sr'), 44, d({ q35a: 2.7, 'pl-sr-39': 0.9 }), cleanQ);
+eq('chain, dry (clean) quote: its own short radio transmission follows after a 0.3 s pause', p && [p.ids, p.radio, near(p.follow.clickAt, 2.7 + 0.3), near(p.parts[1].at, 2.7 + 0.3 + 0.1), near(p.follow.voiceEnd, 2.7 + 0.3 + 0.1 + 0.9), near(p.total, 2.7 + 0.3 + 0.1 + 0.9 + 0.02 + SQ)], [['q35a', 'pl-sr-39'], false, true, true, true, true]);
+p = R.planCall(ch41, 44, d({ q41a: 3.34, 'pl-sr-12': 2.0 }), radioQ);
+eq('chain: the follow-up is dropped when the whole call would pass 5.5 s (the quote still plays)', p && [p.ids, p.follow === undefined], [['q41a'], true]);
+p = R.planCall(ch41, 44, d({ q41a: 2.0 }), radioQ);
+eq('chain: place clip missing -> just the quote', p && p.ids, ['q41a']);
+p = R.planCall(chain(41, 'a', 12, 'sr'), 44, d({ q41a: 3.4, q41b: 2.4, 'pl-sr-12': 1.0 }), radioQ);
+eq('chain: first variant too long -> the other variant plus the place name', p && p.ids, ['q41b', 'pl-sr-12']);
+p = R.planCall(chain(41, 'a', 12, 'sr'), 44, d({ q41a: 3.4, q41b: 3.1, 'pl-sr-12': 1.0 }), radioQ);
+eq('chain: neither variant fits 3 s -> the shorter one, and the place name if the total fits 5.5 s', p && p.ids, ['q41b', 'pl-sr-12']);
+eq('idsFor lists the place clip for a chain quote', R.idsFor(ch41, 44).indexOf('pl-sr-12') >= 0, true);
+eq('idsFor does not list one for a plain quote', R.idsFor(quote(6, 'a'), 30).some(i => i.indexOf('pl-') === 0), false);
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

@@ -166,8 +166,21 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   const t3 = (await rec(A)).turns[2];
   console.log('       landing on A (square 22):', t3 && t3.landing);
   check('square 22 plays its quotable line (q22), not the generic call', !!t3 && /^quote q22[ab]/.test(t3.landing || ''), t3 && t3.landing);
+  check('22 sends the piece on to 32: after the quote the radio names the final square (Yaqui Pass, pl-*-32)', !!t3 && /^quote q22[ab] \+ pl-(sr|r273)-32$/.test(t3.landing || ''), t3 && t3.landing);
   const t3b = (await rec(B)).turns[2];
   check('both phones pick the same quotable', t3 && t3b && t3.landing === t3b.landing, [t3 && t3.landing, t3b && t3b.landing]);
+
+  // ---------------------------------------------------------------- Knock, knock (every phone, same moment)
+  for (const pg of [A, B, C]) await pg.evaluate(() => { DRSound.buffers['nudge-01'] = DRSound.buffers['dice-clatter-01']; });   // the real clip ships with the voices PR
+  check('not my turn: the Knock, knock button is shown; for the player on turn and on the board screen it is not', await A.isVisible('#btn-knock') && !(await B.isVisible('#btn-knock')) && !(await C.isVisible('#btn-knock')));
+  const nk = [(await rec(A)).at.length, (await rec(B)).at.length, (await rec(C)).at.length];
+  await A.click('#btn-knock');
+  check('after a knock the button is disabled for a few seconds (rate limit)', await A.isDisabled('#btn-knock'));
+  await sleep(3500);
+  const kn = [(await rec(A)).at.slice(nk[0]), (await rec(B)).at.slice(nk[1]), (await rec(C)).at.slice(nk[2])].map(a => a.filter(x => x.tag === 'nudge-01'));
+  check('every phone and the board screen plays the knock once, at the same server time', kn.every(a => a.length === 1 && a[0].ok) && kn[0][0].serverMs === kn[1][0].serverMs && kn[1][0].serverMs === kn[2][0].serverMs, kn);
+  check('a knock is not added to the log', await A.evaluate(() => ![].some.call(document.querySelectorAll('#log li'), li => /knocked/.test(li.textContent))));
+  check('the knock note names who knocked', /Marigold knocked/.test(await A.textContent('#nudge-note')));
 
   // ---------------------------------------------------------------- settings panel
   await A.click('#btn-audio');
@@ -212,8 +225,9 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   // ---------------------------------------------------------------- the ~3 s cap, late rule, chatter, finish
   const rAll = await rec(A);
   const perTurn = rAll.turns.map(t => rAll.at.filter(x => x.tag === 'call' && x.serverMs >= t.T + t.end - 1 && x.serverMs < t.T + t.end + 3500));
-  const longest = Math.max.apply(null, perTurn.map(cs => cs.length ? (cs[cs.length - 1].serverMs + cs[cs.length - 1].dur * 1000) - cs[0].serverMs : 0));
-  check('every landing call stays within ~3 s (click + clips + squelch, real clip lengths)', longest <= 3100, longest);
+  const callLen = cs => cs.length ? (cs[cs.length - 1].serverMs + cs[cs.length - 1].dur * 1000) - cs[0].serverMs : 0;
+  const overCap = perTurn.map((cs, k) => { const t = rAll.turns[k], chain = /^quote q\d+[ab] \+ pl-/.test((t && t.landing) || ''); const len = callLen(cs); return len > (chain ? 5600 : 3100) ? [t && t.landing, Math.round(len)] : null; }).filter(Boolean);
+  check('every landing call stays within ~3 s; a quote + the final square after a chain within 5.5 s (real clip lengths)', overCap.length === 0, overCap);
   check('a sound that is more than 250 ms late is skipped, not played out of sync', await A.evaluate(() => { const b = DRSound.buffers['dice-clatter-01']; const sk = DRSound.stats.skipped; const w = DRSound.at(b, DRClock.serverNow() - 1000, { bus: 'cue' }); return w === null && DRSound.stats.skipped === sk + 1; }));
   check('slightly late (<250 ms) still plays, starting inside the clip', await A.evaluate(() => { const b = DRSound.buffers['dice-clatter-01']; const w = DRSound.at(b, DRClock.serverNow() - 120, { bus: 'cue' }); return !!w && (w.end - w.start) < b.duration - 0.05; }));
 
@@ -252,6 +266,17 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await sleep(300);
   check('audio running again: the bar is hidden and the bed was restarted', await A.evaluate(() => document.getElementById('sound-bar').hidden && !!DRAmbience.state.bed && DRAmbience.state.bed !== window.__bedBefore));
   await A.evaluate(() => { delete DRSound.ctx.state; });
+
+  // ---------------------------------------------------------------- Play again (rematch)
+  check('after a win the host sees Play again and the guest sees "Waiting for the host"', await A.isVisible('#btn-rematch') && !(await B.isVisible('#btn-rematch')) && await B.isVisible('#rematch-wait') && !(await C.isVisible('#btn-rematch')));
+  await A.click('#btn-rematch');
+  await A.waitForSelector('#screen-lobby:not([hidden])'); await B.waitForSelector('#screen-lobby:not([hidden])');
+  check('Play again: both phones are back in the same lobby with both players', (await A.textContent('#lobby-code')).trim() === code && (await B.textContent('#lobby-code')).trim() === code && (await A.textContent('#lobby-count')).trim() === '2' && (await B.textContent('#lobby-count')).trim() === '2');
+  check('the background sound keeps playing through the rematch', await A.evaluate(() => !!DRAmbience.state.bed));
+  check('the game screen was reset (empty log)', await A.evaluate(() => document.querySelectorAll('#log li').length === 0));
+  await A.click('#btn-start');
+  await A.waitForSelector('#screen-game:not([hidden])'); await B.waitForSelector('#screen-game:not([hidden])');
+  check('the rematch starts: host on turn, no winner banner', await A.evaluate(() => !/wins/.test(document.getElementById('turn-banner').textContent) && !document.getElementById('btn-roll').disabled));
 
   // ---------------------------------------------------------------- errors
   check('zero console errors / page errors on all pages', errors.length === 0, errors.slice(0, 8));

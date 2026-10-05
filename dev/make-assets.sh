@@ -20,6 +20,9 @@ src, a = sys.argv[1], sys.argv[2]
 im = Image.open(os.path.join(src, 'art/board-flat.jpg'))            # 4372x3321
 im = im.resize((2000, round(2000 * im.height / im.width)), Image.LANCZOS)
 im.save(os.path.join(a, 'img/board-2000.jpg'), quality=80, optimize=True, progressive=True)
+ph = os.path.join(src, 'pitch/img/ranger1.jpg')            # the About page photo (600x600), if the workspace has it
+if os.path.exists(ph):
+    im2 = Image.open(ph); im2.thumbnail((600, 600), Image.LANCZOS); im2.save(os.path.join(a, 'img/about-ranger.jpg'), quality=82, optimize=True)
 for f in glob.glob(os.path.join(src, 'art/pieces/*.png')):
     if 'preview' in f: continue
     p = Image.open(f); p.thumbnail((200, 200), Image.LANCZOS)

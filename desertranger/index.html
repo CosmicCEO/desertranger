@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#C3623B">
 <link rel="icon" href="assets/img/pieces/bronco-orange.png">
 <title>Desert Ranger</title>
-<link rel="stylesheet" href="assets/css/style.css?v=8">
+<link rel="stylesheet" href="assets/css/style.css?v=10">
 </head>
 <body>
 <!--
@@ -33,7 +33,7 @@
 
   <div class="card">
     <label class="field">Your name
-      <input id="in-name" maxlength="20" autocomplete="nickname" placeholder="e.g. Jeff">
+      <input id="in-name" maxlength="20" autocomplete="nickname" placeholder="e.g., Jeff">
     </label>
     <label class="field">Room code <span class="hint">(leave empty to start a new game)</span>
       <input id="in-code" maxlength="4" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="ABCD">
@@ -44,10 +44,13 @@
     <button id="btn-join" class="btn big" type="button" hidden>Join game</button>
     <button id="btn-create" class="btn big" type="button">Create new game</button>
   </div>
+  <p id="stats-line" class="center hint" hidden></p>
+  <p class="center"><a class="about-link" href="about.html">About the game and the park</a></p>
 </section>
 
 <!-- LOBBY: wait for players, host starts -->
 <section id="screen-lobby" class="screen" hidden>
+  <a id="lobby-home" class="lobby-home" href="./">&larr; Home</a>
   <h2 class="mini-title">Desert Ranger</h2>
   <div class="card code-card">
     <div class="label">Room code</div>
@@ -63,7 +66,8 @@
   <p id="demo-hint" class="center hint" hidden>Try the full sound and feel on your own: it starts right away, with computer rivals that roll by themselves.</p>
   <p id="lobby-wait" class="center hint" hidden>Waiting for the host to start…</p>
   <p id="lobby-error" class="error" role="alert"></p>
-  <p class="center hint">Shared screen / TV: open <span id="lobby-board-link"></span></p>
+  <a id="lobby-board-link" class="btn big sage" href="#" target="_blank" rel="noopener">Open shared screen</a>
+  <p class="center hint">For a TV or tablet. <button id="btn-copy-board" class="linkbtn" type="button">Copy link</button> <span id="copy-msg"></span></p>
 </section>
 
 <!-- GAME -->
@@ -98,12 +102,16 @@
       <div id="action-bar" class="action-bar">
         <div id="die" class="die" aria-live="polite">–</div>
         <button id="btn-roll" class="btn huge" type="button" disabled>ROLL</button>
+        <button id="btn-knock" class="btn knock" type="button" hidden>Knock, knock</button>
       </div>
+      <p id="nudge-note" class="center hint" hidden></p>
       <div id="choices" class="choices"></div>
       <p id="game-error" class="error" role="alert"></p>
       <ul id="player-list" class="player-list"></ul>
       <ol id="log" class="log"></ol>
       <button id="btn-end-demo" class="btn big sage" type="button" hidden>End demo</button>
+      <button id="btn-rematch" class="btn big mari" type="button" hidden>Play again</button>
+      <p id="rematch-wait" class="center hint" hidden>Waiting for the host to start a rematch…</p>
       <a id="btn-new" class="btn big sage" href="./" hidden>New game</a>
     </aside>
   </div>
@@ -123,6 +131,6 @@
 <script src="assets/js/board.js?v=3"></script>
 <script src="assets/js/radio.js?v=1"></script>
 <script src="assets/js/ambience.js?v=4"></script>
-<script src="assets/js/app.js?v=6"></script>
+<script src="assets/js/app.js?v=8"></script>
 </body>
 </html>

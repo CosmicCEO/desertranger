@@ -29,7 +29,9 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
     await page.addInitScript(() => {                          // record every scheduled sound + landing pick
       window.__rec = { at: [], turns: [] };
       document.addEventListener('DOMContentLoaded', () => {
-        const S = window.DRSound, R = window.DRRadio, orig = S.at.bind(S);
+        const S = window.DRSound, R = window.DRRadio;
+        if (!S || !R) return;   // pages without the game scripts (about.html)
+        const orig = S.at.bind(S);
         S.at = function (buf, serverMs, o) { const w = orig(buf, serverMs, o); o = o || {}; window.__rec.at.push({ tag: o.tag || '', bus: o.bus || 'cue', ok: !!w }); return w; };
         const onTurn = R.onTurn;
         R.onTurn = function (ev, T, tl) { const rec = { id: ev.id, T: T }; window.__rec.turns.push(rec); const r = onTurn.apply(this, arguments); setTimeout(() => { rec.landing = R.last.text; }, 900); return r; };
@@ -71,6 +73,39 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
   const yStart = (await h1.locator('#btn-start').boundingBox()).y, yDemo = (await h1.locator('#btn-demo').boundingBox()).y;
   check('the demo button sits below the Start button', yDemo > yStart, [yStart, yDemo]);
   await h1.screenshot({ path: SHOTS + 'lobby-demo-phone-390x844.png', fullPage: true });
+  // ---- Wave 2 B: lobby links, home screen layout, About page
+  console.log('\nWave 2 B: lobby, home screen, About');
+  check('lobby: the shared-screen link is a styled button that opens a new window (board=1 for this room)',
+    await h1.evaluate(c => { const a = document.getElementById('lobby-board-link'); return a.tagName === 'A' && a.classList.contains('btn') && a.target === '_blank' && /rel/.test(a.outerHTML) && a.href.indexOf('g=' + c) > 0 && a.href.indexOf('board=1') > 0; }, code1));
+  check('lobby: a Home link is shown', await visible(h1, '#lobby-home'));
+  const hm = await open('home', phone);
+  const codeH = await createGame(hm, 'Marigold', 'bronco-orange');
+  await hm.click('#lobby-home');
+  await hm.waitForSelector('#screen-home:not([hidden])');
+  check('lobby Home: back on the homepage, with a "Resume game ' + codeH + '" button (the seat is kept)', await visible(hm, '#btn-resume') && (await text(hm, '#btn-resume')) === 'Resume game ' + codeH, await text(hm, '#btn-resume'));
+  await hm.click('#btn-resume');
+  await hm.waitForSelector('#screen-lobby:not([hidden])');
+  check('Resume returns to the same lobby and seat', (await text(hm, '#lobby-code')) === codeH && (await hm.locator('#lobby-players li').count()) === 1);
+  const desk = await open('desk', { viewport: { width: 1280, height: 900 } });
+  await desk.goto(BASE); await desk.waitForSelector('#screen-home:not([hidden])'); await sleep(500);
+  const gridInfo = p => p.evaluate(() => { const g = document.getElementById('vehicle-grid'), im = g.querySelector('img'); return { cols: getComputedStyle(g).gridTemplateColumns.split(' ').length, n: g.children.length, h: Math.round(im.getBoundingClientRect().height) }; });
+  const gd = await gridInfo(desk);
+  check('PC/Mac: the eight rigs are in 2 columns x 4 rows with large pictures', gd.cols === 2 && gd.n === 8 && gd.h >= 100, gd);
+  await desk.waitForFunction(() => { const l = document.getElementById('stats-line'); return l && !l.hidden; }, null, { timeout: 8000 }).catch(() => {});
+  const statsTxt = await text(desk, '#stats-line');
+  check('homepage shows how many games are being played right now (a count, from a=stats)', await visible(desk, '#stats-line') && /^(\d+ games being played right now|1 game being played right now|No games being played)/.test(statsTxt || ''), statsTxt);
+  check('home name field placeholder is "e.g., Jeff"', (await desk.getAttribute('#in-name', 'placeholder')) === 'e.g., Jeff');
+  const ph = await open('phoneHome', phone); await ph.goto(BASE); await ph.waitForSelector('#screen-home:not([hidden])'); await sleep(300);
+  const gp = await gridInfo(ph);
+  check('phone: the rig grid stays 4 across', gp.cols === 4 && gp.n === 8, gp);
+  check('home screen has an About link', (await desk.getAttribute('a.about-link', 'href')) === 'about.html');
+  await desk.click('a.about-link'); await desk.waitForSelector('main.about');
+  const ab = await desk.evaluate(() => { const i = document.querySelector('.who img'); return { h1: document.querySelector('h1').textContent, img: i.complete && i.naturalWidth > 0, links: [].map.call(document.querySelectorAll('.links a'), a => a.target), text: document.body.textContent.indexOf('Jeffery Price') > 0 && document.body.textContent.indexOf('R273') > 0 }; });
+  check('About page: title, the ranger photo loads, park links open in a new tab, names R273', ab.h1 === 'Desert Ranger' && ab.img && ab.links.length === 2 && ab.links.every(t => t === '_blank') && ab.text, ab);
+  await desk.click('a.back'); await desk.waitForSelector('#screen-home:not([hidden])');
+  check('About page: "Play Desert Ranger" leads back to the game', true);
+  await desk.close(); await ph.close(); await hm.close();
+
   await g1.goto(BASE + '?g=' + code1);
   await g1.waitForSelector('#screen-home:not([hidden])');
   await g1.fill('#in-name', 'Jeff'); await sleep(400);
