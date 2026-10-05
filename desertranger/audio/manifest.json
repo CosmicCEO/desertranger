@@ -3411,6 +3411,17 @@
    "sec": 1.185,
    "bytes": 7592,
    "v": "951a580f"
+  },
+  "nudge-01": {
+   "kind": "cue",
+   "note": "Knock, knock nudge: synthesized double wood-knock, no voice (tools/audio/make_nudge.py)",
+   "source": "original, generated with ffmpeg",
+   "lufs": -17.4,
+   "tp": -2.4,
+   "file": "cue/nudge-01.mp3",
+   "sec": 0.48,
+   "bytes": 4431,
+   "v": "c72fa3a9"
   }
  }
 }

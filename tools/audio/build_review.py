@@ -8,7 +8,7 @@ man = json.load(open(f"{OUT}/manifest.json"))["clips"]
 L = json.load(open("docs/audio-lines.json"))
 qa = json.load(open("audio-work/qa/summary.json")) if os.path.exists("audio-work/qa/summary.json") else {}
 lines = {l["id"]: l for l in L["lines"]}
-SECTIONS = [("Phase 1: dice, ambience, critters", lambda c, l: c.get("kind") in ("dice", "amb", "critter")),
+SECTIONS = [("Phase 1: dice, ambience, critters", lambda c, l: c.get("kind") in ("dice", "amb", "critter", "cue")),
             ("Phase 2: radio FX", lambda c, l: c.get("kind") == "fx"),
             ("Phase 2: openers", lambda c, l: c.get("kind") == "opener"),
             ("Phase 2: place names", lambda c, l: c.get("kind") == "place"),
