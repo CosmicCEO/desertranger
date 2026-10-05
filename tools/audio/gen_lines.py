@@ -2,6 +2,7 @@
 """Chatterbox venv (Python 3.11). Generate N takes per line from docs/audio-lines.json.
 usage: python tools/audio/gen_lines.py [--phase 2|3|4] [--ids q01a,q01b] [--chars senior_ranger] [--takes 3]
                                        [--seed0 1] [--device auto|mps|cpu] [--alt] [--pron] [--force]
+The shared respelling table docs/audio-lines.json "pronunciations" is applied to the TTS text on every run.
 writes audio-work/takes/<id>/s<seed>.wav (24 kHz mono) + takes.jsonl. Resumable: existing takes are skipped."""
 import argparse, json, os, re, sys, time, warnings; warnings.filterwarnings("ignore")
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
@@ -14,7 +15,7 @@ p.add_argument("--device", default="auto"); p.add_argument("--alt", action="stor
 p.add_argument("--pron", action="store_true", help="substitute 'pronounce' respellings into the TTS text")
 p.add_argument("--ex", type=float); p.add_argument("--cfg", type=float); p.add_argument("--force", action="store_true")
 a = p.parse_args()
-L = json.load(open("docs/audio-lines.json"))["lines"]; CAST = json.load(open("tools/audio/cast.json"))
+D = json.load(open("docs/audio-lines.json")); L = D["lines"]; PRON = D.get("pronunciations", {}); CAST = json.load(open("tools/audio/cast.json"))
 sel = [l for l in L if (a.phase is None or l["phase"] == a.phase)
        and (not a.ids or l["id"] in a.ids.split(","))
        and (not a.chars or l["character"] in a.chars.split(","))]
@@ -24,16 +25,23 @@ def load(dev):
 dev = a.device if a.device != "auto" else ("mps" if torch.backends.mps.is_available() else "cpu")
 m = load(dev); print("device", dev, "lines", len(sel), flush=True)
 log = open("audio-work/takes.jsonl", "a")
+def speak(v):
+    """All-caps respellings ("OYA", "VAYA-SEE-TOE") are read letter by letter by Chatterbox ("O.Y.A.", heard in the Wave 2 takes);
+    send them Title-Cased per hyphen part ("Oya", "Vaya-See-Toe") so they are read as words. Mixed-case respellings
+    (kah-BAY-sahs: caps = stress) are sent as written."""
+    return v if re.search(r"[a-z]", v) else "-".join(p.capitalize() for p in v.split("-"))
 def tts_text(l):
     t = l.get("tts_text", l["text"])
-    if a.pron:
+    if a.pron:   # per-line retake respellings first (they win over the shared table)
         for k, v in l.get("pronounce", {}).items(): t = re.sub(r"\b" + k + r"\b", v, t, flags=re.I)
+    for k, v in PRON.items(): t = re.sub(r"\b" + k + r"\b", speak(v), t, flags=re.I)   # shared table: EVERY generation
     return t
 for l in sel:
     c = CAST[l["character"]]
     refs = [f"audio-work/refs/{r}.wav" for r in c["refs"]] if "refs" in c else \
            [f"audio-work/refs/{l['character']}{'.alt' if a.alt else ''}.wav"]
-    ex = a.ex if a.ex is not None else c["ex"]; cfg = a.cfg if a.cfg is not None else c["cfg"]
+    g = l.get("gen", {})   # optional per-line settings (e.g. slower pacing for the drawn-out R55 call sign); CLI flags win
+    ex = a.ex if a.ex is not None else g.get("ex", c["ex"]); cfg = a.cfg if a.cfg is not None else g.get("cfg", c["cfg"])
     cap = l.get("max_sec", 3.0) * 1.8 + 0.5           # runaway guard (Chatterbox occasionally babbles on)
     for ri, ref in enumerate(refs):
         os.makedirs(f"audio-work/takes/{l['id']}", exist_ok=True)
