@@ -353,13 +353,13 @@
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s1.wav",
-   "lufs": -16.1,
-   "tp": -2.2,
+   "take": "s2.wav",
+   "lufs": -16.0,
+   "tp": -1.9,
    "file": "chatter/ch02-1.mp3",
-   "sec": 1.927,
-   "bytes": 11981,
-   "v": "cb813980"
+   "sec": 3.34,
+   "bytes": 20445,
+   "v": "1e1651cf"
   },
   "ch02-3": {
    "character": "dispatch",
@@ -701,13 +701,13 @@
    "kind": "place",
    "treatment": "radio",
    "qa": "FAIL",
-   "take": "s4.wav",
+   "take": "s1.wav",
    "lufs": -16.0,
-   "tp": -4.6,
+   "tp": -3.5,
    "file": "radio/places/pl-sr-12.mp3",
-   "sec": 1.311,
-   "bytes": 8376,
-   "v": "38440822"
+   "sec": 1.393,
+   "bytes": 8846,
+   "v": "e9c93e90"
   },
   "pl-sr-13": {
    "character": "senior_ranger",
@@ -790,14 +790,14 @@
    "square": 18,
    "kind": "place",
    "treatment": "radio",
-   "qa": "pass",
-   "take": "s1.wav",
+   "qa": "FAIL",
+   "take": "s3.wav",
    "lufs": -16.1,
-   "tp": -2.4,
+   "tp": -2.1,
    "file": "radio/places/pl-sr-18.mp3",
-   "sec": 1.208,
-   "bytes": 7749,
-   "v": "da2913d4"
+   "sec": 1.336,
+   "bytes": 8533,
+   "v": "d373d534"
   },
   "pl-sr-19": {
    "character": "senior_ranger",
@@ -911,13 +911,13 @@
    "kind": "place",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s2.wav",
-   "lufs": -16.1,
+   "take": "s5.wav",
+   "lufs": -16.0,
    "tp": -2.4,
    "file": "radio/places/pl-sr-26.mp3",
-   "sec": 1.21,
-   "bytes": 7749,
-   "v": "55f5f62b"
+   "sec": 1.0,
+   "bytes": 6495,
+   "v": "df4ffde9"
   },
   "pl-sr-27": {
    "character": "senior_ranger",
@@ -1001,13 +1001,13 @@
    "kind": "place",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s1.wav",
-   "lufs": -16.2,
-   "tp": -2.2,
+   "take": "s2.wav",
+   "lufs": -16.1,
+   "tp": -2.1,
    "file": "radio/places/pl-sr-32.mp3",
-   "sec": 1.089,
-   "bytes": 6965,
-   "v": "a7f5df86"
+   "sec": 1.121,
+   "bytes": 7122,
+   "v": "2b3849b3"
   },
   "pl-sr-33": {
    "character": "senior_ranger",
@@ -1121,13 +1121,13 @@
    "kind": "place",
    "treatment": "radio",
    "qa": "FAIL",
-   "take": "s4.wav",
+   "take": "s1.wav",
    "lufs": -16.0,
-   "tp": -2.4,
+   "tp": -2.3,
    "file": "radio/places/pl-sr-41.mp3",
-   "sec": 1.962,
-   "bytes": 12294,
-   "v": "9b8a2a1c"
+   "sec": 2.014,
+   "bytes": 12608,
+   "v": "5ea112c3"
   },
   "pl-sr-42": {
    "character": "senior_ranger",
@@ -1196,13 +1196,13 @@
    "kind": "place",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s5.wav",
-   "lufs": -16.0,
-   "tp": -2.9,
+   "take": "s1.wav",
+   "lufs": -16.1,
+   "tp": -3.9,
    "file": "radio/places/pl-sr-46.mp3",
-   "sec": 1.214,
-   "bytes": 7749,
-   "v": "e3572072"
+   "sec": 1.127,
+   "bytes": 7279,
+   "v": "11c8875b"
   },
   "pl-sr-47": {
    "character": "senior_ranger",
@@ -1570,14 +1570,14 @@
    "square": 12,
    "kind": "place",
    "treatment": "radio",
-   "qa": "FAIL",
-   "take": "s9.wav",
-   "lufs": -16.0,
-   "tp": -2.5,
+   "qa": "pass",
+   "take": "s8.wav",
+   "lufs": -16.1,
+   "tp": -2.0,
    "file": "radio/places/pl-r273-12.mp3",
-   "sec": 1.216,
+   "sec": 1.21,
    "bytes": 7749,
-   "v": "1cd96336"
+   "v": "56a6c2cc"
   },
   "pl-r273-13": {
    "character": "ranger_273",
@@ -1660,14 +1660,14 @@
    "square": 18,
    "kind": "place",
    "treatment": "radio",
-   "qa": "pass",
-   "take": "s1.wav",
+   "qa": "FAIL",
+   "take": "s6.wav",
    "lufs": -16.1,
-   "tp": -2.2,
+   "tp": -2.3,
    "file": "radio/places/pl-r273-18.mp3",
-   "sec": 0.885,
-   "bytes": 5711,
-   "v": "f22d9d8f"
+   "sec": 1.231,
+   "bytes": 7906,
+   "v": "ae649cfd"
   },
   "pl-r273-19": {
    "character": "ranger_273",
@@ -1781,13 +1781,13 @@
    "kind": "place",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s1.wav",
-   "lufs": -16.2,
-   "tp": -2.1,
+   "take": "s4.wav",
+   "lufs": -16.0,
+   "tp": -2.8,
    "file": "radio/places/pl-r273-26.mp3",
-   "sec": 1.203,
-   "bytes": 7749,
-   "v": "a1c9c81c"
+   "sec": 1.128,
+   "bytes": 7279,
+   "v": "eb7a6353"
   },
   "pl-r273-27": {
    "character": "ranger_273",
@@ -1873,11 +1873,11 @@
    "qa": "pass",
    "take": "s1.wav",
    "lufs": -16.2,
-   "tp": -2.1,
+   "tp": -1.8,
    "file": "radio/places/pl-r273-32.mp3",
-   "sec": 1.215,
-   "bytes": 7749,
-   "v": "5cec30bf"
+   "sec": 1.155,
+   "bytes": 7436,
+   "v": "cd2a668c"
   },
   "pl-r273-33": {
    "character": "ranger_273",
@@ -1991,13 +1991,13 @@
    "kind": "place",
    "treatment": "radio",
    "qa": "FAIL",
-   "take": "s6.wav",
+   "take": "s8.wav",
    "lufs": -16.0,
-   "tp": -3.1,
+   "tp": -2.3,
    "file": "radio/places/pl-r273-41.mp3",
-   "sec": 1.806,
-   "bytes": 11354,
-   "v": "2e4f9b49"
+   "sec": 1.916,
+   "bytes": 11981,
+   "v": "42d4c36f"
   },
   "pl-r273-42": {
    "character": "ranger_273",
@@ -2068,11 +2068,11 @@
    "qa": "pass",
    "take": "s1.wav",
    "lufs": -16.0,
-   "tp": -2.6,
+   "tp": -3.6,
    "file": "radio/places/pl-r273-46.mp3",
-   "sec": 1.207,
+   "sec": 1.212,
    "bytes": 7749,
-   "v": "f5f8cb1f"
+   "v": "2c49dd00"
   },
   "pl-r273-47": {
    "character": "ranger_273",
@@ -2275,14 +2275,14 @@
    "square": 12,
    "kind": "quotable",
    "treatment": "radio",
-   "qa": "pass",
-   "take": "s1.wav",
+   "qa": "FAIL",
+   "take": "s2.wav",
    "lufs": -16.0,
-   "tp": -2.7,
+   "tp": -2.2,
    "file": "quotes/q12a.mp3",
-   "sec": 2.701,
-   "bytes": 16683,
-   "v": "96f679ac"
+   "sec": 3.043,
+   "bytes": 18720,
+   "v": "817bb57f"
   },
   "q12b": {
    "character": "senior_ranger",
@@ -2411,13 +2411,13 @@
    "kind": "quotable",
    "treatment": "clean",
    "qa": "pass",
-   "take": "s4.wav",
+   "take": "s1.wav",
    "lufs": -16.0,
-   "tp": -2.3,
+   "tp": -3.5,
    "file": "quotes/q26b.mp3",
-   "sec": 2.702,
+   "sec": 2.707,
    "bytes": 22194,
-   "v": "0e281286"
+   "v": "a749ead0"
   },
   "q27b": {
    "character": "supervisor",
@@ -2668,13 +2668,13 @@
    "kind": "quotable",
    "treatment": "radio",
    "qa": "FAIL",
-   "take": "s1.wav",
+   "take": "s9.wav",
    "lufs": -16.0,
    "tp": -2.4,
    "file": "quotes/q41a.mp3",
-   "sec": 3.34,
-   "bytes": 20445,
-   "v": "4bdff480"
+   "sec": 3.463,
+   "bytes": 21228,
+   "v": "98b4342f"
   },
   "q41b": {
    "character": "senior_ranger",
@@ -2683,13 +2683,13 @@
    "kind": "quotable",
    "treatment": "radio",
    "qa": "FAIL",
-   "take": "s7.wav",
+   "take": "s6.wav",
    "lufs": -16.0,
-   "tp": -2.9,
+   "tp": -2.5,
    "file": "quotes/q41b.mp3",
-   "sec": 3.259,
-   "bytes": 19974,
-   "v": "b5a026df"
+   "sec": 3.17,
+   "bytes": 19504,
+   "v": "db788da5"
   },
   "q42a": {
    "character": "tow_guy",
@@ -2759,12 +2759,12 @@
    "treatment": "radio",
    "qa": "pass",
    "take": "s1.wav",
-   "lufs": -16.1,
-   "tp": -2.2,
+   "lufs": -16.0,
+   "tp": -2.6,
    "file": "quotes/q46a.mp3",
-   "sec": 2.697,
-   "bytes": 16683,
-   "v": "911c507f"
+   "sec": 2.69,
+   "bytes": 16526,
+   "v": "da6451eb"
   },
   "q46b": {
    "character": "senior_ranger",
@@ -2843,18 +2843,18 @@
   },
   "q50a": {
    "character": "senior_ranger",
-   "text": "Ground fire at Arroyo Salado. Ranger 1, go check.",
+   "text": "Ground fire at Arroyo Salado. R273, go check.",
    "square": 50,
    "kind": "quotable",
    "treatment": "radio",
    "qa": "FAIL",
-   "take": "s6.wav",
+   "take": "s9.wav",
    "lufs": -16.0,
-   "tp": -2.5,
+   "tp": -2.3,
    "file": "quotes/q50a.mp3",
-   "sec": 3.002,
-   "bytes": 18407,
-   "v": "179bd3c1"
+   "sec": 3.822,
+   "bytes": 23422,
+   "v": "8f3685fa"
   },
   "q50b": {
    "character": "senior_ranger",
@@ -2893,13 +2893,13 @@
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s2.wav",
-   "lufs": -16.2,
-   "tp": -2.0,
+   "take": "s3.wav",
+   "lufs": -16.0,
+   "tp": -2.4,
    "file": "chatter/ch01-1.mp3",
-   "sec": 1.831,
-   "bytes": 11511,
-   "v": "b28b6a0f"
+   "sec": 3.091,
+   "bytes": 19034,
+   "v": "99103300"
   },
   "ch01-2": {
    "character": "r55",
@@ -2984,12 +2984,12 @@
    "treatment": "radio",
    "qa": "pass",
    "take": "s3.wav",
-   "lufs": -16.2,
-   "tp": -2.1,
+   "lufs": -16.0,
+   "tp": -2.2,
    "file": "chatter/ch04-1.mp3",
-   "sec": 2.548,
-   "bytes": 15742,
-   "v": "7c100ca4"
+   "sec": 4.098,
+   "bytes": 24990,
+   "v": "11591310"
   },
   "ch04-2": {
    "character": "r55",
@@ -3028,13 +3028,13 @@
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s3.wav",
+   "take": "s2.wav",
    "lufs": -16.0,
-   "tp": -2.1,
+   "tp": -2.6,
    "file": "chatter/ch05-1.mp3",
-   "sec": 3.831,
-   "bytes": 23422,
-   "v": "a78298e1"
+   "sec": 5.332,
+   "bytes": 32513,
+   "v": "daed3ffb"
   },
   "ch05-2": {
    "character": "dispatch",
@@ -3058,13 +3058,13 @@
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s2.wav",
-   "lufs": -16.2,
-   "tp": -2.0,
+   "take": "s3.wav",
+   "lufs": -16.0,
+   "tp": -2.4,
    "file": "chatter/ch06-1.mp3",
-   "sec": 1.831,
-   "bytes": 11511,
-   "v": "b28b6a0f"
+   "sec": 3.091,
+   "bytes": 19034,
+   "v": "99103300"
   },
   "ch06-2": {
    "character": "r55",
@@ -3088,13 +3088,13 @@
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s1.wav",
-   "lufs": -16.1,
-   "tp": -1.9,
+   "take": "s3.wav",
+   "lufs": -16.0,
+   "tp": -2.4,
    "file": "chatter/ch06-3.mp3",
-   "sec": 3.049,
-   "bytes": 18720,
-   "v": "0332d605"
+   "sec": 4.875,
+   "bytes": 29692,
+   "v": "77f6db26"
   },
   "ch06-4": {
    "character": "r55",
@@ -3148,13 +3148,13 @@
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s1.wav",
-   "lufs": -16.1,
-   "tp": -2.2,
+   "take": "s2.wav",
+   "lufs": -16.0,
+   "tp": -1.9,
    "file": "chatter/ch08-1.mp3",
-   "sec": 1.927,
-   "bytes": 11981,
-   "v": "cb813980"
+   "sec": 3.34,
+   "bytes": 20445,
+   "v": "1e1651cf"
   },
   "ch08-2": {
    "character": "r55",
@@ -3188,18 +3188,18 @@
   },
   "ch09-1": {
    "character": "dispatch",
-   "text": "273, status?",
+   "text": "R273, status?",
    "square": null,
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s1.wav",
-   "lufs": -16.2,
-   "tp": -2.2,
+   "take": "s3.wav",
+   "lufs": -16.0,
+   "tp": -2.0,
    "file": "chatter/ch09-1.mp3",
-   "sec": 1.876,
-   "bytes": 11667,
-   "v": "8c88757c"
+   "sec": 2.061,
+   "bytes": 12765,
+   "v": "112bbd96"
   },
   "ch09-3": {
    "character": "dispatch",
@@ -3233,18 +3233,18 @@
   },
   "ch10-1": {
    "character": "dispatch",
-   "text": "273, status?",
+   "text": "R273, status?",
    "square": null,
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s1.wav",
-   "lufs": -16.2,
-   "tp": -2.2,
+   "take": "s3.wav",
+   "lufs": -16.0,
+   "tp": -2.0,
    "file": "chatter/ch10-1.mp3",
-   "sec": 1.876,
-   "bytes": 11667,
-   "v": "8c88757c"
+   "sec": 2.061,
+   "bytes": 12765,
+   "v": "112bbd96"
   },
   "ch10-2": {
    "character": "ranger_273",
@@ -3270,11 +3270,11 @@
    "qa": "pass",
    "take": "s2.wav",
    "lufs": -16.0,
-   "tp": -3.8,
+   "tp": -3.7,
    "file": "chatter/ch10-3.mp3",
-   "sec": 0.792,
-   "bytes": 5241,
-   "v": "88e8df99"
+   "sec": 0.756,
+   "bytes": 4928,
+   "v": "b840a4ab"
   },
   "ch10-4": {
    "character": "ranger_273",
@@ -3284,27 +3284,27 @@
    "treatment": "radio",
    "qa": "pass",
    "take": "s1.wav",
-   "lufs": -16.1,
+   "lufs": -16.2,
    "tp": -2.0,
    "file": "chatter/ch10-4.mp3",
-   "sec": 3.964,
-   "bytes": 24206,
-   "v": "2f1b6a6e"
+   "sec": 3.573,
+   "bytes": 21855,
+   "v": "c48fd6ac"
   },
   "ch11-1": {
    "character": "dispatch",
-   "text": "273, status?",
+   "text": "R273, status?",
    "square": null,
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s1.wav",
-   "lufs": -16.2,
-   "tp": -2.2,
+   "take": "s3.wav",
+   "lufs": -16.0,
+   "tp": -2.0,
    "file": "chatter/ch11-1.mp3",
-   "sec": 1.876,
-   "bytes": 11667,
-   "v": "8c88757c"
+   "sec": 2.061,
+   "bytes": 12765,
+   "v": "112bbd96"
   },
   "ch11-2": {
    "character": "ranger_273",
@@ -3353,18 +3353,18 @@
   },
   "ch12-1": {
    "character": "dispatch",
-   "text": "273, report.",
+   "text": "R273, report.",
    "square": null,
    "kind": "chatter",
    "treatment": "radio",
    "qa": "pass",
-   "take": "s3.wav",
+   "take": "s1.wav",
    "lufs": -16.1,
-   "tp": -2.5,
+   "tp": -2.3,
    "file": "chatter/ch12-1.mp3",
-   "sec": 1.851,
+   "sec": 1.836,
    "bytes": 11511,
-   "v": "56a2718d"
+   "v": "658fd1ce"
   },
   "ch12-2": {
    "character": "ranger_273",
@@ -3410,6 +3410,22 @@
    "sec": 1.185,
    "bytes": 7592,
    "v": "951a580f"
+  },
+  "nudge-01": {
+   "character": "nerdy_ranger",
+   "text": "Knock, knock!",
+   "square": null,
+   "kind": "cue",
+   "treatment": "clean",
+   "qa": "pass",
+   "take": "s1.wav",
+   "note": "synthesized double wood-knock + voice",
+   "lufs": -16.2,
+   "tp": -1.8,
+   "file": "cue/nudge-01.mp3",
+   "sec": 1.616,
+   "bytes": 13417,
+   "v": "099fad9a"
   }
  }
 }
