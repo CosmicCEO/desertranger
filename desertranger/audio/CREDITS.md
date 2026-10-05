@@ -21,3 +21,4 @@ Every third-party sound in `desertranger/audio/` must be **CC0 1.0** and has a r
 - **Reference voices:** Kokoro-82M (Apache-2.0), used as cloning references only; not shipped.
 - **Bed, critters and radio FX:** original, synthesized with ffmpeg in this repo (`tools/audio/`, hand-off section 8).
 - **Ambience bed and critters (`amb/`):** `amb-bed-01`, `amb-rattle-01`, `amb-truck-01`, `amb-crickets-01` are original, synthesized with ffmpeg (`tools/audio/make_ambience.py`, hand-off 8.3/8.4). No third-party material.
+- **Nudge cue (`cue/nudge-01.mp3`, Wave 2 "Knock, knock" button):** original. The double wood-knock is synthesized with ffmpeg only (`tools/audio/make_nudge.py`: damped sine partials plus a 12 ms noise transient, two knocks 190 ms apart); the "Knock, knock!" voice is generated with Chatterbox from the Nerdy Ranger reference (a Kokoro preset voice, see above). No third-party audio.
