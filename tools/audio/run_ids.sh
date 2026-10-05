@@ -7,7 +7,7 @@
 #   rung 1 : FAIL ids, 3 more seeds (4-6)             -> QA
 #   rung 2 : FAIL ids, seeds 7-9, faster pacing       -> QA      (9 takes per line is the cap)
 # LONG=1 adds rung 3 (seeds 10-12), LONG=2 also rung 4 (seeds 13-20, 20 takes max) for lines that still FAIL the strict pronunciation gate (20 takes max).
-# Then master.py for the ids. Leftover failures: audio-work/fail-after-ladder-ids.txt. Lines with a per-line "gen" setting keep it unless the rung passes --ex/--cfg.
+# Then master.py for the ids (unless NOMASTER=1). Leftover failures: audio-work/fail-after-ladder-ids.txt. Lines with a per-line "gen" setting keep it unless the rung passes --ex/--cfg.
 set -u
 IDS="${1:?comma-separated ids}"; shift || true
 FAST="${*:---ex 0.6 --cfg 0.65}"
@@ -43,5 +43,5 @@ if [ "${LONG:-0}" != "0" ]; then   # strict pronunciation gate failures only (no
 fi
 F=$(fails); echo "$F" | tr ',' '\n' | sed '/^$/d' > audio-work/fail-after-ladder-ids.txt
 echo "== FAIL-after-ladder: ${F:-none}"
-python3 tools/audio/master.py --ids "$IDS"
+if [ "${NOMASTER:-0}" != "1" ]; then python3 tools/audio/master.py --ids "$IDS"; fi   # NOMASTER=1: leave mastering to the caller (it decides which picks may ship)
 echo "== done ($(date +%T))"
