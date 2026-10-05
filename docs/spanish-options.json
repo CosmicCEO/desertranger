@@ -1,0 +1,4230 @@
+{
+ "pl-sr-11": {
+  "text": "Dos Cabezas",
+  "max_sec": 1.2,
+  "words": [
+   "Cabezas"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-11-A.wav",
+    "heard": "Gozas",
+    "sec": 1.02,
+    "errors": 2,
+    "allowed": 0,
+    "score": 0.5,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cabezas",
+      "heard": "gozas",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-11/A.wav",
+     "heard": "Dos, Cabezas.",
+     "heard_plain": "Gozas",
+     "errors": 2,
+     "allowed": 0,
+     "sec": 1.02,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Cabezas",
+       "heard": "gozas",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-11/A.wav",
+    "mp3": "alt/spanish/pl-sr-11-A.mp3",
+    "mp3_sec": 1.001,
+    "respelling_sent": "as written before: Dos Cabezas",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-11-B.wav",
+    "heard": "Doska Baysas!",
+    "sec": 1.79,
+    "errors": 1,
+    "allowed": 0,
+    "score": 0.76,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cabezas",
+      "heard": "baysas",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-11-B.wav",
+     "heard": "Dos, Cabezas.",
+     "heard_plain": "Doska Baysas!",
+     "errors": 1,
+     "allowed": 0,
+     "sec": 1.79,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Cabezas",
+       "heard": "baysas",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-11/s5.wav",
+    "mp3": "alt/spanish/pl-sr-11-B.mp3",
+    "mp3_sec": 1.549,
+    "respelling_sent": "Dos kah-Bay-sahs",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "B",
+  "why": "no candidate scored 0.10 higher than the previous clip",
+  "shipped": "B"
+ },
+ "pl-sr-12": {
+  "text": "Ocotillo Wells",
+  "max_sec": 1.2,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-12-A.wav",
+    "heard": "Ocoteo Wells",
+    "sec": 1.63,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.77,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocoteo",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-12/A.wav",
+     "heard": "Ocoteo Wells",
+     "heard_plain": "Ocoteo Wells",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.63,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocoteo",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-12/A.wav",
+    "mp3": "alt/spanish/pl-sr-12-A.mp3",
+    "mp3_sec": 1.393,
+    "respelling_sent": "as written before: Ocotillo Wells",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-12-B.wav",
+    "heard": "Ocotillo Wells",
+    "sec": 1.7,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-12-B.wav",
+     "heard": "Ocotillo Wells",
+     "heard_plain": "Ocotillo Wells",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.7,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-12/s9.wav",
+    "mp3": "alt/spanish/pl-sr-12-B.mp3",
+    "mp3_sec": 1.45,
+    "respelling_sent": "Ocotiyo Wells",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-sr-12-C.wav",
+    "heard": "Ocotillo Wells",
+    "sec": 1.79,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-12-C.wav",
+     "heard": "Ocotillo Wells",
+     "heard_plain": "Ocotillo Wells",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.79,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-sr-12/s3_palt.wav",
+    "mp3": "alt/spanish/pl-sr-12-C.mp3",
+    "mp3_sec": 1.514,
+    "respelling_sent": "Ocotillo Wells",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.77 for the previous clip)",
+  "shipped": "B"
+ },
+ "pl-sr-18": {
+  "text": "Vallecito",
+  "max_sec": 1.2,
+  "words": [
+   "Vallecito"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-18-A.wav",
+    "heard": "Yeah, see toe",
+    "sec": 1.57,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.8,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Vallecito",
+      "heard": "toe",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-18/A.wav",
+     "heard": "Yeah, see toe",
+     "heard_plain": "Yeah, see toe",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.57,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Vallecito",
+       "heard": "toe",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-18/A.wav",
+    "mp3": "alt/spanish/pl-sr-18-A.mp3",
+    "mp3_sec": 1.336,
+    "respelling_sent": "as written before: Vallecito",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-18-B.wav",
+    "heard": "Ya-ga-ya-see-toe.",
+    "sec": 2.24,
+    "errors": 1,
+    "allowed": 0,
+    "score": 0.9,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Vallecito",
+      "heard": "toe",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-18-B.wav",
+     "heard": "Yaya-si-to.",
+     "heard_plain": "Ya-ga-ya-see-toe.",
+     "errors": 1,
+     "allowed": 0,
+     "sec": 2.24,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Vallecito",
+       "heard": "toe",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-18/s4.wav",
+    "mp3": "alt/spanish/pl-sr-18-B.mp3",
+    "mp3_sec": 1.918,
+    "respelling_sent": "Vaya-See-Toe",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-sr-18-C.wav",
+    "heard": "Valle Cito",
+    "sec": 1.41,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Vallecito",
+      "heard": "cito",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-18-C.wav",
+     "heard": "Valle Cito",
+     "heard_plain": "Valle Cito",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.41,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Vallecito",
+       "heard": "cito",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-sr-18/s14_palt.wav",
+    "mp3": "alt/spanish/pl-sr-18-C.mp3",
+    "mp3_sec": 1.237,
+    "respelling_sent": "Valle-see-toe",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "C",
+  "why": "no candidate scored 0.10 higher than the previous clip",
+  "shipped": "C"
+ },
+ "pl-sr-19": {
+  "text": "Arroyo Salado",
+  "max_sec": 1.2,
+  "words": [
+   "Salado"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-19-A.wav",
+    "heard": "Arroyo Salado",
+    "sec": 1.38,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "salado",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-19/A.wav",
+     "heard": "Arroyo Salado",
+     "heard_plain": "Arroyo Salado",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.38,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "salado",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-19/A.wav",
+    "mp3": "alt/spanish/pl-sr-19-A.mp3",
+    "mp3_sec": 1.212,
+    "respelling_sent": "as written before: Arroyo Salado",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-19-B.wav",
+    "heard": "Arroyo Salado",
+    "sec": 2.08,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "salado",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-19-B.wav",
+     "heard": "Arroyo Salado",
+     "heard_plain": "Arroyo Salado",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 2.08,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "salado",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-19/s1.wav",
+    "mp3": "alt/spanish/pl-sr-19-B.mp3",
+    "mp3_sec": 1.775,
+    "respelling_sent": "Arroyo sah-Lah-doh",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "previous clip already passes the strict gate and nothing scores 0.10 higher",
+  "shipped": "A"
+ },
+ "pl-sr-26": {
+  "text": "the olla site",
+  "max_sec": 1.2,
+  "words": [
+   "Olla"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-26-A.wav",
+    "heard": "The Oya site",
+    "sec": 1.09,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "oya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-26/A.wav",
+     "heard": "The Oya site",
+     "heard_plain": "The Oya site",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.09,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "oya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-26/A.wav",
+    "mp3": "alt/spanish/pl-sr-26-A.mp3",
+    "mp3_sec": 1.0,
+    "respelling_sent": "as written before: the olla site",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-26-B.wav",
+    "heard": "The Oya site",
+    "sec": 1.09,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "oya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-26-B.wav",
+     "heard": "The Oya site",
+     "heard_plain": "The Oya site",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.09,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "oya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-26/s5.wav",
+    "mp3": "alt/spanish/pl-sr-26-B.mp3",
+    "mp3_sec": 1.0,
+    "respelling_sent": "the Oya site",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-sr-26-C.wav",
+    "heard": "The Oya site.",
+    "sec": 1.44,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "oya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-26-C.wav",
+     "heard": "The Oya site.",
+     "heard_plain": "The Oya site.",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.44,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "oya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-sr-26/s6_palt.wav",
+    "mp3": "alt/spanish/pl-sr-26-C.mp3",
+    "mp3_sec": 1.225,
+    "respelling_sent": "the oy-yah site",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "A",
+  "why": "previous clip already passes the strict gate and nothing scores 0.10 higher",
+  "shipped": "A"
+ },
+ "pl-sr-32": {
+  "text": "Yaqui Pass",
+  "max_sec": 1.2,
+  "words": [
+   "Yaqui"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-32-A.wav",
+    "heard": "Gyaki Pass",
+    "sec": 1.15,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.6,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Yaqui",
+      "heard": "gyaki",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-32/A.wav",
+     "heard": "Gyaki Pass",
+     "heard_plain": "Gyaki Pass",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.15,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Yaqui",
+       "heard": "gyaki",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-32/A.wav",
+    "mp3": "alt/spanish/pl-sr-32-A.mp3",
+    "mp3_sec": 1.121,
+    "respelling_sent": "as written before: Yaqui Pass",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-32-B.wav",
+    "heard": "Yack-y-pass?",
+    "sec": 1.38,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Yaqui",
+      "heard": "y",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-32-B.wav",
+     "heard": "Yack-y-pass?",
+     "heard_plain": "Yack-y-pass?",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.38,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Yaqui",
+       "heard": "y",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-32/s1.wav",
+    "mp3": "alt/spanish/pl-sr-32-B.mp3",
+    "mp3_sec": 1.203,
+    "respelling_sent": "Yacky Pass",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-sr-32-C.wav",
+    "heard": "Yaqui Pass?",
+    "sec": 1.25,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Yaqui",
+      "heard": "yaqui",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-32-C.wav",
+     "heard": "Yaqui Pass?",
+     "heard_plain": "Yaqui Pass?",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.25,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Yaqui",
+       "heard": "yaqui",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-sr-32/s2_palt.wav",
+    "mp3": "alt/spanish/pl-sr-32-C.mp3",
+    "mp3_sec": 1.211,
+    "respelling_sent": "Yaqui Pass",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "C",
+  "why": "best strict-gate pass (score 1.0 vs 0.6 for the previous clip)",
+  "shipped": "C"
+ },
+ "pl-sr-41": {
+  "text": "the Ocotillo Wells turnoff",
+  "max_sec": 1.2,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-41-A.wav",
+    "heard": "The Ocotea Wells turnoff.",
+    "sec": 2.34,
+    "errors": 1,
+    "allowed": 0,
+    "score": 0.63,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotea",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-41/A.wav",
+     "heard": "The Ocotillo, Wells turnoff.",
+     "heard_plain": "The Ocotea Wells turnoff.",
+     "errors": 1,
+     "allowed": 0,
+     "sec": 2.34,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotea",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-41/A.wav",
+    "mp3": "alt/spanish/pl-sr-41-A.mp3",
+    "mp3_sec": 2.014,
+    "respelling_sent": "as written before: the Ocotillo Wells turnoff",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-41-B.wav",
+    "heard": "The Ocotillo Wells Turnoff",
+    "sec": 2.44,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-41-B.wav",
+     "heard": "The Ocotillo Wells Turnoff",
+     "heard_plain": "The Ocotillo Wells Turnoff",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 2.44,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-41/s4.wav",
+    "mp3": "alt/spanish/pl-sr-41-B.mp3",
+    "mp3_sec": 2.108,
+    "respelling_sent": "the Ocotiyo Wells turnoff",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-sr-41-C.wav",
+    "heard": "The Okotillo Wells Turnoff",
+    "sec": 2.3,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.88,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "okotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-41-C.wav",
+     "heard": "The Okotillo Wells Turnoff",
+     "heard_plain": "The Okotillo Wells Turnoff",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 2.3,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "okotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-sr-41/s4_palt.wav",
+    "mp3": "alt/spanish/pl-sr-41-C.mp3",
+    "mp3_sec": 1.962,
+    "respelling_sent": "the Ocotillo Wells turnoff",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.63 for the previous clip)",
+  "shipped": "B"
+ },
+ "pl-sr-46": {
+  "text": "the cholla patch",
+  "max_sec": 1.2,
+  "words": [
+   "Cholla"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-46-A.wav",
+    "heard": "The Cholla Patch",
+    "sec": 1.18,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "cholla",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-46/A.wav",
+     "heard": "The Cholla Patch",
+     "heard_plain": "The Cholla Patch",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.18,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "cholla",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-46/A.wav",
+    "mp3": "alt/spanish/pl-sr-46-A.mp3",
+    "mp3_sec": 1.127,
+    "respelling_sent": "as written before: the cholla patch",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-46-B.wav",
+    "heard": "The Cholla Patch",
+    "sec": 1.18,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "cholla",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-46-B.wav",
+     "heard": "The Cholla Patch",
+     "heard_plain": "The Cholla Patch",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.18,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "cholla",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-46/s1.wav",
+    "mp3": "alt/spanish/pl-sr-46-B.mp3",
+    "mp3_sec": 1.127,
+    "respelling_sent": "the Choya patch",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-sr-46-C.wav",
+    "heard": "The Cholla Patch",
+    "sec": 1.38,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "cholla",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-46-C.wav",
+     "heard": "The Cholla Patch",
+     "heard_plain": "The Cholla Patch",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.38,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "cholla",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-sr-46/s1_palt.wav",
+    "mp3": "alt/spanish/pl-sr-46-C.mp3",
+    "mp3_sec": 1.211,
+    "respelling_sent": "the Choyah patch",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "A",
+  "why": "previous clip already passes the strict gate and nothing scores 0.10 higher",
+  "shipped": "A"
+ },
+ "pl-sr-50": {
+  "text": "the fire report at Arroyo Salado",
+  "max_sec": 1.2,
+  "words": [
+   "Salado"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-sr-50-A.wav",
+    "heard": "The Fire Report at Arroyo Salado",
+    "sec": 2.08,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "salado",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-sr-50/A.wav",
+     "heard": "The Fire Report at Arroyo Salado",
+     "heard_plain": "The Fire Report at Arroyo Salado",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 2.08,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "salado",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-sr-50/A.wav",
+    "mp3": "alt/spanish/pl-sr-50-A.mp3",
+    "mp3_sec": 1.789,
+    "respelling_sent": "as written before: the fire report at Arroyo Salado",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-sr-50-B.wav",
+    "heard": "The fire report at Arroyo Salado.",
+    "sec": 2.53,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "salado",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-sr-50-B.wav",
+     "heard": "The fire report at Arroyo Salado.",
+     "heard_plain": "The fire report at Arroyo Salado.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 2.53,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "salado",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-sr-50/s4.wav",
+    "mp3": "alt/spanish/pl-sr-50-B.mp3",
+    "mp3_sec": 2.206,
+    "respelling_sent": "the fire report at Arroyo sah-Lah-doh",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "previous clip already passes the strict gate and nothing scores 0.10 higher",
+  "shipped": "A"
+ },
+ "pl-r273-11": {
+  "text": "Dos Cabezas",
+  "max_sec": 1.2,
+  "words": [
+   "Cabezas"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-11-A.wav",
+    "heard": "Go skabesas!",
+    "sec": 1.15,
+    "errors": 1,
+    "allowed": 0,
+    "score": 0.67,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cabezas",
+      "heard": "skabesas",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-11/A.wav",
+     "heard": "Dos, Cabezas.",
+     "heard_plain": "Go skabesas!",
+     "errors": 1,
+     "allowed": 0,
+     "sec": 1.15,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Cabezas",
+       "heard": "skabesas",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-11/A.wav",
+    "mp3": "alt/spanish/pl-r273-11-A.mp3",
+    "mp3_sec": 1.033,
+    "respelling_sent": "as written before: Dos Cabezas",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-11-B.wav",
+    "heard": "Yours Ka Baysa",
+    "sec": 2.66,
+    "errors": 1,
+    "allowed": 0,
+    "score": 0.82,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cabezas",
+      "heard": "baysa",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-11-B.wav",
+     "heard": "Dos, Cabezas.",
+     "heard_plain": "Yours Ka Baysa",
+     "errors": 1,
+     "allowed": 0,
+     "sec": 2.66,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Cabezas",
+       "heard": "baysa",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-11/s3.wav",
+    "mp3": "alt/spanish/pl-r273-11-B.mp3",
+    "mp3_sec": 2.32,
+    "respelling_sent": "Dos kah-Bay-sahs",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "B",
+  "why": "no candidate scored 0.10 higher than the previous clip",
+  "shipped": "B"
+ },
+ "pl-r273-12": {
+  "text": "Ocotillo Wells",
+  "max_sec": 1.2,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-12-A.wav",
+    "heard": "Okotee-A-Wears",
+    "sec": 1.34,
+    "errors": 3,
+    "allowed": 0,
+    "score": 0.46,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "a",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-12/A.wav",
+     "heard": "Ocotillo, Wells.",
+     "heard_plain": "Okotee-A-Wears",
+     "errors": 3,
+     "allowed": 0,
+     "sec": 1.34,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "a",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-12/A.wav",
+    "mp3": "alt/spanish/pl-r273-12-A.mp3",
+    "mp3_sec": 1.21,
+    "respelling_sent": "as written before: Ocotillo Wells",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-12-B.wav",
+    "heard": "Ocotillo Wells",
+    "sec": 1.63,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-12-B.wav",
+     "heard": "Ocotillo Wells",
+     "heard_plain": "Ocotillo Wells",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.63,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-12/s1.wav",
+    "mp3": "alt/spanish/pl-r273-12-B.mp3",
+    "mp3_sec": 1.363,
+    "respelling_sent": "Ocotiyo Wells",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-r273-12-C.wav",
+    "heard": "Ocotillo Wells",
+    "sec": 1.6,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-12-C.wav",
+     "heard": "Ocotillo Wells",
+     "heard_plain": "Ocotillo Wells",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.6,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-r273-12/s4_palt.wav",
+    "mp3": "alt/spanish/pl-r273-12-C.mp3",
+    "mp3_sec": 1.341,
+    "respelling_sent": "Ocotillo Wells",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.46 for the previous clip)",
+  "shipped": "B"
+ },
+ "pl-r273-18": {
+  "text": "Vallecito",
+  "max_sec": 1.2,
+  "words": [
+   "Vallecito"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-18-A.wav",
+    "heard": "Kaya Shito",
+    "sec": 1.54,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.63,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Vallecito",
+      "heard": "shito",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-18/A.wav",
+     "heard": "Kaya Shito",
+     "heard_plain": "Kaya Shito",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.54,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Vallecito",
+       "heard": "shito",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-18/A.wav",
+    "mp3": "alt/spanish/pl-r273-18-A.mp3",
+    "mp3_sec": 1.231,
+    "respelling_sent": "as written before: Vallecito",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-18-B.wav",
+    "heard": "Vaya Sito!",
+    "sec": 1.89,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.78,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Vallecito",
+      "heard": "sito",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-18-B.wav",
+     "heard": "Vaya Sito!",
+     "heard_plain": "Vaya Sito!",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.89,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Vallecito",
+       "heard": "sito",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-18/s5.wav",
+    "mp3": "alt/spanish/pl-r273-18-B.mp3",
+    "mp3_sec": 1.571,
+    "respelling_sent": "Vaya-See-Toe",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-r273-18-C.wav",
+    "heard": "Val\u00e9cito",
+    "sec": 1.7,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.88,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Vallecito",
+      "heard": "valecito",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-18-C.wav",
+     "heard": "Val\u00e9cito",
+     "heard_plain": "Val\u00e9cito",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.7,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Vallecito",
+       "heard": "valecito",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-r273-18/s5_palt.wav",
+    "mp3": "alt/spanish/pl-r273-18-C.mp3",
+    "mp3_sec": 1.42,
+    "respelling_sent": "Valle-see-toe",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "C",
+  "why": "best strict-gate pass (score 0.88 vs 0.63 for the previous clip)",
+  "shipped": "C"
+ },
+ "pl-r273-19": {
+  "text": "Arroyo Salado",
+  "max_sec": 1.2,
+  "words": [
+   "Salado"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-19-A.wav",
+    "heard": "A Royal Salado.",
+    "sec": 1.5,
+    "errors": 2,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "salado",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-19/A.wav",
+     "heard": "Arroyo, Salado.",
+     "heard_plain": "A Royal Salado.",
+     "errors": 2,
+     "allowed": 0,
+     "sec": 1.5,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "salado",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-19/A.wav",
+    "mp3": "alt/spanish/pl-r273-19-A.mp3",
+    "mp3_sec": 1.272,
+    "respelling_sent": "as written before: Arroyo Salado",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-19-B.wav",
+    "heard": "Arroyo Salado",
+    "sec": 2.5,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "salado",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-19-B.wav",
+     "heard": "Arroyo Salado",
+     "heard_plain": "Arroyo Salado",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 2.5,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "salado",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-19/s3.wav",
+    "mp3": "alt/spanish/pl-r273-19-B.mp3",
+    "mp3_sec": 2.132,
+    "respelling_sent": "Arroyo sah-Lah-doh",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 1.0 for the previous clip)",
+  "shipped": "B"
+ },
+ "pl-r273-26": {
+  "text": "the olla site",
+  "max_sec": 1.2,
+  "words": [
+   "Olla"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-26-A.wav",
+    "heard": "The OEOSite",
+    "sec": 1.18,
+    "errors": 2,
+    "allowed": 0,
+    "score": 0.2,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-26/A.wav",
+     "heard": "The Oya site.",
+     "heard_plain": "The OEOSite",
+     "errors": 2,
+     "allowed": 0,
+     "sec": 1.18,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-26/A.wav",
+    "mp3": "alt/spanish/pl-r273-26-A.mp3",
+    "mp3_sec": 1.128,
+    "respelling_sent": "as written before: the olla site",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-26-B.wav",
+    "heard": "The Oya site.",
+    "sec": 1.22,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "oya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-26-B.wav",
+     "heard": "The Oya site.",
+     "heard_plain": "The Oya site.",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.22,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "oya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-26/s7.wav",
+    "mp3": "alt/spanish/pl-r273-26-B.mp3",
+    "mp3_sec": 1.113,
+    "respelling_sent": "the Oya site",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-r273-26-C.wav",
+    "heard": "The Oya site",
+    "sec": 1.44,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "oya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-26-C.wav",
+     "heard": "The Oya site",
+     "heard_plain": "The Oya site",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.44,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "oya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-r273-26/s6_palt.wav",
+    "mp3": "alt/spanish/pl-r273-26-C.mp3",
+    "mp3_sec": 1.206,
+    "respelling_sent": "the oy-yah site",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.2 for the previous clip)",
+  "shipped": "B"
+ },
+ "pl-r273-32": {
+  "text": "Yaqui Pass",
+  "max_sec": 1.2,
+  "words": [
+   "Yaqui"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-32-A.wav",
+    "heard": "Yaki Pass",
+    "sec": 1.22,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.67,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Yaqui",
+      "heard": "yaki",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-32/A.wav",
+     "heard": "Yaki Pass",
+     "heard_plain": "Yaki Pass",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.22,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Yaqui",
+       "heard": "yaki",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-32/A.wav",
+    "mp3": "alt/spanish/pl-r273-32-A.mp3",
+    "mp3_sec": 1.155,
+    "respelling_sent": "as written before: Yaqui Pass",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-32-B.wav",
+    "heard": "Yaqui Pass",
+    "sec": 1.63,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Yaqui",
+      "heard": "yaqui",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-32-B.wav",
+     "heard": "Yaqui Pass",
+     "heard_plain": "Yaqui Pass",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.63,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Yaqui",
+       "heard": "yaqui",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-32/s16.wav",
+    "mp3": "alt/spanish/pl-r273-32-B.mp3",
+    "mp3_sec": 1.375,
+    "respelling_sent": "Yacky Pass",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-r273-32-C.wav",
+    "heard": "Yaqui Pass",
+    "sec": 1.38,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Yaqui",
+      "heard": "yaqui",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-32-C.wav",
+     "heard": "Yaqui Pass",
+     "heard_plain": "Yaqui Pass",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.38,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Yaqui",
+       "heard": "yaqui",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-r273-32/s3_palt.wav",
+    "mp3": "alt/spanish/pl-r273-32-C.mp3",
+    "mp3_sec": 1.214,
+    "respelling_sent": "Yaqui Pass",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.67 for the previous clip)",
+  "shipped": "B"
+ },
+ "pl-r273-41": {
+  "text": "the Ocotillo Wells turnoff",
+  "max_sec": 1.2,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-41-A.wav",
+    "heard": "The Okotio wells turn off.",
+    "sec": 2.27,
+    "errors": 2,
+    "allowed": 0,
+    "score": 0.77,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "okotio",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-41/A.wav",
+     "heard": "The Ocotillo Wells turnoff.",
+     "heard_plain": "The Okotio wells turn off.",
+     "errors": 2,
+     "allowed": 0,
+     "sec": 2.27,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "okotio",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-41/A.wav",
+    "mp3": "alt/spanish/pl-r273-41-A.mp3",
+    "mp3_sec": 1.916,
+    "respelling_sent": "as written before: the Ocotillo Wells turnoff",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-41-B.wav",
+    "heard": "The Ocotillo Wells turnoff.",
+    "sec": 2.46,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-41-B.wav",
+     "heard": "The Ocotillo Wells turnoff.",
+     "heard_plain": "The Ocotillo Wells turnoff.",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 2.46,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-41/s1.wav",
+    "mp3": "alt/spanish/pl-r273-41-B.mp3",
+    "mp3_sec": 2.122,
+    "respelling_sent": "the Ocotiyo Wells turnoff",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-r273-41-C.wav",
+    "heard": "The Ocotillo Wells Turnoff",
+    "sec": 2.5,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-41-C.wav",
+     "heard": "The Ocotillo Wells Turnoff",
+     "heard_plain": "The Ocotillo Wells Turnoff",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 2.5,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-r273-41/s3_palt.wav",
+    "mp3": "alt/spanish/pl-r273-41-C.mp3",
+    "mp3_sec": 2.166,
+    "respelling_sent": "the Ocotillo Wells turnoff",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.77 for the previous clip)",
+  "shipped": "B"
+ },
+ "pl-r273-46": {
+  "text": "the cholla patch",
+  "max_sec": 1.2,
+  "words": [
+   "Cholla"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-46-A.wav",
+    "heard": "Detroiter Patch",
+    "sec": 1.28,
+    "errors": 2,
+    "allowed": 0,
+    "score": 0.4,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "detroiter",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-46/A.wav",
+     "heard": "The Cholla patch.",
+     "heard_plain": "Detroiter Patch",
+     "errors": 2,
+     "allowed": 0,
+     "sec": 1.28,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "detroiter",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-46/A.wav",
+    "mp3": "alt/spanish/pl-r273-46-A.mp3",
+    "mp3_sec": 1.212,
+    "respelling_sent": "as written before: the cholla patch",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-46-B.wav",
+    "heard": "The Cholla Patch",
+    "sec": 1.34,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "cholla",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-46-B.wav",
+     "heard": "The Cholla Patch",
+     "heard_plain": "The Cholla Patch",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.34,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "cholla",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-46/s7.wav",
+    "mp3": "alt/spanish/pl-r273-46-B.mp3",
+    "mp3_sec": 1.212,
+    "respelling_sent": "the Choya patch",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/pl-r273-46-C.wav",
+    "heard": "The Cholla Patch",
+    "sec": 1.79,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "cholla",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-46-C.wav",
+     "heard": "The Cholla Patch",
+     "heard_plain": "The Cholla Patch",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.79,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "cholla",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/pl-r273-46/s10_palt.wav",
+    "mp3": "alt/spanish/pl-r273-46-C.mp3",
+    "mp3_sec": 1.543,
+    "respelling_sent": "the Choyah patch",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.4 for the previous clip)",
+  "shipped": "B"
+ },
+ "pl-r273-50": {
+  "text": "the fire report at Arroyo Salado",
+  "max_sec": 1.2,
+  "words": [
+   "Salado"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/pl-r273-50-A.wav",
+    "heard": "The Fire Report at Arroyo Salado",
+    "sec": 2.34,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "salado",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/pl-r273-50/A.wav",
+     "heard": "The Fire Report at Arroyo Salado",
+     "heard_plain": "The Fire Report at Arroyo Salado",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 2.34,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "salado",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/pl-r273-50/A.wav",
+    "mp3": "alt/spanish/pl-r273-50-A.mp3",
+    "mp3_sec": 1.976,
+    "respelling_sent": "as written before: the fire report at Arroyo Salado",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/pl-r273-50-B.wav",
+    "heard": "The fire report at Arroyo Sala",
+    "sec": 2.44,
+    "errors": 0,
+    "allowed": 1,
+    "score": 0.8,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "sala",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/pl-r273-50-B.wav",
+     "heard": "The fire report at Arroyo Sala",
+     "heard_plain": "The fire report at Arroyo Sala",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 2.44,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "sala",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/pl-r273-50/s8.wav",
+    "mp3": "alt/spanish/pl-r273-50-B.mp3",
+    "mp3_sec": 2.111,
+    "respelling_sent": "the fire report at Arroyo sah-Lah-doh",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "previous clip already passes the strict gate and nothing scores 0.10 higher",
+  "shipped": "A"
+ },
+ "q12a": {
+  "text": "Ocotillo Wells: one-turn hold. Hydrate and reset.",
+  "max_sec": 2.7,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/q12a-A.wav",
+    "heard": "OTO wells, one turn hold, hydrate and reset.",
+    "sec": 3.52,
+    "errors": 0,
+    "allowed": 1,
+    "score": 0.6,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "oto",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/q12a/A.wav",
+     "heard": "OTO wells, one turn hold, hydrate and reset.",
+     "heard_plain": "OTO wells, one turn hold, hydrate and reset.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.52,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "oto",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/q12a/A.wav",
+    "mp3": "alt/spanish/q12a-A.mp3",
+    "mp3_sec": 3.043,
+    "respelling_sent": "as written before: Ocotillo Wells: one-turn hold. Hydrate and reset.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/q12a-B.wav",
+    "heard": "Ocotillo Wells, one turn hold, hydrate and reset.",
+    "sec": 4.54,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q12a-B.wav",
+     "heard": "Ocotillo Wells, one turn hold, hydrate and reset.",
+     "heard_plain": "Ocotillo Wells, one turn hold, hydrate and reset.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 4.54,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/q12a/s10.wav",
+    "mp3": "alt/spanish/q12a-B.mp3",
+    "mp3_sec": 3.943,
+    "respelling_sent": "Ocotiyo Wells: one-turn hold. Hydrate and reset.",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/q12a-C.wav",
+    "heard": "Ocotillo wells one turn hold. Hydrate and reset.",
+    "sec": 4.77,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q12a-C.wav",
+     "heard": "Ocotillo wells one turn hold. Hydrate and reset.",
+     "heard_plain": "Ocotillo wells one turn hold. Hydrate and reset.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 4.77,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/q12a/s7_palt.wav",
+    "mp3": "alt/spanish/q12a-C.mp3",
+    "mp3_sec": 4.092,
+    "respelling_sent": "Ocotillo Wells: one-turn hold. Hydrate and reset.",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.6 for the previous clip)",
+  "shipped": "B"
+ },
+ "q26b": {
+  "text": "Olla found! Please admire it from a respectful distance.",
+  "max_sec": 2.7,
+  "words": [
+   "Olla"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/q26b-A.wav",
+    "heard": "Oya found, please admire it from a respectful distance.",
+    "sec": 2.78,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "oya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/q26b/A.wav",
+     "heard": "Oya found, please admire it from a respectful distance.",
+     "heard_plain": "Oya found, please admire it from a respectful distance.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 2.78,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "oya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/q26b/A.wav",
+    "mp3": "alt/spanish/q26b-A.mp3",
+    "mp3_sec": 2.707,
+    "respelling_sent": "as written before: Olla found! Please admire it from a respectful distance.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/q26b-B.wav",
+    "heard": "Oya found, please admire it from a respectful distance.",
+    "sec": 2.78,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "oya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q26b-B.wav",
+     "heard": "Oya found, please admire it from a respectful distance.",
+     "heard_plain": "Oya found, please admire it from a respectful distance.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 2.78,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "oya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/q26b/s1.wav",
+    "mp3": "alt/spanish/q26b-B.mp3",
+    "mp3_sec": 2.707,
+    "respelling_sent": "Oya found! Please admire it from a respectful distance.",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/q26b-C.wav",
+    "heard": "Oya found, please admire it from a respectful distance.",
+    "sec": 3.71,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Olla",
+      "heard": "oya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q26b-C.wav",
+     "heard": "Oya found, please admire it from a respectful distance.",
+     "heard_plain": "Oya found, please admire it from a respectful distance.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.71,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Olla",
+       "heard": "oya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/q26b/s6_palt.wav",
+    "mp3": "alt/spanish/q26b-C.mp3",
+    "mp3_sec": 3.201,
+    "respelling_sent": "oy-yah found! Please admire it from a respectful distance.",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "A",
+  "why": "previous clip already passes the strict gate and nothing scores 0.10 higher",
+  "shipped": "A"
+ },
+ "q41a": {
+  "text": "Order: Ocotillo Wells. The extra turn is part of the ruling.",
+  "max_sec": 2.7,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/q41a-A.wav",
+    "heard": "Order, Okutio-Wells. The extra turn is part of the ruling.",
+    "sec": 4.0,
+    "errors": 0,
+    "allowed": 1,
+    "score": 0.62,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "okutio",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/q41a/A.wav",
+     "heard": "Order, Okutio-Wells. The extra turn is part of the ruling.",
+     "heard_plain": "Order, Okutio-Wells. The extra turn is part of the ruling.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 4.0,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "okutio",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/q41a/A.wav",
+    "mp3": "alt/spanish/q41a-A.mp3",
+    "mp3_sec": 3.463,
+    "respelling_sent": "as written before: Order: Ocotillo Wells. The extra turn is part of the ruling.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/q41a-B.wav",
+    "heard": "Order Okotiyo Wells. The extra turn is part of the ruling.",
+    "sec": 4.29,
+    "errors": 0,
+    "allowed": 1,
+    "score": 0.86,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "okotiyo",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q41a-B.wav",
+     "heard": "Order Okotiyo Wells. The extra turn is part of the ruling.",
+     "heard_plain": "Order Okotiyo Wells. The extra turn is part of the ruling.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 4.29,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "okotiyo",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/q41a/s1.wav",
+    "mp3": "alt/spanish/q41a-B.mp3",
+    "mp3_sec": 3.668,
+    "respelling_sent": "Order: Ocotiyo Wells. The extra turn is part of the ruling.",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/q41a-C.wav",
+    "heard": "Order, Ocotillo Wells. The extra turn is part of the ruling.",
+    "sec": 3.9,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q41a-C.wav",
+     "heard": "Order, Ocotillo Wells. The extra turn is part of the ruling.",
+     "heard_plain": "Order, Ocotillo Wells. The extra turn is part of the ruling.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.9,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/q41a/s1_palt.wav",
+    "mp3": "alt/spanish/q41a-C.mp3",
+    "mp3_sec": 3.34,
+    "respelling_sent": "Order: Ocotillo Wells. The extra turn is part of the ruling.",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "C",
+  "why": "best strict-gate pass (score 1.0 vs 0.62 for the previous clip)",
+  "shipped": "C"
+ },
+ "q41b": {
+  "text": "Proceed to Ocotillo Wells; no appeals on the detour.",
+  "max_sec": 2.7,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/q41b-A.wav",
+    "heard": "Proceed to Ocotillo Wells. No appeals on the detour.",
+    "sec": 3.65,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/q41b/A.wav",
+     "heard": "Proceed to Ocotillo Wells. No appeals on the detour.",
+     "heard_plain": "Proceed to Ocotillo Wells. No appeals on the detour.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.65,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/q41b/A.wav",
+    "mp3": "alt/spanish/q41b-A.mp3",
+    "mp3_sec": 3.17,
+    "respelling_sent": "as written before: Proceed to Ocotillo Wells; no appeals on the detour.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/q41b-B.wav",
+    "heard": "Proceed to Ocotillo Wells. No appeals on the detour.",
+    "sec": 3.65,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q41b-B.wav",
+     "heard": "Proceed to Ocotillo Wells. No appeals on the detour.",
+     "heard_plain": "Proceed to Ocotillo Wells. No appeals on the detour.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.65,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/q41b/s6.wav",
+    "mp3": "alt/spanish/q41b-B.mp3",
+    "mp3_sec": 3.17,
+    "respelling_sent": "Proceed to Ocotiyo Wells; no appeals on the detour.",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/q41b-C.wav",
+    "heard": "Sir, proceed to Ocotillo Wells. No appeals on the detour.",
+    "sec": 4.48,
+    "errors": 1,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q41b-C.wav",
+     "heard": "Sir, proceed to Ocotillo Wells. No appeals on the detour.",
+     "heard_plain": "Sir, proceed to Ocotillo Wells. No appeals on the detour.",
+     "errors": 1,
+     "allowed": 1,
+     "sec": 4.48,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/q41b/s1_palt.wav",
+    "mp3": "alt/spanish/q41b-C.mp3",
+    "mp3_sec": 3.873,
+    "respelling_sent": "Proceed to Ocotillo Wells; no appeals on the detour.",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "A",
+  "why": "previous clip already passes the strict gate and nothing scores 0.10 higher",
+  "shipped": "A"
+ },
+ "q46a": {
+  "text": "Cholla hazard confirmed. Lose one turn.",
+  "max_sec": 2.7,
+  "words": [
+   "Cholla"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/q46a-A.wav",
+    "heard": "Koya hazard confirmed. Lose one turn.",
+    "sec": 3.01,
+    "errors": 0,
+    "allowed": 1,
+    "score": 0.67,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "koya",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/q46a/A.wav",
+     "heard": "Koya hazard confirmed. Lose one turn.",
+     "heard_plain": "Koya hazard confirmed. Lose one turn.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.01,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "koya",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/q46a/A.wav",
+    "mp3": "alt/spanish/q46a-A.mp3",
+    "mp3_sec": 2.69,
+    "respelling_sent": "as written before: Cholla hazard confirmed. Lose one turn.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/q46a-B.wav",
+    "heard": "Cholla Hazard confirmed. Lose one turn!",
+    "sec": 3.2,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "cholla",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q46a-B.wav",
+     "heard": "Cholla Hazard confirmed. Lose one turn!",
+     "heard_plain": "Cholla Hazard confirmed. Lose one turn!",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.2,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "cholla",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/q46a/s7.wav",
+    "mp3": "alt/spanish/q46a-B.mp3",
+    "mp3_sec": 2.735,
+    "respelling_sent": "Choya hazard confirmed. Lose one turn.",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/q46a-C.wav",
+    "heard": "Choya Hazard confirmed. Lose one turn.",
+    "sec": 3.23,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cholla",
+      "heard": "choya",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q46a-C.wav",
+     "heard": "Choya Hazard confirmed. Lose one turn.",
+     "heard_plain": "Choya Hazard confirmed. Lose one turn.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.23,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cholla",
+       "heard": "choya",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/q46a/s5_palt.wav",
+    "mp3": "alt/spanish/q46a-C.mp3",
+    "mp3_sec": 2.758,
+    "respelling_sent": "Choyah hazard confirmed. Lose one turn.",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.67 for the previous clip)",
+  "shipped": "B"
+ },
+ "q50a": {
+  "text": "Ground fire at Arroyo Salado. R273, go check.",
+  "max_sec": 2.7,
+  "words": [
+   "Salado"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/q50a-A.wav",
+    "heard": "Ground fire at Arroyo SA LAH DO, R-273 go check",
+    "sec": 4.42,
+    "errors": 0,
+    "allowed": 1,
+    "score": 0.92,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "do",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/q50a/A.wav",
+     "heard": "Ground fire at Arroyo SA LAH DO, R-273 go check",
+     "heard_plain": "Ground fire at Arroyo SA LAH DO, R-273 go check",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 4.42,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "do",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/q50a/A.wav",
+    "mp3": "alt/spanish/q50a-A.mp3",
+    "mp3_sec": 3.822,
+    "respelling_sent": "as written before: Ground fire at Arroyo Salado. R two seven three, go check.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/q50a-B.wav",
+    "heard": "Ground fire at Arroyo Salado, R-273 go check.",
+    "sec": 4.22,
+    "errors": 0,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Salado",
+      "heard": "salado",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/q50a-B.wav",
+     "heard": "Ground fire at Arroyo Salado, R-273 go check.",
+     "heard_plain": "Ground fire at Arroyo Salado, R-273 go check.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 4.22,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Salado",
+       "heard": "salado",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/q50a/s1.wav",
+    "mp3": "alt/spanish/q50a-B.mp3",
+    "mp3_sec": 3.632,
+    "respelling_sent": "Ground fire at Arroyo sah-Lah-doh. R two seven three, go check.",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 1.0 vs 0.92 for the previous clip) (previous clip is tainted)",
+  "shipped": "B"
+ },
+ "ch01-2": {
+  "text": "Burro Bend Cafe. Attempting lunch.",
+  "max_sec": 4.5,
+  "words": [
+   "Cafe"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/ch01-2-A.wav",
+    "heard": "Burrowbend Cafe, attempting lunch.",
+    "sec": 2.72,
+    "errors": 2,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cafe",
+      "heard": "cafe",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/ch01-2/A.wav",
+     "heard": "Burro, Bend, Cafe, Attempting Lunch.",
+     "heard_plain": "Burrowbend Cafe, attempting lunch.",
+     "errors": 2,
+     "allowed": 0,
+     "sec": 2.72,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cafe",
+       "heard": "cafe",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/ch01-2/A.wav",
+    "mp3": "alt/spanish/ch01-2-A.mp3",
+    "mp3_sec": 2.686,
+    "respelling_sent": "as written before: Burro Bend Cafe. Attempting lunch.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/ch01-2-B.wav",
+    "heard": "Burl Bend Cafe. Attempting lunch.",
+    "sec": 2.75,
+    "errors": 1,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Cafe",
+      "heard": "cafe",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch01-2-B.wav",
+     "heard": "Burro, Bend, Cafe, Attempting Lunch.",
+     "heard_plain": "Burl Bend Cafe. Attempting lunch.",
+     "errors": 1,
+     "allowed": 0,
+     "sec": 2.75,
+     "ok": false,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Cafe",
+       "heard": "cafe",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/ch01-2/s7.wav",
+    "mp3": "alt/spanish/ch01-2-B.mp3",
+    "mp3_sec": 2.712,
+    "respelling_sent": "Burro Bend ka-Fay. Attempting lunch.",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "no candidate scored 0.10 higher than the previous clip",
+  "shipped": "A"
+ },
+ "ch09-2": {
+  "text": "10-7 at the Visitor Center. Currently on Zygophyllaceae, Larrea tridentata.",
+  "max_sec": 8.0,
+  "words": [
+   "Zygophyllaceae",
+   "Larrea",
+   "tridentata"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/ch09-2-A.wav",
+    "heard": "10-7, at the Visitor Center, currently on Zygophilaceae, Lurea Tridentata.",
+    "sec": 7.04,
+    "errors": 2,
+    "allowed": 1,
+    "score": 0.87,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Zygophyllaceae",
+      "heard": "zygophilaceae",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Larrea",
+      "heard": "lurea",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "tridentata",
+      "heard": "tridentata",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/ch09-2/A.wav",
+     "heard": "10-7, at the Visitor Center, Currently, on Zygophyllaceae, Larrea, tridentata.",
+     "heard_plain": "10-7, at the Visitor Center, currently on Zygophilaceae, Lurea Tridentata.",
+     "errors": 2,
+     "allowed": 1,
+     "sec": 7.04,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Zygophyllaceae",
+       "heard": "zygophilaceae",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Larrea",
+       "heard": "lurea",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "tridentata",
+       "heard": "tridentata",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/ch09-2/A.wav",
+    "mp3": "alt/spanish/ch09-2-A.mp3",
+    "mp3_sec": 6.994,
+    "respelling_sent": "as written before: ten-seven at the Visitor Center. Currently on Zygophyllaceae, Larrea tridentata.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/ch09-2-B.wav",
+    "heard": "10-7 at the Visitor Center, currently on Z-I-GO Phil, I-E-C-E, L-E-A. Tri-den, Tata.",
+    "sec": 9.79,
+    "errors": 8,
+    "allowed": 1,
+    "score": 0.74,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Zygophyllaceae",
+      "heard": "tri",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Larrea",
+      "heard": "den",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "tridentata",
+      "heard": "tata",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch09-2-B.wav",
+     "heard": "10-7, at the Visitor Center, Currently, on Zygophyllaceae, Larrea, Tridentata.",
+     "heard_plain": "10-7 at the Visitor Center, currently on Z-I-GO Phil, I-E-C-E, L-E-A. Tri-den, Tata.",
+     "errors": 8,
+     "allowed": 1,
+     "sec": 9.79,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Zygophyllaceae",
+       "heard": "tri",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Larrea",
+       "heard": "den",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "tridentata",
+       "heard": "tata",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": true
+    },
+    "src": "audio-work/takes/ch09-2/s2.wav",
+    "mp3": "alt/spanish/ch09-2-B.mp3",
+    "mp3_sec": 8.479,
+    "respelling_sent": "ten-seven at the Visitor Center. Currently on zy-goh-fil-Ay-see-ee, Lair-ee-uh try-den-Tah-tuh.",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "no candidate scored 0.10 higher than the previous clip",
+  "shipped": "A"
+ },
+ "ch10-2": {
+  "text": "10-7 at the Visitor Center. Fouquieriaceae, Fouquieria splendens.",
+  "max_sec": 8.0,
+  "words": [
+   "Fouquieriaceae",
+   "Fouquieria",
+   "splendens"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/ch10-2-A.wav",
+    "heard": "10-7 at the Visitor Center, Fukieria Sei, Fukieria Splendens.",
+    "sec": 7.14,
+    "errors": 3,
+    "allowed": 1,
+    "score": 0.81,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Fouquieriaceae",
+      "heard": "sei",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Fouquieria",
+      "heard": "fukieria",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "splendens",
+      "heard": "splendens",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/ch10-2/A.wav",
+     "heard": "10-7 at the Visitor Center, Fouquieriaceae, Fouquieriia, splendens.",
+     "heard_plain": "10-7 at the Visitor Center, Fukieria Sei, Fukieria Splendens.",
+     "errors": 3,
+     "allowed": 1,
+     "sec": 7.14,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Fouquieriaceae",
+       "heard": "sei",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Fouquieria",
+       "heard": "fukieria",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "splendens",
+       "heard": "splendens",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/ch10-2/A.wav",
+    "mp3": "alt/spanish/ch10-2-A.mp3",
+    "mp3_sec": 7.07,
+    "respelling_sent": "as written before: ten-seven at the Visitor Center. Fouquieriaceae, Fouquieria splendens.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/ch10-2-B.wav",
+    "heard": "TEN SEVEN AT THE VISITOR CENTER FU KIER E I C E FU KIER E A SPLENDENZ",
+    "sec": 9.18,
+    "errors": 7,
+    "allowed": 1,
+    "score": 0.77,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Fouquieriaceae",
+      "heard": "kier",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Fouquieria",
+      "heard": "ea",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "splendens",
+      "heard": "splendenz",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch10-2-B.wav",
+     "heard": "Ten-seven at the Visitor Center, Fouquieriiaceae, Fouquieria, splendens.",
+     "heard_plain": "TEN SEVEN AT THE VISITOR CENTER FU KIER E I C E FU KIER E A SPLENDENZ",
+     "errors": 7,
+     "allowed": 1,
+     "sec": 9.18,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Fouquieriaceae",
+       "heard": "kier",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Fouquieria",
+       "heard": "ea",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "splendens",
+       "heard": "splendenz",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": true
+    },
+    "src": "audio-work/takes/ch10-2/s3.wav",
+    "mp3": "alt/spanish/ch10-2-B.mp3",
+    "mp3_sec": 8.013,
+    "respelling_sent": "ten-seven at the Visitor Center. foo-keer-ee-Ay-see-ee, foo-Keer-ee-uh Splen-denz.",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "no candidate scored 0.10 higher than the previous clip",
+  "shipped": "A"
+ },
+ "ch10-3": {
+  "text": "Ocotillo?",
+  "max_sec": 4.5,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/ch10-3-A.wav",
+    "heard": "Ocoteel",
+    "sec": 0.83,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.67,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocoteel",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/ch10-3/A.wav",
+     "heard": "Ocoteel",
+     "heard_plain": "Ocoteel",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 0.83,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocoteel",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/ch10-3/A.wav",
+    "mp3": "alt/spanish/ch10-3-A.mp3",
+    "mp3_sec": 0.756,
+    "respelling_sent": "as written before: Ocotillo?",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/ch10-3-B.wav",
+    "heard": "Okotiyo",
+    "sec": 0.86,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.86,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "okotiyo",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch10-3-B.wav",
+     "heard": "Okotiyo",
+     "heard_plain": "Okotiyo",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 0.86,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "okotiyo",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/ch10-3/s20.wav",
+    "mp3": "alt/spanish/ch10-3-B.mp3",
+    "mp3_sec": 0.764,
+    "respelling_sent": "Ocotiyo?",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/ch10-3-C.wav",
+    "heard": "Okotillo",
+    "sec": 0.9,
+    "errors": 0,
+    "allowed": 0,
+    "score": 0.88,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "okotillo",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch10-3-C.wav",
+     "heard": "Okotillo",
+     "heard_plain": "Okotillo",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 0.9,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "okotillo",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/ch10-3/s5_palt.wav",
+    "mp3": "alt/spanish/ch10-3-C.mp3",
+    "mp3_sec": 0.844,
+    "respelling_sent": "Ocotillo?",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 0.86 vs 0.67 for the previous clip)",
+  "shipped": "B"
+ },
+ "ch10-4": {
+  "text": "Ocotillo. Family first, common name second.",
+  "max_sec": 8.0,
+  "words": [
+   "Ocotillo"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/ch10-4-A.wav",
+    "heard": "Ocotillo, find me the first, common name second.",
+    "sec": 3.62,
+    "errors": 3,
+    "allowed": 1,
+    "score": 1.0,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "ocotillo me find",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/ch10-4/A.wav",
+     "heard": "Ocotillo, Family first, common name second.",
+     "heard_plain": "Ocotillo, find me the first, common name second.",
+     "errors": 3,
+     "allowed": 1,
+     "sec": 3.62,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "ocotillo me find",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/ch10-4/A.wav",
+    "mp3": "alt/spanish/ch10-4-A.mp3",
+    "mp3_sec": 3.573,
+    "respelling_sent": "as written before: Ocotillo. Family first, common name second.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/ch10-4-B.wav",
+    "heard": "Okotiyo, family first, common name second.",
+    "sec": 3.52,
+    "errors": 0,
+    "allowed": 1,
+    "score": 0.86,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "okotiyo",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch10-4-B.wav",
+     "heard": "Okotiyo, family first, common name second.",
+     "heard_plain": "Okotiyo, family first, common name second.",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 3.52,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "okotiyo",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/ch10-4/s6.wav",
+    "mp3": "alt/spanish/ch10-4-B.mp3",
+    "mp3_sec": 3.444,
+    "respelling_sent": "Ocotiyo. Family first, common name second.",
+    "respelling": "user table (Title-Cased)"
+   },
+   "C": {
+    "wav": "audio-work/spanish-opts/ch10-4-C.wav",
+    "heard": "Okotiyo, family first, common name second",
+    "sec": 4.03,
+    "errors": 0,
+    "allowed": 1,
+    "score": 0.86,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Ocotillo",
+      "heard": "okotiyo",
+      "match": "respelling",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch10-4-C.wav",
+     "heard": "Okotiyo, family first, common name second",
+     "heard_plain": "Okotiyo, family first, common name second",
+     "errors": 0,
+     "allowed": 1,
+     "sec": 4.03,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Ocotillo",
+       "heard": "okotiyo",
+       "match": "respelling",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-alt/ch10-4/s1_palt.wav",
+    "mp3": "alt/spanish/ch10-4-C.mp3",
+    "mp3_sec": 3.964,
+    "respelling_sent": "Ocotillo. Family first, common name second.",
+    "respelling": "alternative"
+   }
+  },
+  "recommended": "B",
+  "why": "best strict-gate pass (score 0.86 vs 1.0 for the previous clip)",
+  "shipped": "B"
+ },
+ "ch11-2": {
+  "text": "10-7 leading a walk: Burseraceae, Bursera microphylla.",
+  "max_sec": 8.0,
+  "words": [
+   "Burseraceae",
+   "Bursera",
+   "microphylla"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/ch11-2-A.wav",
+    "heard": "10-7, leading a walk bursaryci bursar microphylla",
+    "sec": 5.57,
+    "errors": 2,
+    "allowed": 0,
+    "score": 0.79,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Burseraceae",
+      "heard": "bursaryci",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Bursera",
+      "heard": "bursar",
+      "match": "respelling",
+      "ok": true
+     },
+     {
+      "word": "microphylla",
+      "heard": "microphylla",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/ch11-2/A.wav",
+     "heard": "10-7, leading a walk, Burseraceae, Bursera, microphylla.",
+     "heard_plain": "10-7, leading a walk bursaryci bursar microphylla",
+     "errors": 2,
+     "allowed": 0,
+     "sec": 5.57,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Burseraceae",
+       "heard": "bursaryci",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Bursera",
+       "heard": "bursar",
+       "match": "respelling",
+       "ok": true
+      },
+      {
+       "word": "microphylla",
+       "heard": "microphylla",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/ch11-2/A.wav",
+    "mp3": "alt/spanish/ch11-2-A.mp3",
+    "mp3_sec": 5.508,
+    "respelling_sent": "as written before: ten-seven leading a walk: Burseraceae, Bursera microphylla.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/ch11-2-B.wav",
+    "heard": "10-7. Leading a walk, brr, sir, I, C, E, brr, sir, uh, my, crow fill, uh.",
+    "sec": 9.06,
+    "errors": 9,
+    "allowed": 0,
+    "score": 0.69,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Burseraceae",
+      "heard": "my",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Bursera",
+      "heard": "crow",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "microphylla",
+      "heard": "fill",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch11-2-B.wav",
+     "heard": "10-7. Leading a walk, Burseraceae, Bursera, microphylla.",
+     "heard_plain": "10-7. Leading a walk, brr, sir, I, C, E, brr, sir, uh, my, crow fill, uh.",
+     "errors": 9,
+     "allowed": 0,
+     "sec": 9.06,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Burseraceae",
+       "heard": "my",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Bursera",
+       "heard": "crow",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "microphylla",
+       "heard": "fill",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": true
+    },
+    "src": "audio-work/takes/ch11-2/s3.wav",
+    "mp3": "alt/spanish/ch11-2-B.mp3",
+    "mp3_sec": 8.014,
+    "respelling_sent": "ten-seven leading a walk: bur-ser-Ay-see-ee, Bur-ser-uh my-kroh-Fil-uh.",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "no candidate scored 0.10 higher than the previous clip",
+  "shipped": "A"
+ },
+ "ch12-2": {
+  "text": "10-7 at the Visitor Center: Arecaceae, Washingtonia filifera, and Asparagaceae, Agave deserti.",
+  "max_sec": 8.0,
+  "words": [
+   "Arecaceae",
+   "Washingtonia",
+   "filifera",
+   "Asparagaceae",
+   "Agave",
+   "deserti"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/ch12-2-A.wav",
+    "heard": "10-7, at the Visitor Center, Arakasiye, Washingtonia, Filifera, and Espara-Gasiye, Agave Dzerti.",
+    "sec": 8.96,
+    "errors": 4,
+    "allowed": 1,
+    "score": 0.84,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Arecaceae",
+      "heard": "arakasiye",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Washingtonia",
+      "heard": "washingtonia",
+      "match": "written",
+      "ok": true
+     },
+     {
+      "word": "filifera",
+      "heard": "filifera espara",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Asparagaceae",
+      "heard": "gasiye",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Agave",
+      "heard": "agave",
+      "match": "written",
+      "ok": true
+     },
+     {
+      "word": "deserti",
+      "heard": "dzerti",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/ch12-2/A.wav",
+     "heard": "10-7, at the Visitor Center, Arecaceae, Washingtonia, filifera, and Asparagaceae, Agave, deserti.",
+     "heard_plain": "10-7, at the Visitor Center, Arakasiye, Washingtonia, Filifera, and Espara-Gasiye, Agave Dzerti.",
+     "errors": 4,
+     "allowed": 1,
+     "sec": 8.96,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Arecaceae",
+       "heard": "arakasiye",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Washingtonia",
+       "heard": "washingtonia",
+       "match": "written",
+       "ok": true
+      },
+      {
+       "word": "filifera",
+       "heard": "filifera espara",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Asparagaceae",
+       "heard": "gasiye",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Agave",
+       "heard": "agave",
+       "match": "written",
+       "ok": true
+      },
+      {
+       "word": "deserti",
+       "heard": "dzerti",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/ch12-2/A.wav",
+    "mp3": "alt/spanish/ch12-2-A.mp3",
+    "mp3_sec": 8.008,
+    "respelling_sent": "as written before: ten-seven at the Visitor Center: Arecaceae, Washingtonia filifera, and Asparagaceae, Agave deserti.",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/ch12-2-B.wav",
+    "heard": "10-7, at the Visitor's Center, Air-A-K-C-E, Washing Toni, Afil Ifur-Ah, and As-Pair-Ah, Gay-C-E, Agave Des-Er-T.",
+    "sec": 13.73,
+    "errors": 17,
+    "allowed": 1,
+    "score": 0.82,
+    "strict_ok": false,
+    "words_ok": false,
+    "ok": false,
+    "pron": [
+     {
+      "word": "Arecaceae",
+      "heard": "pair",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Washingtonia",
+      "heard": "ah",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "filifera",
+      "heard": "gay",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Asparagaceae",
+      "heard": "ce",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "Agave",
+      "heard": "agave er des",
+      "match": null,
+      "ok": false
+     },
+     {
+      "word": "deserti",
+      "heard": "t",
+      "match": null,
+      "ok": false
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch12-2-B.wav",
+     "heard": "10-7, at the Visitor Center, Arecaceae, Washingtonia, filifera, and Asparagaceae, Agave, deserti.",
+     "heard_plain": "10-7, at the Visitor's Center, Air-A-K-C-E, Washing Toni, Afil Ifur-Ah, and As-Pair-Ah, Gay-C-E, Agave Des-Er-T.",
+     "errors": 17,
+     "allowed": 1,
+     "sec": 13.73,
+     "ok": false,
+     "strict_ok": false,
+     "pron": [
+      {
+       "word": "Arecaceae",
+       "heard": "pair",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Washingtonia",
+       "heard": "ah",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "filifera",
+       "heard": "gay",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Asparagaceae",
+       "heard": "ce",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "Agave",
+       "heard": "agave er des",
+       "match": null,
+       "ok": false
+      },
+      {
+       "word": "deserti",
+       "heard": "t",
+       "match": null,
+       "ok": false
+      }
+     ],
+     "spelled": true
+    },
+    "src": "audio-work/takes/ch12-2/s1.wav",
+    "mp3": "alt/spanish/ch12-2-B.mp3",
+    "mp3_sec": 11.939,
+    "respelling_sent": "ten-seven at the Visitor Center: air-eh-Kay-see-ee, wash-ing-Toh-nee-uh fil-If-er-uh, and as-pair-uh-Gay-see-ee, uh-Gah-vee dez-Er-tee.",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "no candidate scored 0.10 higher than the previous clip",
+  "shipped": "A"
+ },
+ "ch12-3": {
+  "text": "Fan palm and desert agave?",
+  "max_sec": 4.5,
+  "words": [
+   "Agave"
+  ],
+  "candidates": {
+   "A": {
+    "wav": "audio-work/spanish-opts/ch12-3-A.wav",
+    "heard": "Fan Palm, and Desert Agave.",
+    "sec": 1.95,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Agave",
+      "heard": "agave",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/takes-A/ch12-3/A.wav",
+     "heard": "Fan Palm, and Desert Agave.",
+     "heard_plain": "Fan Palm, and Desert Agave.",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 1.95,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Agave",
+       "heard": "agave",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes-A/ch12-3/A.wav",
+    "mp3": "alt/spanish/ch12-3-A.mp3",
+    "mp3_sec": 1.898,
+    "respelling_sent": "as written before: Fan palm and desert agave?",
+    "respelling": "previous"
+   },
+   "B": {
+    "wav": "audio-work/spanish-opts/ch12-3-B.wav",
+    "heard": "Fan palm and desert agave",
+    "sec": 2.43,
+    "errors": 0,
+    "allowed": 0,
+    "score": 1.0,
+    "strict_ok": true,
+    "words_ok": true,
+    "ok": true,
+    "pron": [
+     {
+      "word": "Agave",
+      "heard": "agave",
+      "match": "written",
+      "ok": true
+     }
+    ],
+    "rec": {
+     "file": "audio-work/spanish-opts/ch12-3-B.wav",
+     "heard": "Fan palm and desert agave",
+     "heard_plain": "Fan palm and desert agave",
+     "errors": 0,
+     "allowed": 0,
+     "sec": 2.43,
+     "ok": true,
+     "strict_ok": true,
+     "pron": [
+      {
+       "word": "Agave",
+       "heard": "agave",
+       "match": "written",
+       "ok": true
+      }
+     ],
+     "spelled": false
+    },
+    "src": "audio-work/takes/ch12-3/s3.wav",
+    "mp3": "alt/spanish/ch12-3-B.mp3",
+    "mp3_sec": 2.327,
+    "respelling_sent": "Fan palm and desert uh-Gah-vee?",
+    "respelling": "user table (Title-Cased)"
+   }
+  },
+  "recommended": "A",
+  "why": "previous clip already passes the strict gate and nothing scores 0.10 higher",
+  "shipped": "A"
+ }
+}
