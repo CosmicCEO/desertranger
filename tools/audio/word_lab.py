@@ -25,10 +25,11 @@ SPEC = {
     "Cholla":    dict(own="choya",      p=["choyah", "choyuh", "Chohya"],              dash="Choy-Yah",         caps="CHOYA",      dcaps="CHOY-yah",         wc=46, sent="q46a"),
     "Salado":    dict(own="sahlahdoh",  p=["salahdoe", "sahladoh", "Salahdo"],         dash="Sah-Lah-Doh",      caps="SAHLAHDOH",  dcaps="sah-LAH-doh",      wc=19, sent="q50a"),
     "Cabezas":   dict(own="kahbaysahs", p=["kabaysas", "cabaysahs", "Kahbaysas"],      dash="Kah-Bay-Sahs",     caps="KAHBAYSAHS", dcaps="kah-BAY-sahs",     wc=11, sent=None),
-    "Cafe":      dict(own="kafay",      p=["cafay", "kahfay", "Kafay"],                dash="Ka-Fay",           caps="KAFAY",      dcaps="ka-FAY",           wc=None, sent="ch01-2"),
+    "Cafe":      dict(own="kafay",      p=["cafay", "kahfay", "Kafay"],                dash="Ka-Fay",           caps="KAFAY",      dcaps="ka-FAY",           wc=None, wc_synth="Burro Bend Cafe.", sent="ch01-2"),
     "Burro":     dict(own="burroh",     p=["burrow", "buro", "Burrah"],                dash="Bur-Ro",           caps="BURRO",      dcaps="BUR-ro",           wc_line="ch06-2", sent="ch01-2", target="burro bend"),
 }
 ORDER = ["plain", "own", "title", "p1", "p2", "p3", "dash", "caps", "dcaps"]
+SENT_CANDS = {"plain", "own", "p1", "dcaps"}   # sentence clips cost ~60 s a take on this Mac (vs ~14 s for a word clip): a 1-seed confirmation of four candidates is enough
 
 def fmt_of(cid, s):
     """plain | lower | title | dashed (hyphens, no capital run) | allcaps (capital run, no hyphen) | dashedcaps (both)."""
@@ -54,6 +55,8 @@ def clips(word, D):
         ids["ranger_273"] = f"pl-r273-{n.group(1)}" if n else sr_id
         return dict(tag=tag, kind=kind, ids=ids, text=text, max_sec=l.get("max_sec", 3.0), seeds=seeds, surface=m.group(), real_text=l["text"])
     if sp.get("wc"): out.append(mk(f"pl{sp['wc']}", "word", f"pl-sr-{sp['wc']}", 3))
+    if sp.get("wc_synth"):       # no word-only clip exists: the first words of the real line, short enough to be cheap and to look like a place-name clip
+        c = mk("ch012short", "word", "ch01-2", 3); c["text"] = sp["wc_synth"]; c["real_text"] = sp["wc_synth"]; c["max_sec"] = 2.5; out.append(c)
     if sp.get("wc_line"): out.append(mk(sp["wc_line"].replace("-", ""), "word", sp["wc_line"], 3))
     if sp.get("sent"): out.append(mk(sp["sent"].replace("-", ""), "sent", sp["sent"], 3 if not out else 1))
     return out
@@ -66,6 +69,7 @@ def plan(D, words, voices):
         for c in clips(w, D):
             for v in voices:
                 for cid, spell, fm in candidates(w, c["surface"]):
+                    if c["kind"] == "sent" and cid not in SENT_CANDS: continue
                     text = c["text"] if cid == "plain" else re.sub(r"\b" + re.escape(c["surface"]) + r"\b", lambda m: spell, c["text"], count=1, flags=re.I)
                     for s in range(1, c["seeds"] + 1):
                         fn = f"{slug(w)}__{VOICE_TAG[v]}__{c['tag']}__{fm}-{cid}__s{s}.wav"

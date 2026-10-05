@@ -8,11 +8,14 @@ clip trimmed at 40 dB and padded 0.25 s as in qa_check; ffmpeg silencedetect -35
   b  no fragmentation       the word is heard as 1 token, or every gap between its fragments is < 120 ms
   c  no silence inside      no silencedetect interval lies fully inside the word's time span (a pause in the middle of the word)
   d  no spelled-out letters no run of single letters / ALL-CAPS token ("V A Y A", "O.Y.A.", "OTO") in the transcript unless the script has it
-  e  duration               word duration within 1.3x of the median across all candidates for that word/voice/clip (and not below 1/1.3 of it)
+  e  duration               word duration <= 1.3x the median across all candidates for that word/voice/clip (stretched = slow detached syllables)
   f  clip length            trimmed clip <= max_sec * 1.15 (the tempo qa_check/master.py may apply)
+A take is WORD-CLEAN when a-e hold (the word itself reads cleanly) and PASSES when a-f hold; the lab ranks by word-clean first because length is a pacing
+problem the regeneration step can still fix (retake ladder / tempo), while a pause or letters inside the word cannot be fixed afterwards.
 usage:
   .venv-tts/bin/python tools/audio/word_metrics.py --lab  [--dir audio-work/wordlab]     # score every take in <dir>/manifest.jsonl -> metrics.jsonl
   .venv-tts/bin/python tools/audio/word_metrics.py --old                                 # old Wave 2 takes of q12a and pl-sr-18 vs the old strict gate
+  .venv-tts/bin/python tools/audio/word_metrics.py --old-pass                            # every old take the OLD strict gate passed for Ocotillo/Vallecito, re-scored
   .venv-tts/bin/python tools/audio/word_metrics.py --report [--dir audio-work/wordlab]   # report.md + winners (writes the table in docs/audio-lines.json)
   .venv-tts/bin/python tools/audio/word_metrics.py --selftest                            # synthetic clips: 200 ms gap inside a word is flagged, clean passes"""
 import argparse, collections, json, os, re, subprocess, sys, tempfile, unicodedata, wave, warnings; warnings.filterwarnings("ignore")
@@ -128,7 +131,7 @@ def measure(words, sil, ref_text, target, written_forms, resp, clip_len=None):
     run = any(single[k + 1] == single[k] + 1 for k in range(len(single) - 1))
     capstok = [w for w, _, _ in words if re.fullmatch(r"[A-Z]{2,}\.?,?", w) and w.rstrip(".,").lower() not in ref and w.rstrip(".,") != "OK"]
     spelled = (bool(SPELLED.search(txt)) or run or bool(capstok)) and not script_spells
-    return dict(words=res, spelled=spelled, capstok=capstok, transcript=txt, trimmed_sec=None)
+    return dict(words=res, spelled=spelled, capstok=capstok, transcript=txt)
 
 def verdict(m, trimmed_sec, max_sec, med_dur):
     """Combine measure() with the group median duration (e) and the clip length (f). -> dict of flags + ok (all of a-f)."""
@@ -138,9 +141,9 @@ def verdict(m, trimmed_sec, max_sec, med_dur):
     c = bool(real) and all(w["n_frag"] > 0 and not w["silence_inside"] for w in real)
     d = not m["spelled"]
     durs = [w["dur"] for w in real if w["dur"]]; dur = sum(durs) if durs else None
-    e = bool(dur) and med_dur is not None and (1 / DUR_RATIO) * med_dur <= dur <= DUR_RATIO * med_dur
+    e = bool(dur) and med_dur is not None and dur <= DUR_RATIO * med_dur      # stretched (slow, detached syllables) is the defect; a short word is caught by (a)
     f = trimmed_sec <= max_sec * TEMPO_MAX and trimmed_sec >= 0.3
-    return dict(a_match=a, b_frag=b, c_nosilence=c, d_noletters=d, e_dur=e, f_len=f, ok=all((a, b, c, d, e, f)), word_dur=dur,
+    return dict(a_match=a, b_frag=b, c_nosilence=c, d_noletters=d, e_dur=e, f_len=f, clean=all((a, b, c, d, e)), ok=all((a, b, c, d, e, f)), word_dur=dur,
                 heard=" | ".join(w["heard"] for w in real), soft=round(min([w["soft"] for w in real] or [0]), 3))
 
 # ---- self-test ---------------------------------------------------------------------------------------------------------------------------------
@@ -231,11 +234,33 @@ def run_old():
         o = r["old"]; v = r["v"]; og = f"{o['strict_ok']}/{o['ok']}" if o else "-"
         print(f"{r['id']:9} {r['dir']:9} {r['take']:8} old={og:12} new={v['ok']!s:5} {''.join('Y' if v[k] else 'n' for k in ('a_match','b_frag','c_nosilence','d_noletters','e_dur','f_len'))} {v['heard']!r} {[w.get('silence_inside') for w in r['m']['words']]}")
 
+def run_old_pass():
+    """Every old take (Wave 2 and the Spanish-option runs, local audio-work only) that the old strict gate passed for Ocotillo or Vallecito, re-scored with the new metrics."""
+    import glob
+    D = json.load(open("docs/audio-lines.json")); L = {l["id"]: l for l in D["lines"]}; RESP = {"Ocotillo": "ocotiyo", "Vallecito": "vayaseetoe"}; rows = []
+    for qf in sorted(glob.glob("audio-work/qa*/*.json")):
+        if qf.endswith("summary.json"): continue
+        d = json.load(open(qf)); lid = d["id"]
+        for t in d["takes"]:
+            hit = [e["word"] for e in t.get("pron", []) if e["word"] in RESP]
+            if not (t.get("strict_ok") and hit) or not os.path.exists(t["file"]): continue
+            word = hit[0]; y, yt = load_trim(t["file"]); words = whisper_words(yt); sil = silences(yt)
+            m = measure(words, sil, L[lid].get("tts_text", L[lid]["text"]), word.lower(), [], RESP[word], len(yt) / SR)
+            rows.append(dict(id=lid, dir=t["file"].split("/")[1], take=os.path.basename(t["file"]), word=word, trimmed_sec=round(len(yt) / SR, 2), max_sec=L[lid]["max_sec"], m=m, old=t))
+            print(lid, t["file"], m["transcript"], flush=True)
+    for r in rows:
+        r["v"] = verdict(r["m"], r["trimmed_sec"], r["max_sec"], r["v_med"] if "v_med" in r else (r["m"]["words"][0].get("dur") or None))   # (e) needs a group median; a single take is compared with itself, i.e. (e) is neutral here
+    json.dump(rows, open("audio-work/wordlab/old-passed-metrics.json", "w"), indent=1, default=str)
+    print("\nold gate passed (strict_ok) -> new verdict")
+    for r in rows:
+        v = r["v"]; print(f"{r['id']:11} {r['dir']:12} {r['take']:12} old ok={r['old']['ok']!s:5} new ok={v['ok']!s:5} {''.join('Y' if v[k] else 'n' for k in ('a_match','b_frag','c_nosilence','d_noletters','e_dur','f_len'))} {v['heard']!r} {[w.get('silence_inside') for w in r['m']['words']]}")
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--lab", action="store_true"); ap.add_argument("--old", action="store_true"); ap.add_argument("--report", action="store_true")
-    ap.add_argument("--selftest", action="store_true"); ap.add_argument("--dir", default="audio-work/wordlab"); a = ap.parse_args()
+    ap.add_argument("--selftest", action="store_true"); ap.add_argument("--old-pass", action="store_true"); ap.add_argument("--dir", default="audio-work/wordlab"); a = ap.parse_args()
     if a.selftest: sys.exit(selftest())
     if a.lab: run_lab(a.dir)
     if a.old: run_old()
+    if a.old_pass: run_old_pass()
     if a.report:
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import word_report; word_report.main(a.dir, load_metrics(a.dir))
