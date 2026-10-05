@@ -111,7 +111,7 @@ page2 = f'''<section class="sheet">
     <div class="card chk"><div class="bg"></div>
       <h2><img src="{A}/icons/dice-color.png">How we keep it safe</h2>
       <ul>
-        <li><b>No database changes.</b> Your host is updated by copying files; nothing in the saved games moves.</li>
+        <li><b>No database changes.</b> Your host is updated by copying files; nothing in the database changes.</li>
         <li><b>Same checks as Wave 1:</b> the rules tests, full 4- and 8-player games, and the live-site check with zero failures.</li>
         <li><b>Your phones last:</b> after every update you try it on iPhone and the shared screen.</li>
         <li><b>New sounds</b> are free to use or made for the game, and listed in the credits.</li>
@@ -122,7 +122,6 @@ page2 = f'''<section class="sheet">
       <ul>
         <li><b>Places and winner as monitor:</b> the others keep racing for second and third.</li>
         <li><b>Self-contained app:</b> a decision still open, a Mac or iPhone app that runs the game without a server.</li>
-        <li><b>Milestone 2:</b> username and password accounts and saved games.</li>
         <li><b>Then:</b> a last sound and voice polish pass, and launch.</li>
       </ul>
       <div class="p2note">Not confirmed yet: Android phones, and Safari on a computer.</div>
