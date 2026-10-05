@@ -20,3 +20,7 @@ Not OK: Vallecito senior_ranger, Olla senior_ranger, Yaqui senior_ranger and ran
 `senior_ranger: Vallecito` / `olla` overrides and Yaqui stays `Yaqui` until round 2 is answered. Table entries only change what a *regeneration* sends; `pron.py --check` enforces the format.
 Lines whose word is not approved (other voices, plant names) are not regenerated. Leading-artifact check: `tools/audio/word_lead.py` (burst, click, stray sound, long lead-in, onset < 30 ms, stray first token),
 part of the `qa_check.py` gate for table-word lines; a fixable artifact gets a trimmed `_lf.wav` copy (starts 35 ms before the word, 8 ms fade-in, the word itself untouched).
+
+## Round 2 (owner chose clip 1 on all four cards)
+Vallecito senior_ranger = plain `Vallecito`, Olla senior_ranger = `oyah`, Yaqui senior_ranger = `yaki`, Yaqui ranger_273 = `yahki` (default `yaki`). The exact approved takes went into pl-sr-18, pl-sr-26,
+pl-sr-32 and pl-r273-32 (no leading artifact flagged, so no trim). pl-sr-11 (Cabezas senior_ranger) stays on Wave 1: the approved take is 0.7 s longer and costs the square 11 call its opener.
