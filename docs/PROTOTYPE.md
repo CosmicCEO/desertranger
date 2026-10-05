@@ -311,15 +311,37 @@ lobby** after the finish) returns the same room to a clean lobby.
 - Tests: `php tests/demo_game.php <baseUrl>` (API, includes the 2-player-minimum checks) and
   `node dev/audio/demo_browser_test.js <baseUrl>` (one phone in headless Chrome).
 
+### Wave 2 features: games counter, Play again, Knock, knock
+
+No database changes; all three use the existing tables.
+- **Games counter** (`GET api.php?a=stats` -> `{games}`): the homepage shows "N games being played right now" (refreshed every 45 s
+  while the home screen is showing). A game counts when it is a lobby or active, was touched within a day, and has a player who
+  polled in the last two minutes (`players.last_seen_at`). Only a count is returned: no codes, names or players. Computer rivals never poll
+  and board screens send no token, so a solo demo counts while its host is polling.
+- **Play again** (`POST api.php?a=rematch`, host only): a **finished** game goes back to the lobby with the same players, seats and
+  seat tokens; positions and skipped turns reset, the old turn log goes, the winner is cleared. 409 unless the game is over and on a
+  solo demo (use End demo); a double tap is harmless. The host sees "Play again", the others "Waiting for the host to start a rematch".
+  Keep-playing-for-places (winner as monitor) is a later wave.
+- **Knock, knock** (`POST api.php?a=nudge`): a seated player taps it while someone else is on turn. The server writes a `nudge` event
+  stamped with the shared `play_at` and the cue `nudge-01`, so every phone and the board screen play it at the same moment (the
+  clip `nudge-01` ships with the voices change; until it is uploaded the button works and shows a note, silently). One per 5 s
+  per game (429 after that). It is not added to the log, never changes the game, and is hidden on the board screen, in a solo demo
+  and when it is your own turn.
+- Tests: `php tests/wave2_game.php <baseUrl>` (counter, nudge, rematch, demo refusal) and the matching scenarios in
+  `node dev/audio/browser_test.js`.
+
 ### Sound settings (⚙ panel next to the speaker button)
 
 Saved per device in `localStorage`; 🔊 mutes everything.
 - **Ambience** on/off and **Ambience volume** (default **20 %**, `dr_amb_vol`): the desert bed, the critters and the background
-  radio chatter. It plays in the **lobby** as well as in the game (from the audio-unlock tap, never on the home screen). The board
-  view is 6 dB louder. The background chatter scales with this slider.
+  radio chatter. It starts on the **first tap** (on the home screen too, then the lobby and the game) and keeps playing after a
+  win; the bed starts within a second or two and the critters and chatter load behind it. The board view is 6 dB louder. The
+  background chatter scales with this slider. If the phone pauses the audio (call, lock screen, another app) a **"Sound paused.
+  Tap here to resume."** bar appears and any tap resumes it; the bed restarts.
 - **Game sounds volume** (default **50 %**, `dr_game_vol`): the turn-based sounds, meaning dice, landing radio calls, quotable
   lines and the crowd cheer/aww. 100 % is the level the clips were mastered at; 50 % is half of that.
 - **Radio chatter** on/off (`dr_radio_on`): off = no landing calls, quotables or background chatter (dice and crowd stay).
+- **Landing calls after a chain (Wave 2):** when a square carries the piece on (a move, goto or shortcut square such as 35 to 39 or 41 to 12), the quotable line of the first square plays and is then followed by the short place name of the square the piece finally stops on (for example "Fish Creek"). The quote keeps the 3 s cap; with the place name the whole call may run to 5.5 s, and the place name is dropped if it would not fit (`CAP_S`, `CAP_CHAIN_S` in `radio.js`).
 - **Test sound**: plays a dice sound through the game's audio and shows the audio state.
 
 ### Synced audio
@@ -397,7 +419,7 @@ The code at tag `milestone-1`, served by MAMP on the lab Mac:
 ## Known gaps / not yet done
 - **Verified on one real iPhone only** (the solo demo, over Wi-Fi). Not yet verified: **two or more real phones playing together**, the original v1 criterion "laugh and sad cues sound simultaneous on at least 3 phones, by ear", Android, Safari on a computer, Bluetooth speaker latency, and cellular. Cross-device clock sync is implemented but has only been exercised on one machine.
 - **The sounds have not been fully auditioned.** The three CC0 critter clips (crow, coyote, hawk), the plant-name nature walks (chatter exchanges 9 to 12) and the stitched radio calls were checked by loudness, length and speech recognition only. 55 clips run longer than their length caps (words correct), and the written lines and the sound files still need a perfecting pass.
-- **iPhone sound polish (open issues #5 to #8):** the background sound starts 20 to 30 s late; it stops 30 s after a win instead of continuing; sound may stay off after leaving and returning to the page; and a ghost shadow shows behind pieces moving up (a change was made, it needs a phone check). The iPhone silent switch mutes the game, as intended.
+- **iPhone sound polish (Wave 2, needs a phone check):** the late start (#6), the stop after a win (#7) and sound after returning to the page (#8) were changed in Wave 2 and tested in headless Chrome only (it cannot produce the iPhone's "interrupted" state; that is simulated). They need a real iPhone check. The ghost shadow behind pieces (#5) has had a drawing change and still needs a phone check. The iPhone silent switch mutes the game, as intended.
 - **Not tested on the Network Solutions host itself (the largest open item).** The account's reported specs (Oct 3, 2026): Debian, **PHP 7.4.10**, **MySQL 5.7.44**, SFTP on a non-standard port, CGI active. That is the stack already emulated in Docker (PHP 7.4 + MySQL 5.7.44), so version compatibility is expected to be fine. What is still unknown: the `.htaccess` limits, the database host name and connection limits, HTTPS, and the final URL and folder.
   The `.htaccess` options (`Options -Indexes`, `FilesMatch`) may be restricted on some shared plans.
   If you get a 500 error, remove the offending lines. Since then the code was also checked on the Mac under PHP 7.4.33 (syntax of every PHP file, `rules_test.php` 45/45, `play_at_test.php` 4/4).

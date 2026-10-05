@@ -359,6 +359,90 @@ function dr_end_demo(PDO $db, $code, $token)
 }
 
 /**
+ * Host sends a FINISHED game back to the lobby with the same players, seats and seat tokens (a rematch: "Play again").
+ * Positions and skipped turns reset, the old turn log goes, the winner is cleared. Refuses unless the game is over, and on a
+ * solo demo (that has End demo). A double tap on an already-reset room is a no-op.
+ */
+function dr_rematch(PDO $db, $code, $token)
+{
+    $db->beginTransaction();
+    try {
+        $g = dr_find_game($db, $code, true);
+        $players = dr_players($db, $g['id']);
+        $me = dr_player_for_token($players, $token);
+        if (!$me || (int)$me['id'] !== (int)$g['host_player_id']) {
+            throw new ApiError('Only the host can start a rematch.', 403);
+        }
+        if ($g['status'] === 'lobby') {
+            $db->rollBack();
+            return; // already back in the lobby (double tap)
+        }
+        if ($g['status'] !== 'finished') {
+            throw new ApiError('The game is not over yet.', 409);
+        }
+        if (dr_is_demo($db, $g['id'])) {
+            throw new ApiError('Use "End demo" for a solo demo.', 409);
+        }
+        $db->prepare('UPDATE players SET position = 0, skip_turns = 0 WHERE game_id = ?')->execute(array($g['id']));
+        $db->prepare('DELETE FROM events WHERE game_id = ? AND turn_number >= 1')->execute(array($g['id']));
+        $db->prepare("UPDATE games SET status = 'lobby', turn_number = 0, current_seat = ?, pending_json = NULL,
+                             winner_player_id = NULL, last_action_key = NULL, updated_at = ? WHERE id = ?")
+           ->execute(array($players[0]['seat'], dr_now_sql(), $g['id']));
+        dr_add_event($db, $g['id'], 0, 'join', 'Rematch: back in the lobby with the same players.');
+        $db->commit();
+    } catch (Exception $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        throw $e;
+    }
+}
+
+/** Seconds between two "Knock, knock" nudges in one game. */
+define('DR_NUDGE_GAP_S', 5);
+
+/**
+ * "Knock, knock": a player nudges a slow one. Stored as a 'nudge' event stamped with the shared play_at and the nudge cue,
+ * so every phone plays the sound at the same moment (like the other cues). No game row lock and no change to the game.
+ * Rate limited per game with no schema change: the newest nudge event's time.
+ */
+function dr_nudge(PDO $db, $code, $token)
+{
+    $g = dr_find_game($db, $code);
+    $players = dr_players($db, $g['id']);
+    $me = dr_player_for_token($players, $token);
+    if (!$me) {
+        throw new ApiError('Join the game first.', 403);
+    }
+    if ($g['status'] !== 'active') {
+        throw new ApiError('Knock, knock works during a game.', 409);
+    }
+    $st = $db->prepare("SELECT created_at FROM events WHERE game_id = ? AND type = 'nudge' ORDER BY id DESC LIMIT 1");
+    $st->execute(array($g['id']));
+    $last = $st->fetchColumn();
+    if ($last && strtotime($last . ' UTC') > time() - DR_NUDGE_GAP_S) {
+        throw new ApiError('Easy there: wait a few seconds before knocking again.', 429);
+    }
+    dr_add_event($db, $g['id'], (int)$g['turn_number'], 'nudge', $me['display_name'] . ' knocked: knock, knock!',
+        array('from' => (int)$me['id']), 'nudge-01', true);
+}
+
+/**
+ * Games being played right now, for the homepage: lobby or active, last touched within a day, with a player who has
+ * polled in the last two minutes. Only a count: no codes, names or players. (Computer rivals never poll and board
+ * screens send no token, so a solo demo counts while its host is polling.)
+ */
+function dr_stats(PDO $db)
+{
+    $seenCut = gmdate('Y-m-d H:i:s', time() - 120);
+    $dayCut = gmdate('Y-m-d H:i:s', time() - 86400);
+    $st = $db->prepare("SELECT COUNT(DISTINCT g.id) FROM games g JOIN players p ON p.game_id = g.id
+                        WHERE g.status IN ('lobby', 'active') AND g.updated_at >= ? AND p.last_seen_at >= ?");
+    $st->execute(array($dayCut, $seenCut));
+    return array('games' => (int)$st->fetchColumn());
+}
+
+/**
  * Roll or answer a choice.  ONE transaction, game row locked with FOR UPDATE.
  *
  * Double-tap protection:

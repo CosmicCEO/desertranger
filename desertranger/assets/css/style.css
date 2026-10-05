@@ -66,7 +66,7 @@ input { display: block; width: 100%; margin-top: 6px; font: 600 1.25rem Nunito, 
 .game-head .logo { font: 1.1rem Bungee, sans-serif; flex: 1; }
 .code-chip { font: 1rem Bungee, sans-serif; background: var(--paper); color: var(--terra); border-radius: 8px; padding: 4px 8px; letter-spacing: .1em; }
 
-.board-wrap { overflow: auto; -webkit-overflow-scrolling: touch; background: var(--sand); border-bottom: 3px solid var(--ink); }
+.board-wrap { overflow: auto; background: var(--sand); border-bottom: 3px solid var(--ink); }
 .board { position: relative; width: 100%; user-select: none; -webkit-user-select: none; }
 .board.zoomed { width: 260%; }
 .board img#board-img { display: block; width: 100%; height: auto; }
@@ -100,6 +100,7 @@ input { display: block; width: 100%; margin-top: 6px; font: 600 1.25rem Nunito, 
 .turn-banner.won { background: var(--sage); color: var(--paper); font-size: 1.4rem; }
 .action-bar { display: flex; gap: 12px; align-items: center; margin: 10px 0; }
 .action-bar .btn { margin: 0; flex: 1; }
+.action-bar .btn.knock { flex: 0 0 38%; font-size: .95rem; min-height: 56px; padding: 10px 8px; }
 .die { width: 76px; height: 76px; flex: none; display: flex; align-items: center; justify-content: center;
   font: 2.4rem Bungee, sans-serif; background: #fff; border: 3px solid var(--ink); border-radius: 16px; box-shadow: 0 4px 0 var(--ink); }
 .die.shake { animation: shake .5s; }
@@ -117,6 +118,14 @@ input { display: block; width: 100%; margin-top: 6px; font: 600 1.25rem Nunito, 
 .debug { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.78); color: #b7f5b0;
   font: 12px/1.35 ui-monospace, Menlo, monospace; padding: 4px 8px; z-index: 50; white-space: pre-wrap; }
 
+/* Wide screens: bigger rig picker on the home screen, 2 columns x 4 rows */
+@media (min-width: 900px) {
+  #screen-home { max-width: 760px; }
+  .vehicle-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .vehicle { min-height: 150px; font-size: 1rem; padding: 10px 6px; }
+  .vehicle img { height: 110px; }
+}
+
 /* Wide screens: board left, panel right */
 @media (min-width: 900px) {
   .game-main { display: flex; align-items: flex-start; }
@@ -125,7 +134,7 @@ input { display: block; width: 100%; margin-top: 6px; font: 600 1.25rem Nunito, 
 }
 
 /* ?board=1 : shared big screen, no controls, board as large as possible */
-body.board-mode .game-head .icon-btn#btn-zoom, body.board-mode #btn-roll, body.board-mode .choices, body.board-mode #btn-new { display: none !important; }
+body.board-mode .game-head .icon-btn#btn-zoom, body.board-mode #btn-roll, body.board-mode .choices, body.board-mode #btn-new, body.board-mode #btn-knock, body.board-mode #btn-rematch, body.board-mode #rematch-wait { display: none !important; }
 body.board-mode .game-main { display: flex; align-items: flex-start; }
 body.board-mode .board-wrap { flex: 1; overflow: hidden; border-right: 3px solid var(--ink); border-bottom: 0; display: flex; justify-content: center; }
 body.board-mode .board { width: min(100%, calc((100vh - 56px) * 1.3166)); }
@@ -158,3 +167,15 @@ body.board-mode .piece .nm { font-size: clamp(9px, 1vw, 18px); }
   .game-head .icon-btn { min-width: 40px; min-height: 44px; padding: 0 6px; font-size: 1.1rem; }
   .demo-tag { font-size: .62rem; padding: 2px 5px; letter-spacing: .08em; }
 }
+
+/* "Sound paused" bar: shown when the phone pauses the audio; the whole bar is the resume button */
+.sound-bar { position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 60; border: 2px solid var(--ink); border-radius: 14px;
+  background: var(--mari); color: var(--ink); font: 700 1rem Nunito, sans-serif; padding: 12px 14px; min-height: 48px;
+  box-shadow: 0 4px 0 var(--ink); text-align: center; touch-action: manipulation; }
+.sound-bar[hidden] { display: none; }
+
+/* Home / lobby links */
+.about-link { color: var(--terra); font-weight: 800; }
+.lobby-home { display: inline-block; font: 700 .95rem Nunito, sans-serif; color: var(--terra); text-decoration: none; padding: 8px 4px; }
+.linkbtn { background: none; border: 0; color: var(--terra); font: 800 .85rem Nunito, sans-serif; text-decoration: underline; cursor: pointer; padding: 4px; }
+a.btn[hidden] { display: none; }
