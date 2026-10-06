@@ -6,9 +6,11 @@
 <meta name="theme-color" content="#C3623B">
 <link rel="icon" href="assets/img/pieces/bronco-orange.png">
 <title>Desert Ranger</title>
-<link rel="stylesheet" href="assets/css/style.css?v=10">
+<link rel="stylesheet" href="assets/css/style.css?v=11">
 </head>
 <body>
+<!-- the phone paused the sound (call, lock screen, another app): one tap anywhere also resumes it. In the page flow at the top (not fixed), so it never covers a button -->
+<button id="sound-bar" class="sound-bar" type="button" hidden>🔇 Sound paused. Tap here to resume.</button>
 <!--
   Desert Ranger, milestone 1 prototype.
   One page, three screens (home / lobby / game). Plain JS, no build step:
@@ -66,8 +68,6 @@
   <p id="demo-hint" class="center hint" hidden>Try the full sound and feel on your own: it starts right away, with computer rivals that roll by themselves.</p>
   <p id="lobby-wait" class="center hint" hidden>Waiting for the host to start…</p>
   <p id="lobby-error" class="error" role="alert"></p>
-  <a id="lobby-board-link" class="btn big sage" href="#" target="_blank" rel="noopener">Open shared screen</a>
-  <p class="center hint">For a TV or tablet. <button id="btn-copy-board" class="linkbtn" type="button">Copy link</button> <span id="copy-msg"></span></p>
 </section>
 
 <!-- GAME -->
@@ -105,6 +105,7 @@
         <button id="btn-knock" class="btn knock" type="button" hidden>Knock, knock</button>
       </div>
       <p id="nudge-note" class="center hint" hidden></p>
+      <button id="btn-skip" class="btn sage hostbtn" type="button" hidden>Skip turn</button>
       <div id="choices" class="choices"></div>
       <p id="game-error" class="error" role="alert"></p>
       <ul id="player-list" class="player-list"></ul>
@@ -122,15 +123,12 @@
   <button id="btn-sound" class="btn huge" type="button">🔊 Tap to enable sound</button>
 </div>
 
-<!-- the phone paused the sound (call, lock screen, another app): one tap anywhere also resumes it -->
-<button id="sound-bar" class="sound-bar" type="button" hidden>🔇 Sound paused. Tap here to resume.</button>
-
 <footer id="debug" class="debug" hidden></footer>
 
 <script src="assets/js/sync.js?v=5"></script>
 <script src="assets/js/board.js?v=3"></script>
 <script src="assets/js/radio.js?v=1"></script>
 <script src="assets/js/ambience.js?v=4"></script>
-<script src="assets/js/app.js?v=8"></script>
+<script src="assets/js/app.js?v=9"></script>
 </body>
 </html>

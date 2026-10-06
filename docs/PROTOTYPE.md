@@ -330,6 +330,21 @@ No database changes; all three use the existing tables.
 - Tests: `php tests/wave2_game.php <baseUrl>` (counter, nudge, rematch, demo refusal) and the matching scenarios in
   `node dev/audio/browser_test.js`.
 
+### Host controls: Remove, Skip turn, Sit out (no database changes)
+
+Only the host sees them (never on the shared screen or in a solo demo); the server checks the host on every call.
+- **Remove** (lobby only, `POST api.php?a=remove {code, playerId}`): a "Remove" button on every other player's row. It deletes the seat (the vehicle is free again,
+  the person's seat token stops working), renumbers the seats so they stay 0..n-1, and logs "NAME was removed by the host." The removed phone goes back to the homepage with
+  "The host removed you from this game." Joining takes the first free seat, so a removal never makes the next join fail. Refused once the game has started and for the host.
+- **Skip turn** (`POST api.php?a=skip {code, turn}`): a "Skip NAME's turn" button under the banner when someone else is on turn. It needs the turn number the host saw
+  (a stale tap gets 409), drops any pending swap/shortcut choice without applying it, moves the turn on and logs "NAME was skipped by the host." No animation or sound.
+- **Sit out** (`POST api.php?a=sitout {code, playerId, on}`): a "Sit out" / "Bring back" button on every other player's row in the game list. A player who sits out is passed
+  over silently (their `skip_turns` is set to `DesertRangerRules::SIT_OUT`, 100, so no schema change); the list shows "sitting out" and their phone says "The host has you sitting out".
+  The host cannot sit out; at least one player always stays in; if the player on turn is sat out the turn moves on at once.
+- Engine: `DesertRangerRules::skipTurn()` and `::sitOut()` in `lib/rules.php` (unit tests and a 1000-game fuzz in `tests/rules_test.php`); server `dr_remove_player`, `dr_skip_turn`,
+  `dr_sit_out` in `lib/game.php`. Tests: `php tests/host_controls.php <baseUrl>` and the "Host controls" part of `node dev/audio/browser_test.js`.
+- Not built (owner's choice): automatic skipping of a player who has been away for a while, and a way to hand the host role to someone else.
+
 ### Sound settings (⚙ panel next to the speaker button)
 
 Saved per device in `localStorage`; 🔊 mutes everything.
@@ -423,8 +438,8 @@ The code at tag `milestone-1`, served by MAMP on the lab Mac:
 - **Not tested on the Network Solutions host itself (the largest open item).** The account's reported specs (Oct 3, 2026): Debian, **PHP 7.4.10**, **MySQL 5.7.44**, SFTP on a non-standard port, CGI active. That is the stack already emulated in Docker (PHP 7.4 + MySQL 5.7.44), so version compatibility is expected to be fine. What is still unknown: the `.htaccess` limits, the database host name and connection limits, HTTPS, and the final URL and folder.
   The `.htaccess` options (`Options -Indexes`, `FilesMatch`) may be restricted on some shared plans.
   If you get a 500 error, remove the offending lines. Since then the code was also checked on the Mac under PHP 7.4.33 (syntax of every PHP file, `rules_test.php` 45/45, `play_at_test.php` 4/4).
-- No turn timeout or skipping of absent players. Nobody can leave, kick, or rematch. A stalled player blocks the game.
-- You can't join after the game starts. Spectators can use the board view.
+- No automatic turn timeout: a stalled player is handled by the host (Skip turn, Sit out, and Remove in the lobby, see "Host controls"). Nobody can leave by themself; the Home link only goes back to the homepage and keeps the seat.
+- You can't join after the game starts. Spectators can use the board (TV) view, which is reached only by typing the address with `&board=1` (the lobby no longer has a button for it, because on a phone it looked like a broken game screen).
 - **No rate limiting on game creation and no cleanup of old games:** finished and test rooms accumulate. `dev/cleanup-test-rooms.sql` previews old rooms and removes them by date.
 - **Solo demo:** the computer rivals' controls live in the host's browser storage, so clearing it mid-demo stops the rivals (End demo still works).
 - `aww` fires fairly often (about 1 in 3 actions in simulations, because every lose-turn counts). Tune it with the client.

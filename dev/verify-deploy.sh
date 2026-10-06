@@ -63,6 +63,7 @@ if [ "$FULL" = "--full" ]; then
     for n in 4; do "$PHPBIN" "$here/desertranger/tests/simulate_game.php" "$BASE" $n 2>&1 | grep -q 'ALL PASSED' && ok "simulate_game.php ($n players) ALL PASSED" || bad "simulate_game.php ($n players) failed: run it by hand to see which check"; done
     "$PHPBIN" "$here/desertranger/tests/demo_game.php" "$BASE" 2>&1 | grep -q 'ALL PASSED' && ok "demo_game.php ALL PASSED (solo demo + the 2-player minimum)" || bad "demo_game.php failed: run it by hand to see which check"
     "$PHPBIN" "$here/desertranger/tests/wave2_game.php" "$BASE" 2>&1 | grep -q 'ALL PASSED' && ok "wave2_game.php ALL PASSED (games counter, Knock-knock, Play again)" || bad "wave2_game.php failed: run it by hand to see which check"
+    "$PHPBIN" "$here/desertranger/tests/host_controls.php" "$BASE" 2>&1 | grep -q 'ALL PASSED' && ok "host_controls.php ALL PASSED (Remove, Skip turn, Sit out)" || bad "host_controls.php failed: run it by hand to see which check"
   fi
 fi
 echo; echo "$pass OK, $warns warning(s), $fails FAIL"

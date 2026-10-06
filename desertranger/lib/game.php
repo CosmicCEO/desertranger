@@ -243,7 +243,16 @@ function dr_join_game(PDO $db, $code, $name, $vehicle)
                 throw new ApiError('Someone already picked that vehicle.', 409);
             }
         }
-        list($token) = dr_join_insert($db, $g['id'], count($players), $name, $vehicle);
+        // First free seat (not count): after the host removes someone the seats must not clash on uq_players_seat.
+        $used = array();
+        foreach ($players as $p) {
+            $used[(int)$p['seat']] = true;
+        }
+        $seat = 0;
+        while (isset($used[$seat])) {
+            $seat++;
+        }
+        list($token) = dr_join_insert($db, $g['id'], $seat, $name, $vehicle);
         dr_add_event($db, $g['id'], 0, 'join', $name . ' joined (' . dr_vehicles()[$vehicle] . ').');
         $db->prepare('UPDATE games SET updated_at = ? WHERE id = ?')->execute(array(dr_now_sql(), $g['id']));
         $db->commit();
@@ -443,6 +452,148 @@ function dr_stats(PDO $db)
 }
 
 /**
+ * Host removes a player from the LOBBY (a spectator, a wrong tap). Frees their vehicle and kills their seat token, and renumbers
+ * the seats so they stay 0..n-1. Refuses once the game has started (use Skip turn / Sit out) and for the host. Removing someone
+ * who is already gone is a harmless no-op (double tap).
+ */
+function dr_remove_player(PDO $db, $code, $token, $playerId)
+{
+    $db->beginTransaction();
+    try {
+        $g = dr_find_game($db, $code, true);
+        $players = dr_players($db, $g['id']);
+        $me = dr_player_for_token($players, $token);
+        if (!$me || (int)$me['id'] !== (int)$g['host_player_id']) {
+            throw new ApiError('Only the host can remove a player.', 403);
+        }
+        if ($g['status'] !== 'lobby') {
+            throw new ApiError('Players can only be removed before the game starts. During a game use Skip turn or Sit out.', 409);
+        }
+        $target = null;
+        foreach ($players as $p) {
+            if ((int)$p['id'] === (int)$playerId) {
+                $target = $p;
+            }
+        }
+        if (!$target) {
+            $db->rollBack();
+            return; // already gone
+        }
+        if ((int)$target['id'] === (int)$g['host_player_id']) {
+            throw new ApiError('The host cannot be removed.', 409);
+        }
+        $db->prepare('DELETE FROM players WHERE id = ? AND game_id = ?')->execute(array($target['id'], $g['id']));
+        // ORDER BY seat: MySQL checks the unique key row by row, so the lowest seat must move first.
+        $db->prepare('UPDATE players SET seat = seat - 1 WHERE game_id = ? AND seat > ? ORDER BY seat')
+           ->execute(array($g['id'], (int)$target['seat']));
+        dr_add_event($db, $g['id'], 0, 'removed', $target['display_name'] . ' was removed by the host.');
+        $db->prepare('UPDATE games SET updated_at = ? WHERE id = ?')->execute(array(dr_now_sql(), $g['id']));
+        $db->commit();
+    } catch (Exception $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        throw $e;
+    }
+}
+
+/** Save the result of a host action (skip / sit out): changed players, the game row, and the log as events (no animation, no sound). */
+function dr_save_host_result(PDO $db, array $g, array $players, array $state, array $res, $eventType)
+{
+    $new = $res['state'];
+    $up = $db->prepare('UPDATE players SET position = ?, skip_turns = ? WHERE id = ?');
+    foreach ($new['players'] as $i => $p) {
+        if ($p['pos'] !== $state['players'][$i]['pos'] || $p['skip'] !== $state['players'][$i]['skip']) {
+            $up->execute(array($p['pos'], $p['skip'], $players[$i]['id']));
+        }
+    }
+    $db->prepare('UPDATE games SET turn_number = ?, current_seat = ?, pending_json = ?, updated_at = ? WHERE id = ?')
+       ->execute(array($new['turn'], $players[$new['current']]['seat'], $new['pending'] ? json_encode($new['pending']) : null,
+                       dr_now_sql(), $g['id']));
+    foreach ($res['log'] as $n => $line) {
+        dr_add_event($db, $g['id'], $state['turn'], $n === 0 ? $eventType : 'skip', $line);
+    }
+}
+
+/**
+ * Host skips the current player's turn (they are away or not really playing). Like a roll it needs the turn number the host saw,
+ * so a stale tap is refused (409). A pending swap/shortcut choice is dropped without being applied.
+ */
+function dr_skip_turn(PDO $db, $code, $token, $turn)
+{
+    $db->beginTransaction();
+    try {
+        $g = dr_find_game($db, $code, true);
+        $players = dr_players($db, $g['id']);
+        $me = dr_player_for_token($players, $token);
+        if (!$me || (int)$me['id'] !== (int)$g['host_player_id']) {
+            throw new ApiError('Only the host can skip a turn.', 403);
+        }
+        if ($g['status'] !== 'active') {
+            throw new ApiError('The game is not in progress.', 409);
+        }
+        if ((int)$turn !== (int)$g['turn_number']) {
+            throw new ApiError('That turn already happened.', 409);
+        }
+        $state = dr_engine_state($g, $players);
+        $res = dr_rules()->skipTurn($state);   // RuleError (nobody else in) becomes a 409
+        dr_save_host_result($db, $g, $players, $state, $res, 'hostskip');
+        $db->commit();
+    } catch (Exception $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        throw $e;
+    }
+}
+
+/**
+ * Host makes a player SIT OUT (their turns pass silently) or brings them back. No schema change: the player's skip_turns
+ * is set to DesertRangerRules::SIT_OUT. The host cannot sit themself out; at least one other player must stay in.
+ */
+function dr_sit_out(PDO $db, $code, $token, $playerId, $on)
+{
+    $db->beginTransaction();
+    try {
+        $g = dr_find_game($db, $code, true);
+        $players = dr_players($db, $g['id']);
+        $me = dr_player_for_token($players, $token);
+        if (!$me || (int)$me['id'] !== (int)$g['host_player_id']) {
+            throw new ApiError('Only the host can make a player sit out.', 403);
+        }
+        if ($g['status'] !== 'active') {
+            throw new ApiError('The game is not in progress.', 409);
+        }
+        $idx = null;
+        foreach ($players as $i => $p) {
+            if ((int)$p['id'] === (int)$playerId) {
+                $idx = $i;
+            }
+        }
+        if ($idx === null) {
+            throw new ApiError('No such player.', 404);
+        }
+        if ($on && (int)$players[$idx]['id'] === (int)$g['host_player_id']) {
+            throw new ApiError('The host cannot sit out.', 409);
+        }
+        $isOut = (int)$players[$idx]['skip_turns'] >= DesertRangerRules::SIT_OUT;
+        if (($on && $isOut) || (!$on && !$isOut)) {
+            $db->rollBack();
+            return; // already in that state (double tap)
+        }
+        $state = dr_engine_state($g, $players);
+        $res = dr_rules()->sitOut($state, $idx, (bool)$on);   // RuleError (last player in) becomes a 409
+        dr_save_host_result($db, $g, $players, $state, $res, 'sitout');
+        $db->commit();
+    } catch (Exception $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        throw $e;
+    }
+}
+
+/**
  * Roll or answer a choice.  ONE transaction, game row locked with FOR UPDATE.
  *
  * Double-tap protection:
@@ -481,7 +632,7 @@ function dr_take_action(PDO $db, $code, $token, $kind, $turn, $key, array $choic
 
         // ---- Build the engine state from the DB rows ----
         $state = dr_engine_state($g, $players);
-        if ($state['current'] !== (int)$me['seat']) {
+        if ((int)$players[$state['current']]['id'] !== (int)$me['id']) {
             throw new ApiError("It's not your turn.", 409);
         }
 
@@ -630,6 +781,7 @@ function dr_state(PDO $db, $code, $since, $token)
             'seat'    => (int)$p['seat'],
             'pos'     => (int)$p['position'],
             'skip'    => (int)$p['skip_turns'],
+            'out'     => (int)$p['skip_turns'] >= DesertRangerRules::SIT_OUT,   // sitting out (the host's choice)
             'bot'     => $demo && (int)$p['id'] !== (int)$g['host_player_id'],   // computer rival in a solo demo
         );
         if ((int)$p['seat'] === (int)$g['current_seat']) {

@@ -55,6 +55,7 @@ function finish(g, pl, steps, out, text) {
     for (let n = 0; n < g.players.length; n++) {
       g.cur = (g.cur + 1) % g.players.length;
       const nx = g.players[g.cur];
+      if (nx.skip >= 100) continue;   // sitting out (the host's choice): passed over silently
       if (nx.skip > 0) { nx.skip--; addEvent(g, 'skip', nx.name + ' skips a turn.'); } else break;
     }
   }
@@ -64,7 +65,8 @@ function newGame() {
   return (games[code] = { code: code, status: 'lobby', turn: 0, cur: 0, hostId: null, winnerId: null, pending: null, players: [], events: [] });
 }
 function addPlayer(g, name, vehicle) {
-  const p = { id: nextPlayer++, name: name || 'Player', vehicle: vehicle, seat: g.players.length, pos: 0, skip: 0,
+  let seat = 0; while (g.players.some(x => x.seat === seat)) seat++;   // first free seat (after a removal there is a gap to reuse)
+  const p = { id: nextPlayer++, name: name || 'Player', vehicle: vehicle, seat: seat, pos: 0, skip: 0,
               token: Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2) };
   g.players.push(p); if (g.hostId === null) g.hostId = p.id;
   addEvent(g, 'join', p.name + ' joined.');
@@ -75,7 +77,7 @@ function stateOf(g, me, since) {
   return { ok: true, serverNow: Date.now(),
     game: { code: g.code, status: g.status, turn: g.turn, currentId: g.status === 'active' ? g.players[g.cur].id : null,
             hostId: g.hostId, winnerId: g.winnerId, pending: g.pending ? { type: g.pending.type, playerId: g.pending.playerId } : null },
-    players: g.players.map(p => ({ id: p.id, name: p.name, vehicle: p.vehicle, seat: p.seat, pos: p.pos, skip: p.skip })),
+    players: g.players.map(p => ({ id: p.id, name: p.name, vehicle: p.vehicle, seat: p.seat, pos: p.pos, skip: p.skip, out: p.skip >= 100 })),
     meId: me ? me.id : null, events: ev };
 }
 
@@ -107,6 +109,31 @@ function api(action, q, body, token, res) {
       g.players.forEach(p => { p.pos = 0; p.skip = 0; }); g.events = g.events.filter(e => e.type === 'join');
       g.status = 'lobby'; g.turn = 0; g.cur = 0; g.winnerId = null; g.pending = null;
       addEvent(g, 'join', 'Rematch: back in the lobby with the same players.'); return j({ ok: true });
+    case 'remove': {   // host only, lobby only; frees the vehicle, renumbers seats
+      if (!g || !me || me.id !== g.hostId) return err('Only the host can remove a player.', 403);
+      if (g.status !== 'lobby') return err('Players can only be removed before the game starts.', 409);
+      const t = g.players.find(p => p.id === +body.playerId); if (!t) return j({ ok: true });
+      if (t.id === g.hostId) return err('The host cannot be removed.', 409);
+      g.players.splice(g.players.indexOf(t), 1); g.players.forEach(p => { if (p.seat > t.seat) p.seat--; });
+      addEvent(g, 'removed', t.name + ' was removed by the host.'); return j({ ok: true }); }
+    case 'skip': {     // host only: pass the turn on without the current player acting
+      if (!g || !me || me.id !== g.hostId) return err('Only the host can skip a turn.', 403);
+      if (g.status !== 'active') return err('The game is not in progress.', 409);
+      if (+body.turn !== g.turn) return err('That turn already happened.', 409);
+      if (!g.players.some((p, i) => i !== g.cur && p.skip < 100)) return err('There is nobody else to hand the turn to.', 409);
+      const was = g.players[g.cur]; g.pending = null; g.turn++;
+      for (let n = 0; n < g.players.length; n++) { g.cur = (g.cur + 1) % g.players.length; const nx = g.players[g.cur];
+        if (nx.skip >= 100) continue; if (nx.skip > 0) { nx.skip--; continue; } break; }
+      addEvent(g, 'hostskip', was.name + ' was skipped by the host.'); return j({ ok: true }); }
+    case 'sitout': {   // host only: a player's turns pass silently until the host brings them back
+      if (!g || !me || me.id !== g.hostId) return err('Only the host can make a player sit out.', 403);
+      if (g.status !== 'active') return err('The game is not in progress.', 409);
+      const t = g.players.find(p => p.id === +body.playerId); if (!t) return err('No such player.', 404);
+      const on = !!body.on; if (on && t.id === g.hostId) return err('The host cannot sit out.', 409);
+      if (on === (t.skip >= 100)) return j({ ok: true });
+      t.skip = on ? 100 : 0;
+      if (on && g.players[g.cur] === t) { g.pending = null; g.turn++; for (let n = 0; n < g.players.length; n++) { g.cur = (g.cur + 1) % g.players.length; if (g.players[g.cur].skip < 100) break; } }
+      addEvent(g, 'sitout', t.name + (on ? ' is sitting out.' : ' is back in the game.')); return j({ ok: true }); }
     case 'state': if (!g) return err('No game with that code.', 404); return j(stateOf(g, me, +(q.get('since') || 0)));
     case 'roll': case 'choose': {
       if (!g || !me) return err('You are not in this game.', 403);

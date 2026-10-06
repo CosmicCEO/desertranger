@@ -75,8 +75,7 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
   await h1.screenshot({ path: SHOTS + 'lobby-demo-phone-390x844.png', fullPage: true });
   // ---- Wave 2 B: lobby links, home screen layout, About page
   console.log('\nWave 2 B: lobby, home screen, About');
-  check('lobby: the shared-screen link is a styled button that opens a new window (board=1 for this room)',
-    await h1.evaluate(c => { const a = document.getElementById('lobby-board-link'); return a.tagName === 'A' && a.classList.contains('btn') && a.target === '_blank' && /rel/.test(a.outerHTML) && a.href.indexOf('g=' + c) > 0 && a.href.indexOf('board=1') > 0; }, code1));
+  check('lobby: there is no "Open shared screen" button or Copy link any more (the TV view is reached by address only)', await h1.evaluate(() => !document.getElementById('lobby-board-link') && !document.getElementById('btn-copy-board') && !/shared screen/i.test(document.getElementById('screen-lobby').textContent)));
   check('lobby: a Home link is shown', await visible(h1, '#lobby-home'));
   const hm = await open('home', phone);
   const codeH = await createGame(hm, 'Marigold', 'bronco-orange');
@@ -155,7 +154,10 @@ const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isM
 
   await hostRolls(d1);                                        // the host plays; the rivals must roll by themselves
   let logTxt = '', waited = 0;
-  while (!(/Rival 1/.test(logTxt) && /Rival 2/.test(logTxt)) && waited < 70000) { await sleep(1500); waited += 1500; logTxt = (await d1.locator('#log li').allTextContents()).join(' | '); }
+  while (!(/Rival 1/.test(logTxt) && /Rival 2/.test(logTxt)) && waited < 70000) {
+    const pend = await d1.$$('#choices button');   // the host's own roll can land on a shortcut or swap: answer it, or the rivals never get a turn
+    if (pend.length) { await pend[pend.length - 1].click(); }
+    await sleep(1500); waited += 1500; logTxt = (await d1.locator('#log li').allTextContents()).join(' | '); }
   check('both rivals rolled by themselves (no taps) within ' + Math.round(waited / 1000) + ' s', /Rival 1 rolled/.test(logTxt) && /Rival 2 rolled/.test(logTxt), logTxt.slice(0, 300));
   let turnsPlayed = 1;
   for (let i = 0; i < 3; i++) { await hostRolls(d1, 90000); turnsPlayed++; await sleep(500); }

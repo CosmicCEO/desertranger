@@ -14,6 +14,9 @@
  *   POST api.php?a=start   {code}
  *   POST api.php?a=rematch {code}           host only: a finished game back to the lobby, same players
  *   POST api.php?a=nudge   {code}           "Knock, knock" to every phone (rate limited)
+ *   POST api.php?a=remove  {code, playerId}        host only, lobby only: remove a player
+ *   POST api.php?a=skip    {code, turn}            host only: skip the current player's turn
+ *   POST api.php?a=sitout  {code, playerId, on}    host only: a player sits out (turns pass silently) or comes back
  *   POST api.php?a=roll    {code, turn, key}
  *   POST api.php?a=choose  {code, turn, key, action, target}
  *
@@ -135,6 +138,21 @@ try {
         case 'nudge':
             requirePost();
             dr_nudge($db, $code, dr_token_for($code));
+            dr_out(array('ok' => true));
+
+        case 'remove':
+            requirePost();
+            dr_remove_player($db, $code, dr_token_for($code), isset($in['playerId']) ? $in['playerId'] : 0);
+            dr_out(array('ok' => true));
+
+        case 'skip':
+            requirePost();
+            dr_skip_turn($db, $code, dr_token_for($code), isset($in['turn']) ? $in['turn'] : -1);
+            dr_out(array('ok' => true));
+
+        case 'sitout':
+            requirePost();
+            dr_sit_out($db, $code, dr_token_for($code), isset($in['playerId']) ? $in['playerId'] : 0, !empty($in['on']));
             dr_out(array('ok' => true));
 
         case 'stats':
