@@ -197,11 +197,15 @@
 
     // Not seated (and not a board screen)? -> home with the code filled in.
     if (!BOARD_MODE && !j.meId) {
+      var wasSeated = S.hadSeat;
       S.token = null;
       S.stopPolling = true;
+      S.hadSeat = false;
       if (wasFirst) showHome(j.game.code);
+      else if (wasSeated) removedFromGame(j.game.code);   // the host removed this player: do not leave them frozen on a dead screen
       return;
     }
+    if (!BOARD_MODE) S.hadSeat = true;
 
     // New events -> log, animation, sound.
     j.events.forEach(function (ev) {
@@ -274,7 +278,6 @@
     var st = S.state, me = st.meId, isHost = me === st.game.hostId;
     $('lobby-code').textContent = st.game.code;
     $('lobby-link').textContent = location.host + location.pathname;
-    $('lobby-board-link').href = gameUrl('&board=1');   // a real button: opens the shared-screen view in a new window
     $('lobby-count').textContent = st.players.length;
     var ul = $('lobby-players');
     ul.textContent = '';
@@ -287,6 +290,12 @@
       }
       var w = document.createElement('span'); w.className = 'where'; w.textContent = S.vehicles[p.vehicle] || '';
       li.appendChild(w);
+      if (isHost && p.id !== me) {   // host: remove someone who is not really playing (before the game starts)
+        var ra = document.createElement('div'); ra.className = 'rowact';
+        var rb = document.createElement('button'); rb.type = 'button'; rb.className = 'mini-btn danger'; rb.textContent = 'Remove';
+        rb.onclick = (function (pl) { return function () { removePlayer(pl); }; })(p);
+        ra.appendChild(rb); li.appendChild(ra);
+      }
       ul.appendChild(li);
     });
     $('btn-start').hidden = !isHost;
@@ -308,6 +317,7 @@
     if (!st) return;
     var g = st.game, me = st.meId, cur = playerById(g.currentId);
     var mine = !BOARD_MODE && g.status === 'active' && g.currentId === me;
+    var meP = playerById(me), meOut = !BOARD_MODE && g.status === 'active' && !!(meP && meP.out);
     var pendingMine = mine && g.pending && g.pending.playerId === me;
 
     $('game-code').textContent = g.code;
@@ -319,6 +329,8 @@
       var w = playerById(g.winnerId);
       banner.textContent = '🏁 ' + (w ? w.name : '?') + ' wins!';
       banner.classList.add('won');
+    } else if (meOut) {
+      banner.textContent = 'The host has you sitting out. Ask to be brought back.';
     } else if (pendingMine) {
       banner.textContent = 'Your choice!';
       banner.classList.add('mine');
@@ -353,15 +365,26 @@
     // Player list
     var ul = $('player-list');
     ul.textContent = '';
+    // Host tools: only the host, in a real game that is running, never on the shared screen.
+    var hostTools = !BOARD_MODE && g.status === 'active' && me === g.hostId && !g.demo;
+    var skipBtn = $('btn-skip');
+    skipBtn.hidden = !(hostTools && cur && cur.id !== me);
+    if (!skipBtn.hidden) skipBtn.textContent = 'Skip ' + cur.name + "'s turn";
     st.players.forEach(function (p) {
       var li = document.createElement('li');
-      if (p.id === g.currentId) li.className = 'current';
+      li.className = (p.id === g.currentId ? 'current' : '') + (p.out ? ' out' : '');
       li.appendChild(pieceImg(p.vehicle));
       li.appendChild(document.createTextNode(p.name + (p.id === me ? ' (you)' : p.bot ? ' (computer)' : '')));
       var wh = document.createElement('span');
       wh.className = 'where';
-      wh.textContent = p.pos + ' · ' + S.bv.squareName(p.pos) + (p.skip ? ' · skips ' + p.skip : '');
+      wh.textContent = p.pos + ' · ' + S.bv.squareName(p.pos) + (p.out ? ' · sitting out' : p.skip ? ' · skips ' + p.skip : '');
       li.appendChild(wh);
+      if (hostTools && p.id !== me) {   // host: make someone who is not playing sit out (their turns pass) or bring them back
+        var ra = document.createElement('div'); ra.className = 'rowact';
+        var sb = document.createElement('button'); sb.type = 'button'; sb.className = 'mini-btn'; sb.textContent = p.out ? 'Bring back' : 'Sit out';
+        sb.onclick = (function (pl) { return function () { sitOut(pl); }; })(p);
+        ra.appendChild(sb); li.appendChild(ra);
+      }
       ul.appendChild(li);
     });
     // Solo demo: DEMO tag for everyone watching; the host gets End demo / Back to lobby instead of New game.
@@ -409,6 +432,40 @@
       (j.rivals || []).forEach(function (r) { S.rivals[r.id] = r.token; });
       saveRivals();
     }).catch(function (e) { $('lobby-error').textContent = e.message; }).then(poll);
+  }
+
+  // ---- Host controls (the server checks the host; these are the buttons) ----
+  function hostCall(action, body, errBox) {
+    return api(action, body).catch(function (e) { $(errBox).textContent = e.message; }).then(poll);
+  }
+  function removePlayer(p) {
+    if (!confirm('Remove ' + p.name + ' from the game?')) return;
+    $('lobby-error').textContent = '';
+    hostCall('remove', { code: S.code, playerId: p.id }, 'lobby-error');
+  }
+  function skipTurn() {
+    var g = S.state && S.state.game, cur = g && playerById(g.currentId);
+    if (!g || !cur || !confirm("Skip " + cur.name + "'s turn?")) return;
+    $('game-error').textContent = '';
+    hostCall('skip', { code: S.code, turn: g.turn }, 'game-error');
+  }
+  function sitOut(p) {
+    var on = !p.out;
+    if (on && !confirm(p.name + ' will sit out: their turns are skipped until you bring them back. Continue?')) return;
+    $('game-error').textContent = '';
+    hostCall('sitout', { code: S.code, playerId: p.id, on: on }, 'game-error');
+  }
+  /** This phone's seat was removed by the host: forget the seat and go home with a clear message. */
+  function removedFromGame(code) {
+    clearTimeout(S.pollTimer); clearTimeout(S.botTimer);
+    try {
+      localStorage.removeItem('dr_token_' + code);
+      if (localStorage.getItem('dr_last_code') === code) localStorage.removeItem('dr_last_code');
+    } catch (e) { /* private mode: fine */ }
+    if (S.gameShown) resetGameView();
+    history.replaceState(null, '', './' + (DEBUG ? '?debug=1' : ''));
+    showHome(code);
+    $('home-error').textContent = 'The host removed you from this game.';
   }
 
   /** Host: "Play again": a finished game goes back to the lobby with the same players. */
@@ -557,11 +614,8 @@
     };
     $('btn-demo').onclick = startDemo;
     $('btn-rematch').onclick = rematch;
+    $('btn-skip').onclick = skipTurn;
     $('btn-knock').onclick = knock;
-    $('btn-copy-board').onclick = function () {   // for a TV that is typed by hand: copy the address, or show it to read out
-      var u = gameUrl('&board=1'), done = function (ok) { $('copy-msg').textContent = ok ? 'Copied.' : u; };
-      try { navigator.clipboard.writeText(u).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
-    };
     $('btn-end-demo').onclick = endDemo;
     $('btn-roll').onclick = function () { Sound.unlock(); if (Radio) Radio.localShake(); act('roll', {}); };
     $('btn-sound').onclick = function () { Sound.unlock(); $('sound-overlay').hidden = true; };

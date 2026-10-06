@@ -30,6 +30,7 @@
  *   - 31 Swap: optional, player may pick ANY other player.
  *   - 6 -> 33 shortcut: optional, exact landing only.
  *   - Lose N turns: skip your next N turns.
+ *   - Host controls: skipTurn() passes the turn on; sitOut() makes a player's turns pass silently (skip >= SIT_OUT) until brought back.
  *   - Moves never go below START (0).
  *
  * STILL OPEN (we use whatever is in board/desert-ranger.json):
@@ -49,6 +50,9 @@ class DesertRangerRules
 {
     /** Hard stop for effect chains, so bad board data can never loop forever. */
     const MAX_CHAIN_DEPTH = 20;
+
+    /** A player whose 'skip' count is at least this is SITTING OUT (the host's choice): passed over silently, nothing is burned. */
+    const SIT_OUT = 100;
 
     /** "Big setback" (plays the 'aww' clip): pushed back at least this many squares in one action, or any lose-turn square. */
     const BIG_SETBACK_SQUARES = 5;
@@ -190,6 +194,71 @@ class DesertRangerRules
             throw new RuleError('That choice is not allowed here.');
         }
         return $this->finishAction($state, $p, $out);
+    }
+
+    /**
+     * HOST ACTION: pass the turn on without the current player acting (they are away, or not really playing).
+     * A pending swap/shortcut choice is dropped without being applied. Same return shape as roll(); no cue.
+     */
+    public function skipTurn(array $state)
+    {
+        if ($state['status'] !== 'active') {
+            throw new RuleError('The game is not active.');
+        }
+        if ($this->othersIn($state, $state['current']) < 1) {
+            throw new RuleError('There is nobody else to hand the turn to.');
+        }
+        $out = $this->blankOutcome();
+        $log = array($state['players'][$state['current']]['name'] . ' was skipped by the host.');
+        $state['pending'] = null;
+        $state['turn']++;
+        $this->advanceTurn($state, $out, $log);
+        return array('state' => $state, 'events' => $out['events'], 'log' => $log, 'cue' => null);
+    }
+
+    /**
+     * HOST ACTION: make player index $idx sit out (their turns are passed over silently) or bring them back.
+     * At least one other player must stay in. If the player sitting out is the one on turn, the turn moves on
+     * (and 'turn' increases, so a stale tap from them is refused). Same return shape as roll(); no cue.
+     */
+    public function sitOut(array $state, $idx, $on)
+    {
+        if ($state['status'] !== 'active') {
+            throw new RuleError('The game is not active.');
+        }
+        if (!isset($state['players'][$idx])) {
+            throw new RuleError('No such player.');
+        }
+        $out = $this->blankOutcome();
+        $name = $state['players'][$idx]['name'];
+        if ($on) {
+            if ($this->othersIn($state, $idx) < 1) {
+                throw new RuleError('At least one player has to stay in the game.');
+            }
+            $state['players'][$idx]['skip'] = self::SIT_OUT;
+            $log = array($name . ' is sitting out.');
+            if ($state['current'] === $idx) {
+                $state['pending'] = null;
+                $state['turn']++;
+                $this->advanceTurn($state, $out, $log);
+            }
+        } else {
+            $state['players'][$idx]['skip'] = 0;
+            $log = array($name . ' is back in the game.');
+        }
+        return array('state' => $state, 'events' => $out['events'], 'log' => $log, 'cue' => null);
+    }
+
+    /** How many players OTHER than $idx are still in the game (not sitting out). */
+    private function othersIn(array $state, $idx)
+    {
+        $n = 0;
+        foreach ($state['players'] as $i => $pl) {
+            if ($i !== $idx && $pl['skip'] < self::SIT_OUT) {
+                $n++;
+            }
+        }
+        return $n;
     }
 
     // =====================================================================
@@ -354,10 +423,23 @@ class DesertRangerRules
     {
         $n = count($state['players']);
         $cur = $state['current'];
+        // Everyone sitting out (the server never allows it): leave the turn where it is.
+        $anyIn = false;
+        foreach ($state['players'] as $pl) {
+            if ($pl['skip'] < self::SIT_OUT) {
+                $anyIn = true;
+            }
+        }
+        if (!$anyIn) {
+            return;
+        }
         // Each skipped seat burns one owed turn, so this always ends;
         // the cap is just belt-and-braces.
         for ($guard = 0; $guard < 1000; $guard++) {
             $cur = ($cur + 1) % $n;
+            if ($state['players'][$cur]['skip'] >= self::SIT_OUT) {
+                continue;   // sitting out (host's choice): passed over silently, nothing burned, no log line
+            }
             if ($state['players'][$cur]['skip'] > 0) {
                 $state['players'][$cur]['skip']--;
                 $out['events'][] = array('type' => 'skipped', 'player' => $cur);

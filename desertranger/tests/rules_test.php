@@ -123,6 +123,59 @@ check(throwsRule(function () use ($R, $r) { $R->roll($r['state'], dice(array(1))
 $r = $R->roll(st($R, 2, array(47)), dice(array(4)));
 check($r['state']['status'] === 'finished', 'exact landing wins');
 
+echo "Host controls: skipTurn and sitOut\n";
+$s = st($R, 3);
+$r = $R->skipTurn($s);
+check($r['state']['current'] === 1 && $r['state']['turn'] === $s['turn'] + 1 && $r['cue'] === null, 'skipTurn passes the turn on (turn +1, no cue)');
+check($r['log'] === array('P0 was skipped by the host.') && $r['events'] === array(), 'skipTurn log line, no events');
+check($r['state']['players'][0]['pos'] === 0 && $r['state']['players'][0]['skip'] === 0, 'the skipped player is not moved or penalised');
+$s = st($R, 2, array(2));                                     // 2 + 4 = 6: optional shortcut
+$s = $R->roll($s, dice(array(4)))['state'];
+check(!empty($s['pending']) && $s['pending']['type'] === 'shortcut', 'setup: a shortcut choice is pending');
+$r = $R->skipTurn($s);
+check($r['state']['pending'] === null && $r['state']['current'] === 1 && $r['state']['players'][0]['pos'] === 6, 'skipTurn drops a pending choice without applying it');
+$s = st($R, 2, array(10));                                    // 10 + 4 = 14: roll again, current stays
+$s = $R->roll($s, dice(array(4)))['state'];
+check($s['current'] === 0, 'setup: roll again keeps the turn');
+check($R->skipTurn($s)['state']['current'] === 1, 'skipTurn works on a roll-again turn');
+$s = st($R, 3); $s['players'][1]['skip'] = 1;
+$r = $R->skipTurn($s);
+check($r['state']['current'] === 2 && $r['state']['players'][1]['skip'] === 0 && count($r['events']) === 1 && $r['events'][0]['type'] === 'skipped', 'skipTurn still burns the next player\'s owed turn');
+check(count($r['log']) === 2 && strpos($r['log'][1], 'P1 loses this turn') !== false, '...with its own log line');
+check(throwsRule(function () use ($R) { $s = st($R, 2); $s['status'] = 'finished'; $R->skipTurn($s); }), 'no skipping after the game ends');
+check(throwsRule(function () use ($R) { $s = st($R, 2); $s['players'][1]['skip'] = DesertRangerRules::SIT_OUT; $R->skipTurn($s); }), 'no skipping when nobody else is in');
+
+$s = st($R, 3);
+$r = $R->sitOut($s, 1, true);
+check($r['state']['players'][1]['skip'] === DesertRangerRules::SIT_OUT && $r['state']['current'] === 0 && $r['state']['turn'] === $s['turn'], 'sitOut on another player: flag set, turn unchanged');
+check($r['log'] === array('P1 is sitting out.'), 'sitOut log line');
+$s = $r['state']; $lines = 0; $order = array();
+for ($i = 0; $i < 6; $i++) {                                  // 6 rolls: P0, P2, P0, P2, P0, P2 and never P1
+    $order[] = $s['current'];
+    $r = $R->roll($s, dice(array(1)));
+    $lines += count($r['log']) - 1;
+    $s = $r['state'];
+}
+check($order === array(0, 2, 0, 2, 0, 2), 'a sitting-out player is passed over every round');
+check($lines === 0 && $s['players'][1]['skip'] === DesertRangerRules::SIT_OUT, '...silently, and nothing is burned');
+$r = $R->sitOut($s, 1, false);
+check($r['state']['players'][1]['skip'] === 0 && $r['log'] === array('P1 is back in the game.'), 'bringing them back clears the flag');
+$s = $r['state']; $s['current'] = 0;
+check($R->roll($s, dice(array(1)))['state']['current'] === 1, '...and they get their turn again');
+$s = st($R, 3);
+$r = $R->sitOut($s, 0, true);                                 // the player on turn sits out
+check($r['state']['current'] === 1 && $r['state']['turn'] === $s['turn'] + 1 && $r['state']['pending'] === null, 'sitting out the current player moves the turn on (turn +1)');
+$s = st($R, 2); $s = $R->sitOut($s, 0, true)['state'];
+check(throwsRule(function () use ($R, $s) { $R->sitOut($s, 1, true); }), 'the last player in cannot sit out');
+check(throwsRule(function () use ($R) { $R->sitOut(st($R, 2), 5, true); }), 'sitOut: no such player');
+check(throwsRule(function () use ($R) { $s = st($R, 2); $s['status'] = 'finished'; $R->sitOut($s, 1, true); }), 'sitOut: not after the game ends');
+$s = st($R, 2); $s['players'][0]['skip'] = DesertRangerRules::SIT_OUT; $s['players'][1]['skip'] = DesertRangerRules::SIT_OUT; $s['current'] = 1;
+$r = $R->roll($s, dice(array(1)));
+check($r['state']['current'] === 1, 'safety: if everybody is sitting out the turn stays put (no endless loop)');
+$s = st($R, 2); $s = $R->sitOut($s, 1, true)['state'];       // P0 plays alone against a sitter
+$s = $R->roll($s, dice(array(2)))['state'];
+check($s['current'] === 0 && $s['players'][0]['pos'] === 2, 'a lone active player keeps rolling');
+
 echo "Synthetic boards (guards)\n";
 $loop = array('squares' => array(
     array('i' => 0, 'type' => 'start'), array('i' => 1, 'type' => 'goto', 'target' => 2),
@@ -184,6 +237,44 @@ for ($g = 0; $g < 3000; $g++) {
 check($unfinished === 0, 'every game finished');
 check($invalid === 0, 'invariants held (turn+1 per action, 0<=pos<=51, skip>=0)');
 echo "       avg actions/game " . round($totalActions / 3000) . ", max $maxActions\n";
+
+echo "Fuzz with host controls: 1000 games with random skips and sit-outs\n";
+$unfinished = 0; $invalid = 0; $badCurrent = 0;
+for ($g = 0; $g < 1000; $g++) {
+    $s = st($R, random_int(2, 8));
+    for ($a = 0; $a < 5000 && $s['status'] === 'active'; $a++) {
+        $prevTurn = $s['turn'];
+        $roll = random_int(1, 100);
+        try {
+            if ($roll <= 6) {                                     // host skips the current player
+                $r = $R->skipTurn($s); $s = $r['state'];
+                if ($s['turn'] !== $prevTurn + 1) $invalid++;
+                continue;
+            }
+            if ($roll <= 10) {                                    // host sits a random player out or back in
+                $i = random_int(0, count($s['players']) - 1);
+                $r = $R->sitOut($s, $i, (bool)random_int(0, 1)); $s = $r['state'];
+                if ($s['turn'] !== $prevTurn && $s['turn'] !== $prevTurn + 1) $invalid++;
+                continue;
+            }
+        } catch (RuleError $e) { /* refused (last player in, nobody to hand over to): fine */ }
+        $in = 0; foreach ($s['players'] as $pl) if ($pl['skip'] < DesertRangerRules::SIT_OUT) $in++;
+        if ($in < 1) $invalid++;                                  // sitOut must never leave nobody in
+        if ($in >= 1 && $s['players'][$s['current']]['skip'] >= DesertRangerRules::SIT_OUT) $badCurrent++;
+        if (!empty($s['pending'])) {
+            $r = $R->choose($s, array('action' => 'skip'), $rng);
+        } else {
+            $r = $R->roll($s, $rng);
+        }
+        $s = $r['state'];
+        if ($s['turn'] !== $prevTurn + 1) $invalid++;
+        foreach ($s['players'] as $pl) if ($pl['pos'] < 0 || $pl['pos'] > 51 || $pl['skip'] < 0) $invalid++;
+    }
+    if ($s['status'] !== 'finished') $unfinished++;
+}
+check($unfinished === 0, 'every game with host controls finished');
+check($invalid === 0, 'invariants held (turn counts, positions, never everybody sitting out)');
+check($badCurrent === 0, 'a sitting-out player is never the one on turn');
 
 echo "\n$pass passed, $fail failed\n";
 exit($fail ? 1 : 0);

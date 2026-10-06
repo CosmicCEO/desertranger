@@ -278,6 +278,83 @@ const group = u => /manifest\.json/.test(u) ? 'manifest' : /assets\/audio\//.tes
   await A.waitForSelector('#screen-game:not([hidden])'); await B.waitForSelector('#screen-game:not([hidden])');
   check('the rematch starts: host on turn, no winner banner', await A.evaluate(() => !/wins/.test(document.getElementById('turn-banner').textContent) && !document.getElementById('btn-roll').disabled));
 
+  // ---------------------------------------------------------------- host controls: Remove, Skip turn, Sit out
+  console.log('Host controls');
+  const hp = await open('hc-host', phone), g1p = await open('hc-g1', phone), g2p = await open('hc-g2', phone);
+  for (const pg of [hp, g1p, g2p]) pg.on('dialog', d => d.accept());           // the confirm() questions
+  const apiCall = (a, body, tok) => fetch(BASE + 'api.php?a=' + a, { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, tok ? { 'X-Player-Token': tok } : {}), body: JSON.stringify(body || {}) }).then(async r => Object.assign(await r.json(), { _status: r.status }));
+  const stateOf = (code, tok) => fetch(BASE + 'api.php?a=state&code=' + code + '&since=0', { headers: tok ? { 'X-Player-Token': tok } : {} }).then(r => r.json());
+  const tokOf = (pg, code) => pg.evaluate(c => localStorage.getItem('dr_token_' + c), code);
+  async function joinVia(pg, name, veh, code) {
+    await pg.goto(BASE + (code ? '?g=' + code : '')); await pg.waitForSelector('#screen-home:not([hidden])');
+    await pg.fill('#in-name', name); await pg.click('.vehicle:has(img[src*="' + veh + '"])'); await pg.click(code ? '#btn-join' : '#btn-create');
+    await pg.waitForSelector('#screen-lobby:not([hidden])');
+  }
+  await joinVia(hp, 'Hosty', 'bronco-orange');
+  const hcode = (await hp.textContent('#lobby-code')).trim();
+  await joinVia(g1p, 'Ann', 'jeep-red', hcode); await joinVia(g2p, 'Bob', 'scout-butter', hcode);
+  await sleep(1800);
+  check('lobby: no "Open shared screen" button any more', !(await hp.locator('text=Open shared screen').count()));
+  check('lobby: the host sees a Remove button on each other player; a guest sees none', (await hp.locator('#lobby-players .mini-btn').count()) === 2 && (await g1p.locator('#lobby-players .mini-btn').count()) === 0);
+  const rowsFit = (pg, sel) => pg.evaluate(s => [].every.call(document.querySelectorAll(s), li => li.scrollWidth <= li.clientWidth + 1), sel);
+  check('lobby rows with the Remove button fit a 390 px phone', await rowsFit(hp, '#lobby-players li'));
+  // the "Sound paused" bar sits in the page flow and covers no button, even on a short screen
+  await hp.evaluate(() => { window.__f = 'interrupted'; Object.defineProperty(DRSound.ctx, 'state', { get: () => window.__f, configurable: true }); DRSound.ctx.onstatechange(); });
+  for (const h of [844, 664]) {
+    await hp.setViewportSize({ width: 390, height: h }); await sleep(250);
+    const ov = await hp.evaluate(() => { const bar = document.getElementById('sound-bar'), br = bar.getBoundingClientRect();
+      const hit = [].filter.call(document.querySelectorAll('#screen-lobby button, #screen-lobby a'), b => b.offsetParent !== null).filter(b => { const r = b.getBoundingClientRect(); return r.top < br.bottom && r.bottom > br.top && r.left < br.right && r.right > br.left; }).map(b => b.id || b.textContent.trim());
+      return { shown: !bar.hidden, pos: getComputedStyle(bar).position, hit: hit }; });
+    check('sound-paused bar is in the page flow and covers no lobby button at 390x' + h, ov.shown && ov.pos !== 'fixed' && ov.hit.length === 0, ov);
+  }
+  await hp.evaluate(() => { window.__f = 'running'; DRSound.ctx.onstatechange(); }); await hp.setViewportSize({ width: 390, height: 844 });
+  // Remove Bob
+  await hp.locator('#lobby-players li', { hasText: 'Bob' }).locator('.mini-btn').click();
+  await g2p.waitForSelector('#screen-home:not([hidden])', { timeout: 8000 });
+  check('the removed player\'s phone goes home and says the host removed them', /removed you/.test(await g2p.textContent('#home-error')) && (await tokOf(g2p, hcode)) === null);
+  const htok = await tokOf(hp, hcode), atok = await tokOf(g1p, hcode);
+  const cy = await apiCall('join', { code: hcode, name: 'Cy', vehicle: 'scout-butter' });
+  const stL = await stateOf(hcode, htok);
+  check('the freed vehicle can be taken again and the next join works (seats 0,1,2 all different)', cy.ok && stL.players.map(p => p.seat).sort().join() === '0,1,2' && stL.players.length === 3, stL.players);
+  const cyTok = cy.token;
+  await hp.click('#btn-start');
+  await hp.waitForSelector('#screen-game:not([hidden])'); await g1p.waitForSelector('#screen-game:not([hidden])');
+  await sleep(1200);
+  check('host on turn: no Skip button (it is their own turn)', !(await hp.isVisible('#btn-skip')));
+  await rollAs('hc-host', 1);                                                           // Hosty rolls; Ann is up
+  await hp.waitForFunction(() => { const b = document.getElementById('btn-skip'); return b && !b.hidden; }, null, { timeout: 8000 });
+  check('host sees "Skip Ann\'s turn" while Ann is up; Ann does not see a Skip button', /Skip Ann/.test(await hp.textContent('#btn-skip')) && !(await g1p.isVisible('#btn-skip')));
+  const stG = await stateOf(hcode, htok);
+  const gr = await apiCall('skip', { code: hcode, turn: stG.game.turn }, atok);
+  check('a guest cannot skip (403, asserted through the API)', !gr.ok && gr._status === 403, gr);
+  const sr = await apiCall('skip', { code: hcode, turn: stG.game.turn - 1 }, htok);
+  check('a stale turn number is refused (409)', !sr.ok && sr._status === 409, sr);
+  await hp.click('#btn-skip');
+  await hp.waitForFunction(() => /Cy/.test(document.getElementById('turn-banner').textContent), null, { timeout: 8000 });
+  await g1p.waitForFunction(() => /was skipped by the host/.test(document.getElementById('log').textContent), null, { timeout: 6000 }).catch(() => {});   // the guest's poll runs once a second
+  check('Skip moves the turn on to Cy and the log says so, on every phone', /was skipped by the host/.test(await hp.textContent('#log')) && /was skipped by the host/.test(await g1p.textContent('#log')));
+  // Sit out Cy (the player on turn): the turn moves on at once
+  check('game rows with the Sit out button fit a 390 px phone', await rowsFit(hp, '#player-list li'));
+  await hp.locator('#player-list li', { hasText: 'Cy' }).locator('.mini-btn').click();
+  await hp.waitForFunction(() => /Your turn/.test(document.getElementById('turn-banner').textContent), null, { timeout: 8000 });
+  check('sitting out the player on turn passes the turn to the next player; Cy is marked "sitting out" with a Bring back button', /sitting out/.test(await hp.locator('#player-list li', { hasText: 'Cy' }).textContent()) && /Bring back/.test(await hp.locator('#player-list li', { hasText: 'Cy' }).locator('.mini-btn').textContent()));
+  // Sit out Ann: her phone says so
+  await hp.locator('#player-list li', { hasText: 'Ann' }).locator('.mini-btn').click();
+  await g1p.waitForFunction(() => /sitting you out|sitting out/.test(document.getElementById('turn-banner').textContent), null, { timeout: 8000 });
+  check('a sitting-out player\'s phone says "The host has you sitting out"', /The host has you sitting out/.test(await g1p.textContent('#turn-banner')));
+  // the host plays alone for a round: the turn stays with the host, nobody else is called
+  await rollAs('hc-host', 2);
+  const st2 = await stateOf(hcode, htok);
+  check('with both guests sitting out the host keeps the turn', st2.game.currentId === st2.meId, st2.game);
+  // Bring both back
+  for (const nm of ['Cy', 'Ann']) await hp.locator('#player-list li', { hasText: nm }).locator('.mini-btn').click();
+  await sleep(1800);
+  const st3 = await stateOf(hcode, htok);
+  check('Bring back clears both (no one is sitting out)', st3.players.every(p => !p.out), st3.players);
+  await rollAs('hc-host', 1);
+  const st4 = await stateOf(hcode, htok);
+  check('and they are called again (Ann is up after the host)', st4.game.currentId !== st4.meId, st4.game);
+
   // ---------------------------------------------------------------- errors
   check('zero console errors / page errors on all pages', errors.length === 0, errors.slice(0, 8));
   check('zero HTTP 4xx/5xx responses on all pages', httpErrs.length === 0, httpErrs.slice(0, 8));
